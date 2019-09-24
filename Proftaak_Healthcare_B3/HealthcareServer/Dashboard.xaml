@@ -7,6 +7,23 @@
         mc:Ignorable="d"
         Title="Dashboard" Height="450" Width="800">
     <Grid>
-        
+        <StackPanel>
+            <WrapPanel>
+                <StackPanel Margin="5,5,5,5">
+                    <Label Content="Ip:"></Label>
+                    <TextBox x:Name="txbIp" HorizontalAlignment="Left" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" Width="100"/>
+                </StackPanel>
+                <StackPanel Margin="5,5,5,5">
+                    <Label Content="Port:"></Label>
+                    <TextBox x:Name="txbPort" HorizontalAlignment="Left" TextWrapping="Wrap" Text="1331" VerticalAlignment="Top" Width="100"/>
+                </StackPanel>
+            </WrapPanel>
+            <WrapPanel>
+                <StackPanel Margin="5,5,5,5">
+                    <Label Content="Log:"></Label>
+                    <TextBox x:Name="txbLog" AcceptsReturn="True" Height="323" Width="778"></TextBox>
+                </StackPanel>
+            </WrapPanel>
+        </StackPanel>
     </Grid>
 </Window>
