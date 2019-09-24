@@ -21,10 +21,37 @@ namespace HealthcareServer
         {
             Message message = Message.ParseMessage(data);
 
-            //switch(message.GetPrefix())
-            //{
-
-            //}
+            switch ((Message.MessageTypes)message.GetPrefix())
+            {
+                case Message.MessageTypes.BIKEDATA:
+                    {
+                        break;
+                    }
+                case Message.MessageTypes.CHAT_MESSAGE:
+                    {
+                        break;
+                    }
+                case Message.MessageTypes.CLIENT_LOGIN:
+                    {
+                        break;
+                    }
+                case Message.MessageTypes.DOCTOR_LOGIN:
+                    {
+                        break;
+                    }
+                case Message.MessageTypes.CHANGE_RESISTANCE:
+                    {
+                        break;
+                    }
+                case Message.MessageTypes.SERVER_ERROR:
+                    {
+                        break;
+                    }
+                case Message.MessageTypes.SERVER_OK:
+                    {
+                        break;
+                    }
+            }
         }
     }
 }

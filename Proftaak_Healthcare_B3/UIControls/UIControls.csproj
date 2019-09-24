@@ -56,6 +56,8 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Compile Include="Charts\GraphPoint.cs" />
+    <Compile Include="Charts\LiveChart.cs" />
     <Compile Include="Container.xaml.cs">
       <DependentUpon>Container.xaml</DependentUpon>
     </Compile>
