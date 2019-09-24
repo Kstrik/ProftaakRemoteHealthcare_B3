@@ -165,7 +165,8 @@ namespace HealthcareClient
             openFileDialog.Filter = "Text files (*.Scene)|*.Scene";
             if (openFileDialog.ShowDialog() == true)
             {
-                string sceneInput = File.ReadAllText(openFileDialog.FileName);
+                SceneLoader sceneLoader = new SceneLoader(ref this.session);
+                sceneLoader.LoadSceneFile(openFileDialog.FileName);
                 lblScene.Content = openFileDialog.FileName;
             }
         }
@@ -174,7 +175,5 @@ namespace HealthcareClient
         {
             Task.Run(() => session.Create());
         }
-
-
     }
 }
