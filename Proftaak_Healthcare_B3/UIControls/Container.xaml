@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="UIControls.Container"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UIControls"
+             mc:Ignorable="d" 
+             Margin="2, 2, 2, 2">
+    <Grid Background="#FF2D2D30">
+        <Label x:Name="lbl_Header" Content="Header" Foreground="White" FontSize="12" Margin="5, 5, 0, 0"></Label>
+        <StackPanel x:Name="stk_Content" Background="#FF1E1E1E" Margin="5, 35, 5, 5">
+            
+        </StackPanel>
+    </Grid>
+</UserControl>

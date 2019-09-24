@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="UIControls.Menu.Sidemenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UIControls.Menu"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="300" Margin="-250,0,0,0">
+    <Grid x:Name="grd_Grid" Width="300" HorizontalAlignment="Left">
+        <WrapPanel Background="#FF1E1E1E">
+            <ScrollViewer x:Name="scv_Content" Width="250" Height="500" Background="#FF1E1E1E" CanContentScroll="True" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel x:Name="stk_Content" Width="250" Height="500" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    
+                </StackPanel>
+            </ScrollViewer>
+            <StackPanel x:Name="stk_MenuBar" Width="50" Height="500" Background="#FF2D2D30">
+                <Canvas x:Name="btn_MenuToggle" Height="50" Width="50" Background="#FF2D2D30" Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseDown="MenuToggle_MouseDown">
+                    <Label Content="&#9776;" Foreground="White" FontSize="30" Margin="6, 0, 0, 0"/>
+                </Canvas>
+            </StackPanel>
+        </WrapPanel>
+    </Grid>
+</UserControl>
