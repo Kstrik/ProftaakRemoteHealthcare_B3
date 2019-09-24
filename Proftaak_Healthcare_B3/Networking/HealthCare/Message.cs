@@ -6,6 +6,17 @@ namespace Networking.HealthCare
 {
     public class Message
     {
+        [Flags] public enum MessageTypes
+        {
+            BIKEDATA = 0x01,
+            CHAT_MESSAGE = 0x02,
+            CLIENT_LOGIN = 0x03,
+            DOCTOR_LOGIN = 0x04,
+            CHANGE_RESISTANCE = 0x05,
+            SERVER_ERROR = 0x06,
+            SERVER_OK = 0x07
+        }
+
         public byte MessageLength { get; }
         public byte IdPrefix { get; }
         public byte[] ContentMessage { get; }
