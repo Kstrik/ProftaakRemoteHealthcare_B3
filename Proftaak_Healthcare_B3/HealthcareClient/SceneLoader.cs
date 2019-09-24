@@ -55,6 +55,7 @@ namespace HealthcareClient
                             break;
                     }
                 }
+                SubmitScene();
             }
             catch (Exception e)
             {
@@ -144,6 +145,17 @@ namespace HealthcareClient
             route = new Route(session);
             route.SetRoad(road);
             routes.Add(route);
+        }
+
+        public void SubmitScene()
+        {
+            Task.Run(async () =>
+            {
+                foreach (Node node in this.nodes)
+                    await node.Add();
+                foreach (Route route in this.routes)
+                    await route.Add();
+            });
         }
     }
 }
