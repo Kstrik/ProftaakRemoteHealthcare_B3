@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HealthcareServer"
         mc:Ignorable="d"
-        Title="Dashboard" Height="750" Width="1000">
-    <Grid x:Name="grd_Grid">
+        Title="Dashboard" Height="450" Width="800">
+    <Grid>
         
     </Grid>
 </Window>

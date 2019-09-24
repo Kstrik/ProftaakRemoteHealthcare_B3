@@ -60,39 +60,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Dashboard.xaml.cs">
-      <DependentUpon>Dashboard.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Vr\Actions\ActionRequest.cs" />
-    <Compile Include="Vr\Actions\IResponseValidator.cs" />
-    <Compile Include="Vr\Actions\Response.cs" />
-    <Compile Include="Vr\Assets.cs" />
-    <Compile Include="Vr\Session.cs" />
-    <Compile Include="Vr\Tunnel.cs" />
-    <Compile Include="Vr\VectorMath\Vector2.cs" />
-    <Compile Include="Vr\VectorMath\Vector3.cs" />
-    <Compile Include="Vr\VectorMath\Vector4.cs" />
-    <Compile Include="Vr\World\Components\Panel.cs" />
-    <Compile Include="Vr\World\Components\PanelLine.cs" />
-    <Compile Include="Vr\World\Components\Road.cs" />
-    <Compile Include="Vr\World\Components\TerrainTextureLayer.cs" />
-    <Compile Include="Vr\World\Components\Transform.cs" />
-    <Compile Include="Vr\World\Components\Model.cs" />
-    <Compile Include="Vr\World\Components\Terrain.cs" />
-    <Compile Include="Vr\World\Node.cs" />
-    <Compile Include="Vr\World\Route.cs" />
-    <Compile Include="Vr\World\Scene.cs" />
-    <Compile Include="Vr\World\SkyBox.cs" />
-    <Page Include="Dashboard.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dashboard.xaml.cs">
+      <DependentUpon>Dashboard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -129,6 +105,11 @@
       <Name>UIControls</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="Dashboard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

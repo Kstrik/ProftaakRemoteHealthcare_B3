@@ -25,6 +25,11 @@ namespace Networking.HealthCare
             return new Message((bytes[0] == 1), bytes[1], bytes.GetRange(2, (int)bytes[0]).ToArray());
         }
 
+        public byte GetPrefix()
+        {
+            return (byte)(this.IdPrefix & 127);
+        }
+
         private byte[] GetBytes()
         {
             List<byte> bytes = new List<byte>(){

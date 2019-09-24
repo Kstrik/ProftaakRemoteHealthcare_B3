@@ -25,7 +25,7 @@ namespace Networking.Server
 
         private List<ClientConnection> connections;
 
-        public Server(string ip, int port, IClientDataReceiver receiver = null, IServerConnector connector = null, ILogger logger = null)
+        public Server(string ip, int port, IClientDataReceiver receiver, IServerConnector connector, ILogger logger)
         {
             this.isReady = IPAddress.TryParse(ip, out this.host);
             this.isRunning = false;

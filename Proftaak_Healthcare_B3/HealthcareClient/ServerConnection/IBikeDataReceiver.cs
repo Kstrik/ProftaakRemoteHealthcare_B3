@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HealthcareServer.Vr.Actions
+namespace HealthcareClient.Bike
 {
-    public interface IResponseValidator
+     public interface IBikeDataReceiver
     {
-        Task<Response> GetResponse(string jsonResponse);
+        void ReceiveBikeData(byte[] data, Bike bike);
     }
 }

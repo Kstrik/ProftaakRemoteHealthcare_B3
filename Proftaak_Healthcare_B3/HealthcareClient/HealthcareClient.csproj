@@ -63,6 +63,13 @@
     <Compile Include="Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ServerConnection\Bike.cs" />
+    <Compile Include="ServerConnection\ClientMessage.cs" />
+    <Compile Include="ServerConnection\DataManager.cs" />
+    <Compile Include="ServerConnection\IBikeDataReceiver.cs" />
+    <Compile Include="ServerConnection\IClientMessageReceiver.cs" />
+    <Compile Include="ServerConnection\RealBike.cs" />
+    <Compile Include="ServerConnection\TacxTranslater.cs" />
     <Compile Include="Vr\Actions\ActionRequest.cs" />
     <Compile Include="Vr\Actions\IResponseValidator.cs" />
     <Compile Include="Vr\Actions\Response.cs" />

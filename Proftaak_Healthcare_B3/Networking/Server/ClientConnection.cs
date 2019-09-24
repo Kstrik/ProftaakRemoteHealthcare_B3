@@ -21,7 +21,7 @@ namespace Networking.Server
 
         private Server server;
 
-        public ClientConnection(TcpClient client, Server server, IClientDataReceiver receiver = null, ILogger logger = null)
+        public ClientConnection(TcpClient client, Server server, IClientDataReceiver receiver, ILogger logger)
         {
             this.isConnected = false;
 

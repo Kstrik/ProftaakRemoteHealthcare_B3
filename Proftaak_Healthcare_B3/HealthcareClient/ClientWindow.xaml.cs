@@ -14,6 +14,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using HealthcareClient.Bike;
+using HealthcareClient.BikeConnection;
+using HealthcareClient.ServerConnection;
 using HealthcareServer.Vr;
 using HealthcareServer.Vr.World;
 using Microsoft.Win32;
@@ -29,16 +32,24 @@ namespace HealthcareClient
     /// <summary>
     /// Interaction logic for ClientWindow.xaml
     /// </summary>
-    public partial class ClientWindow : Window, IServerDataReceiver {
-
+    public partial class ClientWindow : Window, IServerDataReceiver
+    {
         private Client client;
         private Session session;
+        private DataManager dataManager;
         public ClientWindow()
         {
             InitializeComponent();
             this.client = new Client("145.48.6.10", 6666, this, null);
             this.client.Connect();
+            dataManager = new DataManager(dataManager);
             GetCurrentSessions();
+            ConnectToBike(dataManager);
+        }
+
+        private void ConnectToBike(IBikeDataReceiver bikeDataReceiver)
+        {
+            RealBike bike = new RealBike("00438", dataManager);
         }
 
         private async Task Initialize(string sessionHost)
@@ -161,7 +172,9 @@ namespace HealthcareClient
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
-           Task.Run(()=> session.Create());
+            Task.Run(() => session.Create());
         }
+
+
     }
 }

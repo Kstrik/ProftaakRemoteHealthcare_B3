@@ -23,7 +23,7 @@ namespace Networking.Client
 
         private Thread listenerThread;
 
-        public Client(string ip, int port, IServerDataReceiver receiver = null, ILogger logger = null)
+        public Client(string ip, int port, IServerDataReceiver receiver, ILogger logger)
         {
             this.isReady = IPAddress.TryParse(ip, out host);
             this.isConnected = false;
