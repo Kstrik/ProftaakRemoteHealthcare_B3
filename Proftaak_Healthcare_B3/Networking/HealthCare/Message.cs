@@ -17,6 +17,14 @@ namespace Networking.HealthCare
             SERVER_OK = 0x07
         }
 
+        [Flags] public enum ValueIds
+        {
+            HEARTRATE = 0x01,
+            POWER = 0x02,
+            SPEED = 0x03,
+            CYCLE_RITHM = 0x04
+        }
+
         public byte MessageLength { get; }
         public byte IdPrefix { get; }
         public byte[] ContentMessage { get; }
@@ -41,12 +49,11 @@ namespace Networking.HealthCare
             return (byte)(this.IdPrefix & 127);
         }
 
-        private byte[] GetBytes()
+        public byte[] GetBytes()
         {
-            List<byte> bytes = new List<byte>(){
-                this.MessageLength,
-                this.IdPrefix,
-            };
+            List<byte> bytes = new List<byte>();
+            bytes.Add(this.MessageLength);
+            bytes.Add(this.IdPrefix);
             bytes.AddRange(this.ContentMessage);
             return bytes.ToArray();
         }
