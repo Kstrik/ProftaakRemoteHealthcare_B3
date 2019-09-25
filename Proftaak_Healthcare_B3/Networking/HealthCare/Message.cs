@@ -20,7 +20,7 @@ namespace Networking.HealthCare
         [Flags] public enum ValueIds
         {
             HEARTRATE = 0x01,
-            POWER = 0x02,
+            DISNTANCE = 0x02,
             SPEED = 0x03,
             CYCLE_RITHM = 0x04
         }
