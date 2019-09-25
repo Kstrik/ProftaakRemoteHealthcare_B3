@@ -20,9 +20,13 @@ namespace HealthcareDoctor
     /// </summary>
     public partial class MainWindow : Window
     {
+        Doctor doctor;
         public MainWindow()
         {
             InitializeComponent();
+
+
+            
         }
     }
 }
