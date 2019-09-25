@@ -15,29 +15,32 @@ namespace HealthcareServer.Vr.World.Components
         private Session session;
 
         private Bitmap bitmap;
-        private int[] heights;
+        private float[] heights;
 
         public string NodeId { get; set; }
         public int Width { get; }
         public int Depth { get; }
-        public int MaxHeight { get; set; }
+        public float MaxHeight { get; set; }
 
         public bool SmoothNormals { get; }
 
         private string heightMapFilePath;
 
-        public Terrain(int width, int depth, int maxHeight, string heightMapFilePath, bool smoothNormals, Session session)
+        private List<TerrainTextureLayer> textureLayers;
+
+        public Terrain(int width, int depth, float maxHeight, string heightMapFilePath, bool smoothNormals, Session session)
         {
             this.Width = width;
             this.Depth = depth;
             this.MaxHeight = maxHeight;
 
-            this.heights = new int[width * depth];
+            this.heights = new float[width * depth];
             this.SmoothNormals = smoothNormals;
 
             this.heightMapFilePath = heightMapFilePath;
             ConvertImageToMap(heightMapFilePath);
 
+            this.textureLayers = new List<TerrainTextureLayer>();
             this.session = session;
         }
 
@@ -67,7 +70,7 @@ namespace HealthcareServer.Vr.World.Components
             return this.bitmap;
         }
 
-        public int[] GetHeights()
+        public float[] GetHeights()
         {
             return this.heights;
         }
@@ -99,21 +102,34 @@ namespace HealthcareServer.Vr.World.Components
             await this.session.SendAction(GetUpdateJsonObject());
         }
 
+        public void UpdateTextureLayers()
+        {
+            foreach (TerrainTextureLayer terrainTextureLayer in this.textureLayers)
+                terrainTextureLayer.NodeId = this.NodeId;
+        }
+
         public async Task Delete()
         {
             await this.session.SendAction(GetDeleteJsonObject());
         }
 
-        public async Task AddTextureLayer(string diffuse, string normal, float minHeight, float maxHeight, float fadeDistance)
+        public async Task AddTextureLayers()
+        {
+            foreach(TerrainTextureLayer terrainTextureLayer in this.textureLayers)
+                await this.session.SendAction(this.session.GetTunnelSendRequest(terrainTextureLayer.GetAddLayerJsonObject()));
+        }
+
+        public void AddTextureLayer(string diffuse, string normal, float minHeight, float maxHeight, float fadeDistance)
         {
             TerrainTextureLayer terrainTextureLayer = new TerrainTextureLayer(this.NodeId, diffuse, normal, minHeight, maxHeight, fadeDistance);
 
-            await this.session.SendAction(this.session.GetTunnelSendRequest(terrainTextureLayer.GetAddLayerJsonObject()));
+            this.textureLayers.Add(terrainTextureLayer);
+            //await this.session.SendAction(this.session.GetTunnelSendRequest(terrainTextureLayer.GetAddLayerJsonObject()));
         }
 
-        public async Task RemoveTextureLayer()
+        public void RemoveTextureLayer()
         {
-            await this.session.SendAction(this.session.GetTunnelSendRequest(TerrainTextureLayer.GetDeleteLayerJsonObject(this.NodeId)));
+            //await this.session.SendAction(this.session.GetTunnelSendRequest(TerrainTextureLayer.GetDeleteLayerJsonObject(this.NodeId)));
         }
 
         public JObject GetAddJsonObject()

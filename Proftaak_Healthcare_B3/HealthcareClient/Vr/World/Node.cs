@@ -46,7 +46,11 @@ namespace HealthcareServer.Vr.World
                 if(this.panel != null)
                     this.panel.NodeId = this.Id;
                 if (this.terrain != null)
+                {
                     this.terrain.NodeId = this.Id;
+                    this.terrain.UpdateTextureLayers();
+                    await this.terrain.AddTextureLayers();
+                }
             }
         }
 

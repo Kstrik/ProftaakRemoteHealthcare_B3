@@ -167,7 +167,7 @@ namespace HealthcareClient
             {
                 SceneLoader sceneLoader = new SceneLoader(ref this.session);
                 sceneLoader.LoadSceneFile(openFileDialog.FileName);
-                lblScene.Content = openFileDialog.FileName;
+                sceneLoader.SubmitScene();
             }
         }
 
