@@ -102,10 +102,10 @@ namespace HealthcareServer.Vr.World.Components
             await this.session.SendAction(GetUpdateJsonObject());
         }
 
-        public void UpdateTextureLayers()
-        {
-            foreach (TerrainTextureLayer terrainTextureLayer in this.textureLayers)
-                terrainTextureLayer.NodeId = this.NodeId;
+        public void UpdateTextureLayers()
+        {
+            foreach (TerrainTextureLayer terrainTextureLayer in this.textureLayers)
+                terrainTextureLayer.NodeId = this.NodeId;
         }
 
         public async Task Delete()
@@ -113,10 +113,10 @@ namespace HealthcareServer.Vr.World.Components
             await this.session.SendAction(GetDeleteJsonObject());
         }
 
-        public async Task AddTextureLayers()
-        {
-            foreach(TerrainTextureLayer terrainTextureLayer in this.textureLayers)
-                await this.session.SendAction(this.session.GetTunnelSendRequest(terrainTextureLayer.GetAddLayerJsonObject()));
+        public async Task AddTextureLayers()
+        {
+            foreach(TerrainTextureLayer terrainTextureLayer in this.textureLayers)
+                await this.session.SendAction(this.session.GetTunnelSendRequest(terrainTextureLayer.GetAddLayerJsonObject()));
         }
 
         public void AddTextureLayer(string diffuse, string normal, float minHeight, float maxHeight, float fadeDistance)
