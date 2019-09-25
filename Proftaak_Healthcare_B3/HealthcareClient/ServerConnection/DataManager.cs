@@ -22,7 +22,7 @@ namespace HealthcareClient.ServerConnection
 
         private IClientMessageReceiver observer;
 
-        [Flags] public enum CheckBits { Sessie = 0b0001000, BikeError = 0b0000100, HeartBeatError = 0b00000010, VRError = 0b00000001 };
+        [Flags] public enum CheckBits { SESSIE = 0b0001000, BIKE_ERROR = 0b0000100, HEARTRATE_ERROR = 0b00000010, VRERROR = 0b00000001 };
 
 
         public DataManager(IClientMessageReceiver observer) //current observer is datamanager itself, rather than the client window
@@ -31,25 +31,26 @@ namespace HealthcareClient.ServerConnection
             DataServerClient = new Client("localhost", 80, this, null);
 
         }
-        public void addPage25(int power, int cadence)
+        public void addPage25(int cadence)
         {
             if (clientMessage.hasPage25)
                 pushMessage();
-            byte[] powerBytes = BitConverter.GetBytes(power);
+            
             byte[] cadenceBytes = BitConverter.GetBytes(cadence);
 
-            clientMessage.power = new byte[2];
-            clientMessage.power[0] = powerBytes[2];
-            clientMessage.power[1] = powerBytes[3];
-            clientMessage.cadence = cadenceBytes[3];
+            
+            clientMessage.Cadence = cadenceBytes[3];
             clientMessage.hasPage25 = true;
         }
-        public void addPage16(int speed)
+        public void addPage16(int speed, int distance)
         {
             if (clientMessage.hasPage16)
                 pushMessage();
+            byte[] distanceBytes = BitConverter.GetBytes(distance);
             byte[] speedBytes = BitConverter.GetBytes(speed);
-            clientMessage.speed = speedBytes[3];
+
+            clientMessage.Distance = distanceBytes[3];
+            clientMessage.Speed = speedBytes[3];
             clientMessage.hasPage16 = true;
         }
 
@@ -58,14 +59,14 @@ namespace HealthcareClient.ServerConnection
             if (clientMessage.hasHeartbeat)
                 pushMessage();
             byte[] heartbeatBytes = BitConverter.GetBytes(heartbeat);
-            clientMessage.heartbeat = heartbeatBytes[3];
+            clientMessage.Heartbeat = heartbeatBytes[3];
             clientMessage.hasHeartbeat = true;
 
         }
 
         private void pushMessage()
         {
-#if (DEBUG)
+#if DEBUG
             Console.WriteLine("Pushing message");
 #endif
             observer.handleClientMessage(clientMessage);
@@ -84,14 +85,15 @@ namespace HealthcareClient.ServerConnection
             translatedData.TryGetValue("PageID", out PageID); //hier moet ik van overgeven maar het kan niet anders
             if (25 == PageID)
             {
-                int power; translatedData.TryGetValue("InstantaneousPower", out power);
+                
                 int cadence; translatedData.TryGetValue("InstantaneousCadence", out cadence);
-                addPage25(power, cadence);
+                addPage25(cadence);
             }
             else if (16 == PageID)
             {
                 int speed; translatedData.TryGetValue("speed", out speed);
-                addPage16(speed);
+                int distance; translatedData.TryGetValue("distance", out distance);
+                addPage16(speed, distance);
             }
         }
 
@@ -106,7 +108,7 @@ namespace HealthcareClient.ServerConnection
         void IClientMessageReceiver.handleClientMessage(ClientMessage clientMessage)
         {
             byte clientID = 0b00000001; // message is from a client
-            byte Checkbits = (byte)CheckBits.HeartBeatError; //heartbeat not implemented yet
+            byte Checkbits = (byte)CheckBits.HEARTRATE_ERROR; //heartbeat not implemented yet
             byte[] message = clientMessage.toByteArray();
             message.Prepend(clientID);
             message.Append(Checkbits);
@@ -115,7 +117,8 @@ namespace HealthcareClient.ServerConnection
 
         private void Send(byte[] message)
         {
-            DataServerClient.Transmit(message);        }
+            DataServerClient.Transmit(message);
+        }
 
         public void OnDataReceived(byte[] data)
         {
