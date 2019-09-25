@@ -21,6 +21,7 @@ namespace HealthcareClient
         private List<Node> nodes;
         private List<Route> routes;
         private SkyBox skyBox;
+        private List<Terrain> terrains;
         public SceneLoader(ref Session session)
         {
             this.session = session;
@@ -97,9 +98,24 @@ namespace HealthcareClient
                 bool smoothNormals = (jTerrain.GetValue("cullbackfaces").ToString().ToLower() == "true") ? true : false;
                 int width = int.Parse(jTerrain.GetValue("width").ToString());
                 int depth = int.Parse(jTerrain.GetValue("depth").ToString());
-                int maxHeight = int.Parse(jTerrain.GetValue("maxheight").ToString());
+                float maxHeight = float.Parse(jTerrain.GetValue("maxheight").ToString());
                 string heightMap = jTerrain.GetValue("heightmap").ToString();
                 terrain = new Terrain(width,depth, maxHeight, heightMap, smoothNormals, session);
+
+                JArray layers = jTerrain.GetValue("texturelayers").ToObject<JArray>();
+
+                if (layers.Children().Count() != 0)
+                    terrains.Add(terrain);
+  
+                foreach (JObject layer in layers.Children())
+                {
+                    string diffuse = layer.GetValue("diffuse").ToString();
+                    string normal = layer.GetValue("diffuse").ToString();
+                    float minHeight = float.Parse(layer.GetValue("minheight").ToString());
+                    float fMaxHeight = float.Parse(layer.GetValue("maxheight").ToString());
+                    float fadeDistance = float.Parse(layer.GetValue("distance").ToString());
+                    terrain.AddTextureLayer(diffuse, normal, minHeight, fMaxHeight, fadeDistance);
+                }           
             }
             if (jObject.ContainsKey("panel"))
             {
@@ -129,7 +145,7 @@ namespace HealthcareClient
         private void LoadRoute(JObject jObject)
         {
             string name = jObject.GetValue("name").ToString();
-            Route route = null;
+            Route route = new Route(session); 
             Road road = null;
 
             if (jObject.ContainsKey("road"))
@@ -141,8 +157,21 @@ namespace HealthcareClient
                 float heightOffset = float.Parse(jRoad.GetValue("heightoffset").ToString());               
                 road = new Road(diffuse, normal, specular,heightOffset, route, session);
             }
+            if (jObject.ContainsKey("nodes"))
+            {
+                JArray jNodes = jObject.GetValue("nodes").ToObject<JArray>();
 
-            route = new Route(session);
+                foreach (JObject node in jNodes.Children())
+                {
+                    JArray jDirection = node.GetValue("dir").ToObject<JArray>();
+                    JArray jPosition = node.GetValue("pos").ToObject<JArray>();
+
+                    Vector3 position = new Vector3(float.Parse(jPosition[0].ToString()), float.Parse(jPosition[1].ToString()), float.Parse(jPosition[2].ToString()));
+                    Vector3 direction = new Vector3(float.Parse(jDirection[0].ToString()), float.Parse(jDirection[1].ToString()), float.Parse(jDirection[2].ToString()));
+
+                    route.AddRouteNode(new Route.RouteNode(position, direction));
+                }
+            }
             route.SetRoad(road);
             routes.Add(route);
         }
