@@ -31,8 +31,8 @@ namespace HealthcareClient
         {
             JObject scene = JObject.Parse(File.ReadAllText(fileName));
 
-            //try
-            //{
+            try
+            {
                 string sceneName = scene.GetValue("name").ToString();
                 JArray objects = scene.GetValue("objects").ToObject<JArray>();
 
@@ -42,23 +42,24 @@ namespace HealthcareClient
                     switch (type)
                     {
                         case "node":
-                            LoadNode(jobject);                          
-                            break; 
-
+                            {
+                                LoadNode(jobject);
+                                break;
+                            }
                         case "route":
-                            LoadRoute(jobject);
-                            break;
-
+                            {
+                                LoadRoute(jobject);
+                                break;
+                            }
                         default:
                             break;
                     }
                 }
-                //SubmitScene();
-            //}
-            //catch (Exception e)
-            //{
-            //    MessageBox.Show("Error");           
-            //}
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error");
+            }
         }
 
         private void LoadNode(JObject jObject)
@@ -174,10 +175,10 @@ namespace HealthcareClient
         {
             Task.Run(async () =>
             {
-                foreach (Node node in this.nodes)
-                    await node.Add();
                 foreach (Route route in this.routes)
                     await route.Add();
+                foreach (Node node in this.nodes)
+                    await node.Add();
             });
         }
     }

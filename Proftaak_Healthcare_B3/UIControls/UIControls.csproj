@@ -48,7 +48,23 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Fields\ComboBoxField.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Fields\NumberField.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Fields\TextField.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Container.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Fields\Vector3Field.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -58,8 +74,20 @@
     </Page>
     <Compile Include="Charts\GraphPoint.cs" />
     <Compile Include="Charts\LiveChart.cs" />
+    <Compile Include="Fields\ComboBoxField.xaml.cs">
+      <DependentUpon>ComboBoxField.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Fields\NumberField.xaml.cs">
+      <DependentUpon>NumberField.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Fields\TextField.xaml.cs">
+      <DependentUpon>TextField.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Container.xaml.cs">
       <DependentUpon>Container.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Fields\Vector3Field.xaml.cs">
+      <DependentUpon>Vector3Field.xaml</DependentUpon>
     </Compile>
     <Compile Include="Menu\Menu.cs" />
     <Compile Include="Menu\MenuItem.cs" />

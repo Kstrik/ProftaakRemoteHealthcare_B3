@@ -86,7 +86,7 @@ namespace HealthcareServer
                             data += $"Heartrate: {bikeData[i + 1]}\r\n";
                             break;
                         }
-                    case Message.ValueIds.DISNTANCE:
+                    case Message.ValueIds.DISTANCE:
                         {
                             skip = 2;
                             data += $"Power: {(bikeData[i + 1])}\r\n";

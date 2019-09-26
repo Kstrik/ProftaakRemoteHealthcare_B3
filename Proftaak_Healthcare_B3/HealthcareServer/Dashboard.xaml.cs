@@ -26,14 +26,14 @@ namespace HealthcareServer
         {
             InitializeComponent();
 
-            this.healthcareServer = new HealthCareServer(txbIp.Text, int.Parse(txbPort.Text), this);
+            //this.healthcareServer = new HealthCareServer(txbIp.Text, int.Parse(txbPort.Text), this);
         }
 
         public void Log(string message)
         {
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
-                txbLog.Text = message;
+                //txbLog.Text = message;
             }));
         }
     }
