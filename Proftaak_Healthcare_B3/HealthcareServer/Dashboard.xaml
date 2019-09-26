@@ -6,27 +6,35 @@
         xmlns:local="clr-namespace:HealthcareServer"
         xmlns:uicontrols="clr-namespace:UIControls;assembly=UIControls"
         xmlns:fields="clr-namespace:UIControls.Fields;assembly=UIControls"
+        xmlns:menu="clr-namespace:UIControls.Menu;assembly=UIControls"
         mc:Ignorable="d"
         Title="Dashboard" Height="450" Width="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="250"></RowDefinition>
-            <RowDefinition Height="250"></RowDefinition>
-        </Grid.RowDefinitions>
-        
-        <uicontrols:Container Header="Test">
-            <fields:TextField Header="Label:" Value="Test" HeaderForeground="White" ValueForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="Transparent" FontSize="14"></fields:TextField>
-            <WrapPanel>
-                <fields:Vector3Field Header="Position:" HeaderForeground="White" ValueForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="Transparent" FontSize="14"></fields:Vector3Field>
-                <fields:NumberField Header="Scale:" Value="0" HeaderForeground="White" ValueForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="Transparent" FontSize="14"></fields:NumberField>
-                <fields:Vector3Field Header="Rotation:" HeaderForeground="White" ValueForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="Transparent" FontSize="14"></fields:Vector3Field>
-            </WrapPanel>
-            <fields:ComboBoxField Header="Label:" Value="Test" HeaderForeground="White" ValueForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="Transparent" FontSize="14"></fields:ComboBoxField>
-        </uicontrols:Container>
+    <Grid x:Name="grd_Grid">
+        <WrapPanel>
+            <menu:Sidemenu x:Name="sdm_Sidemenu" ContentWidth="250" MenuBarWidth="50" AnimationDuration="400" Foreground="White" Background="#FF1E1E1E" MenuBarBackground="#FF2D2D30" HoverForeground="White" HoverBackground="#FF007ACC">
+                
+            </menu:Sidemenu>
+            <!--<Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="250"></RowDefinition>
+                    <RowDefinition Height="250"></RowDefinition>
+                </Grid.RowDefinitions>-->
+
+                <uicontrols:Container x:Name="con_Test" Header="Test">
+                    <fields:TextField Header="Label:" Value="Test" HeaderForeground="White" ValueForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="Transparent" FontSize="14"></fields:TextField>
+                    <WrapPanel>
+                        <fields:Vector3Field Header="Position:" HeaderForeground="White" ValueForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="Transparent" FontSize="14"></fields:Vector3Field>
+                        <fields:NumberField Header="Scale:" Value="0" HeaderForeground="White" ValueForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="Transparent" FontSize="14"></fields:NumberField>
+                        <fields:Vector3Field Header="Rotation:" HeaderForeground="White" ValueForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="Transparent" FontSize="14"></fields:Vector3Field>
+                    </WrapPanel>
+                    <fields:ComboBoxField x:Uid="cmb_Combobox" Header="Label:" HeaderForeground="White" ValueForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="Transparent" FontSize="14"></fields:ComboBoxField>
+                </uicontrols:Container>
+            <!--</Grid>-->
+        </WrapPanel>
         <!--<StackPanel>
             <WrapPanel>
                 <StackPanel Margin="5,5,5,5">

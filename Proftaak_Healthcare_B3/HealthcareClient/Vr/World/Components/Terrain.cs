@@ -23,8 +23,7 @@ namespace HealthcareServer.Vr.World.Components
         public float MaxHeight { get; set; }
 
         public bool SmoothNormals { get; }
-
-        private string heightMapFilePath;
+        public string HeightMapFilePath { get; set; }
 
         private List<TerrainTextureLayer> textureLayers;
 
@@ -37,7 +36,7 @@ namespace HealthcareServer.Vr.World.Components
             this.heights = new float[width * depth];
             this.SmoothNormals = smoothNormals;
 
-            this.heightMapFilePath = heightMapFilePath;
+            this.HeightMapFilePath = heightMapFilePath;
             ConvertImageToMap(heightMapFilePath);
 
             this.textureLayers = new List<TerrainTextureLayer>();
@@ -48,7 +47,7 @@ namespace HealthcareServer.Vr.World.Components
         {
             if (File.Exists(heightMapFilePath))
             {
-                this.heightMapFilePath = heightMapFilePath;
+                this.HeightMapFilePath = heightMapFilePath;
                 this.bitmap = new Bitmap(heightMapFilePath);
 
                 for (int y = 0; y < this.Depth; y++)
@@ -57,7 +56,7 @@ namespace HealthcareServer.Vr.World.Components
                     {
                         int xPos = x * (this.bitmap.Width / this.Width);
                         int yPos = y * (this.bitmap.Height / this.Depth);
-                        this.heights[(y * this.Width) + x] = (int)((this.MaxHeight * this.bitmap.GetPixel(xPos, yPos).B) / 255);
+                        this.heights[(y * this.Width) + x] = (float)((this.MaxHeight * this.bitmap.GetPixel(xPos, yPos).B) / 255);
                     }
                 }
                 return true;
@@ -78,7 +77,7 @@ namespace HealthcareServer.Vr.World.Components
         public void SetMaxHeight(int maxHeight)
         {
             this.MaxHeight = maxHeight;
-            if (ConvertImageToMap(this.heightMapFilePath))
+            if (ConvertImageToMap(this.HeightMapFilePath))
             {
                 Task.Run(() => Update());
             }
@@ -102,10 +101,9 @@ namespace HealthcareServer.Vr.World.Components
             await this.session.SendAction(GetUpdateJsonObject());
         }
 
-        public void UpdateTextureLayers()
-        {
-            foreach (TerrainTextureLayer terrainTextureLayer in this.textureLayers)
-                terrainTextureLayer.NodeId = this.NodeId;
+        public void UpdateTextureLayers()
+        {            foreach (TerrainTextureLayer terrainTextureLayer in this.textureLayers)
+                terrainTextureLayer.NodeId = this.NodeId;
         }
 
         public async Task Delete()
@@ -113,10 +111,9 @@ namespace HealthcareServer.Vr.World.Components
             await this.session.SendAction(GetDeleteJsonObject());
         }
 
-        public async Task AddTextureLayers()
-        {
-            foreach(TerrainTextureLayer terrainTextureLayer in this.textureLayers)
-                await this.session.SendAction(this.session.GetTunnelSendRequest(terrainTextureLayer.GetAddLayerJsonObject()));
+        public async Task AddTextureLayers()        {
+            foreach(TerrainTextureLayer terrainTextureLayer in this.textureLayers)
+                await this.session.SendAction(this.session.GetTunnelSendRequest(terrainTextureLayer.GetAddLayerJsonObject()));
         }
 
         public void AddTextureLayer(string diffuse, string normal, float minHeight, float maxHeight, float fadeDistance)

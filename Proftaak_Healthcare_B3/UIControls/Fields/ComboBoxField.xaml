@@ -10,8 +10,8 @@
     <StackPanel>
         <Label x:Name="lblHeader" Content="{Binding ElementName=_this, Path=Header}" Margin="0,0,0,5" Foreground="{Binding ElementName=_this, Path=HeaderForeground}" 
                FontSize="{Binding ElementName=_this, Path=FontSize}" HorizontalAlignment="Left" VerticalAlignment="Top"></Label>
-        <ComboBox x:Name="cmbValue" Text="{Binding ElementName=_this, Path=Value}" Foreground="{Binding ElementName=_this, Path=ValueForeground}" 
+        <ComboBox x:Name="cmbValue" ItemsSource="{Binding ElementName=_this, Path=Value}" Foreground="{Binding ElementName=_this, Path=ValueForeground}" 
                  Background="{Binding ElementName=_this, Path=ValueBackground}" BorderBrush="{Binding ElementName=_this, Path=ValueBorderBrush}" 
-                 FontSize="{Binding ElementName=_this, Path=FontSize}" Width="200" HorizontalAlignment="Left" VerticalAlignment="Top"></ComboBox>
+                 FontSize="{Binding ElementName=_this, Path=FontSize}" HorizontalAlignment="Stretch" VerticalAlignment="Top"></ComboBox>
     </StackPanel>
 </UserControl>

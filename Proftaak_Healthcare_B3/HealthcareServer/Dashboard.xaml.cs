@@ -20,13 +20,21 @@ namespace HealthcareServer
     /// </summary>
     public partial class Dashboard : Window, ILog
     {
-        private HealthCareServer healthcareServer;
+        //private HealthCareServer healthcareServer;
 
         public Dashboard()
         {
             InitializeComponent();
 
             //this.healthcareServer = new HealthCareServer(txbIp.Text, int.Parse(txbPort.Text), this);
+            List<string> test = new List<string>() { "Test1", "Test2", "Test3", "Test4" };
+            this.Loaded += Dashboard_Loaded;
+        }
+
+        private void Dashboard_Loaded(object sender, RoutedEventArgs e)
+        {
+            sdm_Sidemenu.SetupMenu();
+            sdm_Sidemenu.Menu.AddItem("Test", 250, 60, null);
         }
 
         public void Log(string message)

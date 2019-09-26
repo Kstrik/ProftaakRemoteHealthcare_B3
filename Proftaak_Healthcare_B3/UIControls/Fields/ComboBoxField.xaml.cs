@@ -25,7 +25,7 @@ namespace UIControls.Fields
         public static readonly DependencyProperty ValueForegroundProperty = DependencyProperty.Register("ValueForeground", typeof(Brush), typeof(ComboBoxField));
         public static readonly DependencyProperty ValueBackgroundProperty = DependencyProperty.Register("ValueBackground", typeof(Brush), typeof(ComboBoxField));
         public static readonly DependencyProperty ValueBorderBrushProperty = DependencyProperty.Register("ValueBorderBrush", typeof(Brush), typeof(ComboBoxField));
-        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(string), typeof(ComboBoxField));
+        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(IEnumerable<object>), typeof(ComboBoxField));
 
         public Brush HeaderForeground
         {
@@ -57,14 +57,16 @@ namespace UIControls.Fields
             set { this.SetValue(ValueBorderBrushProperty, value); }
         }
 
-        public string Value
+        public IEnumerable<object> Value
         {
-            get { return (string)this.GetValue(ValueProperty); }
+            get { return (IEnumerable<object>)this.GetValue(ValueProperty); }
             set { this.SetValue(ValueProperty, value); }
         }
+
         public ComboBoxField()
         {
             InitializeComponent();
+            cmbValue.ItemsSource = Value;
         }
     }
 }
