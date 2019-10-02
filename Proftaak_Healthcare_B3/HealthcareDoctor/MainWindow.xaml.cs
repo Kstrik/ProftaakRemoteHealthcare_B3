@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static HealthcareDoctor.DataManager;
 
 namespace HealthcareDoctor
 {
@@ -21,12 +22,43 @@ namespace HealthcareDoctor
     public partial class MainWindow : Window
     {
         Doctor doctor;
+        DataManager dataManager;
+        TestClient TestClient;
         public MainWindow()
         {
             InitializeComponent();
 
+            dataManager = new DataManager();
 
-            
+            foreach (TestClient client in dataManager.GetClients())
+            {
+                StackPanel canvas = new StackPanel();
+                canvas.Background = (Brush)(new BrushConverter().ConvertFromString("#FF39437D"));   
+                
+                canvas.Width = 200;
+                canvas.HorizontalAlignment = HorizontalAlignment.Left;
+                canvas.VerticalAlignment = VerticalAlignment.Top;
+
+                Label name = new Label();
+                Label id = new Label();
+
+                name.Foreground = Brushes.White;
+                name.Margin = new Thickness(10, 10, 10, 1);
+
+                id.Foreground = Brushes.White;
+                id.Margin = new Thickness(10, 10, 10, 10);
+
+                //name.Width = canvas.ActualWidth;
+                //id.Width = canvas.ActualWidth;
+
+                name.Content = "Naam: " + client.GetName();
+                id.Content = "ID: " + client.GetId();
+
+                canvas.Children.Add(name);
+                canvas.Children.Add(id);
+
+                clientConnectedStack.Children.Add(canvas);
+            }
         }
     }
 }
