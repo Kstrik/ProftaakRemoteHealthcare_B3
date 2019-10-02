@@ -8,5 +8,8 @@ namespace HealthcareServer
 {
     interface IMessageHandler
     {
+
+        void HandleMessage(Byte[] data);
+
     }
 }

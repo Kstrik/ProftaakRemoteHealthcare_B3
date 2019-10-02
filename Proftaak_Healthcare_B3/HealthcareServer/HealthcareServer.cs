@@ -9,15 +9,17 @@ using System.Threading.Tasks;
 
 namespace HealthcareServer
 {
-    public class HealthCareServer : IClientDataReceiver
+    public class HealthCareServer : IClientDataReceiver, IServerConnector
     {
         private Server server;
         private Client client;
         private ILog logger;
 
+       
+
         public HealthCareServer(string ip, int host, ILog logger)
         {
-            this.server = new Server(ip, host, this, null, null);
+            this.server = new Server(ip, host, this, this, null);
             this.server.Start();
             this.client = new Client("127.0.0.1", 1331, null, null);
             this.client.Connect();
@@ -71,43 +73,27 @@ namespace HealthcareServer
 
         private void RecieveBikeData(byte[] bikeData)
         {
-            string data = "";
+           
+            //TODO callhandler + handle function 
+            //and send the unprocessed data to the dokter
 
-            int skip = 0;
-            for(int i = 0; i < bikeData.Length; i += skip)
-            {
-                byte valueId = bikeData[i];
+        }
 
-                switch((Message.ValueIds)valueId)
-                {
-                    case Message.ValueIds.HEARTRATE:
-                        {
-                            skip = 2;
-                            data += $"Heartrate: {bikeData[i + 1]}\r\n";
-                            break;
-                        }
-                    case Message.ValueIds.DISTANCE:
-                        {
-                            skip = 2;
-                            data += $"Power: {(bikeData[i + 1])}\r\n";
-                            break;
-                        }
-                    case Message.ValueIds.SPEED:
-                        {
-                            skip = 2;
-                            data += $"Speed: {bikeData[i + 1]}\r\n";
-                            break;
-                        }
-                    case Message.ValueIds.CYCLE_RITHM:
-                        {
-                            skip = 2;
-                            data += $"Cycle rithm: {bikeData[i + 1]}\r\n";
-                            break;
-                        }
-                }
-            }
 
-            this.logger.Log(data);
+       
+
+
+        public void OnClientDisconnected(ClientConnection connection)
+        {
+            
+
+        }
+
+        public void OnClientConnected(ClientConnection connection)
+        {
+            
+
+
         }
     }
 }
