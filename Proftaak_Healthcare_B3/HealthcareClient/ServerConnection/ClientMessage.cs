@@ -34,12 +34,12 @@ namespace HealthcareClient.BikeConnection
             {
                 message.Append((byte)0b00000010);
                 message.Append(Speed);
+                message.Append((byte)0b00000011);
+                message.Append(Distance);
             }
             if(hasPage25)
             {
-                message.Append((byte)0b00000011);
-               
-                message.Append(Distance);
+                
                 message.Append((byte)0b00000100);
                 message.Append(Cadence);
             }
