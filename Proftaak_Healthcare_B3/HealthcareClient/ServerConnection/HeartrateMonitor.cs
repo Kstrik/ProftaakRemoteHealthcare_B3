@@ -31,16 +31,15 @@ namespace HealthcareClient.ServerConnection
             BlEheart.SubscriptionValueChanged += BleBike_SubscriptionValueChanged;
             await BlEheart.SubscribeToCharacteristic("HeartRateMeasurement");
             Console.WriteLine("Subscribed to Heartrate Measurement");
-            Console.WriteLine("Errorcode: " + errorCode);
-
-
-
-
+            Console.WriteLine("Errorcode: " + errorCode); // 1 = no heartbeat detected.
         }
 
         private void BleBike_SubscriptionValueChanged(object sender, BLESubscriptionValueChangedEventArgs e)
         {
-
+            byte[] data = e.Data;
+            byte heartbeat = data[1];
+            Console.WriteLine("Heartbeat: {0}", heartbeat);
+            heartrateDataReceiver.ReceiveHeartrateData(heartbeat, this);
         }
     }
 }

@@ -26,7 +26,7 @@ namespace HealthcareServer
             byte[] bytes = new byte[2];
             bytes[0] = 1;
             bytes[1] = 20;
-            Message message = new Message(false, 1, bytes);
+            Message message = new Message(false, Message.MessageType.SERVER_OK, bytes);
             this.client.Transmit(message.GetBytes());
         }
 
@@ -34,29 +34,29 @@ namespace HealthcareServer
         {
             Message message = Message.ParseMessage(data);
 
-            switch ((Message.MessageTypes)message.GetPrefix())
+            switch (message.messageType)
             {
-                case Message.MessageTypes.BIKEDATA:
+                case Message.MessageType.BIKEDATA:
                     {
                         RecieveBikeData(message.ContentMessage);
                         break;
                     }
-                case Message.MessageTypes.CHAT_MESSAGE:
+                case Message.MessageType.CHAT_MESSAGE:
                     {
                         this.logger.Log($"Chatmessage: {Encoding.UTF8.GetString(message.ContentMessage)}");
                         break;
                     }
-                case Message.MessageTypes.CLIENT_LOGIN:
+                case Message.MessageType.CLIENT_LOGIN:
                     {
                         this.logger.Log($"Cliënt login");
                         break;
                     }
-                case Message.MessageTypes.DOCTOR_LOGIN:
+                case Message.MessageType.DOCTOR_LOGIN:
                     {
                         this.logger.Log($"Doctor login");
                         break;
                     }
-                case Message.MessageTypes.CHANGE_RESISTANCE:
+                case Message.MessageType.CHANGE_RESISTANCE:
                     {
                         this.logger.Log($"Change resistance");
                         break;
@@ -78,27 +78,27 @@ namespace HealthcareServer
             {
                 byte valueId = bikeData[i];
 
-                switch((Message.ValueIds)valueId)
+                switch((Message.ValueId)valueId)
                 {
-                    case Message.ValueIds.HEARTRATE:
+                    case Message.ValueId.HEARTRATE:
                         {
                             skip = 2;
                             data += $"Heartrate: {bikeData[i + 1]}\r\n";
                             break;
                         }
-                    case Message.ValueIds.DISTANCE:
+                    case Message.ValueId.DISTANCE:
                         {
                             skip = 2;
                             data += $"Power: {(bikeData[i + 1])}\r\n";
                             break;
                         }
-                    case Message.ValueIds.SPEED:
+                    case Message.ValueId.SPEED:
                         {
                             skip = 2;
                             data += $"Speed: {bikeData[i + 1]}\r\n";
                             break;
                         }
-                    case Message.ValueIds.CYCLE_RITHM:
+                    case Message.ValueId.CYCLE_RHYTHM:
                         {
                             skip = 2;
                             data += $"Cycle rithm: {bikeData[i + 1]}\r\n";

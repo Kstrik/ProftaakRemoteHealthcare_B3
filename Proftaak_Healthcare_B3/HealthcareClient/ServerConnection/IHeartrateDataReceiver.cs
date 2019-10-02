@@ -2,6 +2,6 @@
 {
     public interface IHeartrateDataReceiver
     {
-        void ReceiveHeartrateData(int heartrate, HeartrateMonitor heartrateMonitor);
+        void ReceiveHeartrateData(byte heartrate, HeartrateMonitor heartrateMonitor);
     }
 }

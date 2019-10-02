@@ -3,6 +3,7 @@
 using HealthcareClient.Bike;
 using HealthcareClient.BikeConnection;
 using Networking.Client;
+using Networking.HealthCare;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace HealthcareClient.ServerConnection
     /// This class keeps track of data from bikes and Heartbeat Monitors. It's purpose is to make sure no data is lost
     /// 
     /// </summary>
-    class DataManager: IServerDataReceiver, IBikeDataReceiver, IClientMessageReceiver
+    class DataManager: IServerDataReceiver, IBikeDataReceiver, IHeartrateDataReceiver, IClientMessageReceiver
     {
         private ClientMessage clientMessage;
         private Client DataServerClient;
@@ -54,14 +55,12 @@ namespace HealthcareClient.ServerConnection
             clientMessage.hasPage16 = true;
         }
 
-        public void addHeartbeat(int heartbeat)
+        public void addHeartbeat(byte heartbeat)
         {
             if (clientMessage.hasHeartbeat)
                 pushMessage();
-            byte[] heartbeatBytes = BitConverter.GetBytes(heartbeat);
-            clientMessage.Heartbeat = heartbeatBytes[3];
+            clientMessage.Heartbeat = heartbeat;
             clientMessage.hasHeartbeat = true;
-
         }
 
         private void pushMessage()
@@ -97,10 +96,6 @@ namespace HealthcareClient.ServerConnection
             }
         }
 
-        private void ReceiveHeartbeatData(byte[] data)
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// Parses a complete ClientMessage into a packet to be sent via TCP
@@ -109,12 +104,16 @@ namespace HealthcareClient.ServerConnection
         {
             byte clientID = 0b00000001; // message is from a client
             byte Checkbits = (byte)CheckBits.HEARTRATE_ERROR; //heartbeat not implemented yet
-            byte[] message = clientMessage.toByteArray();
+            byte[] message = clientMessage.getData();
             message.Prepend(clientID);
             message.Append(Checkbits);
-            Send(message);
+            Message toSend = new Message(false, 0, message);
+            Send(toSend.GetBytes());
         }
-
+        public void ReceiveHeartrateData(byte heartrate, HeartrateMonitor heartrateMonitor)
+        {
+            addHeartbeat(heartrate);
+        }
         private void Send(byte[] message)
         {
             DataServerClient.Transmit(message);
@@ -125,8 +124,10 @@ namespace HealthcareClient.ServerConnection
 #if DEBUG
             Console.WriteLine("Received response from data server - response not handled");
 #endif
+            throw new NotImplementedException();
+
         }
 
-       
+
     }
 }

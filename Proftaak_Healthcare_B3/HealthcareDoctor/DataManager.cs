@@ -21,7 +21,7 @@ namespace HealthcareDoctor
             byte[] messageContent = new byte[32];
             Buffer.BlockCopy(usernameBytes, 0, messageContent, 0, 16);
             Buffer.BlockCopy(passwordBytes, 0, messageContent, 0, 16);
-            Message message = new Message(true,(byte)Message.MessageTypes.DOCTOR_LOGIN, messageContent);
+            Message message = new Message(true,Message.MessageType.DOCTOR_LOGIN, messageContent);
         }
     }
 }
