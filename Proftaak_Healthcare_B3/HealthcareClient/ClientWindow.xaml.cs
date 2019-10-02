@@ -45,11 +45,17 @@ namespace HealthcareClient
             dataManager = new DataManager(dataManager);
             GetCurrentSessions();
             ConnectToBike(dataManager);
+            ConnectToHeartrateMonitor(dataManager);
         }
 
         private void ConnectToBike(IBikeDataReceiver bikeDataReceiver)
         {
             RealBike bike = new RealBike("00438", dataManager);
+        }
+
+        private void ConnectToHeartrateMonitor(IHeartrateDataReceiver heartrateDataReceiver)
+        {
+            HeartrateMonitor heartrateMonitor = new HeartrateMonitor(heartrateDataReceiver);
         }
 
         private async Task Initialize(string sessionHost)
