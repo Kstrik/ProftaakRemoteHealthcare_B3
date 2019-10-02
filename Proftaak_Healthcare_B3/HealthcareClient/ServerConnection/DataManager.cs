@@ -102,12 +102,10 @@ namespace HealthcareClient.ServerConnection
         /// </summary>
         void IClientMessageReceiver.handleClientMessage(ClientMessage clientMessage)
         {
-            byte clientID = 0b00000001; // message is from a client
             byte Checkbits = (byte)CheckBits.HEARTRATE_ERROR; //heartbeat not implemented yet
             byte[] message = clientMessage.getData();
-            message.Prepend(clientID);
             message.Append(Checkbits);
-            Message toSend = new Message(false, 0, message);
+            Message toSend = new Message(false, Message.MessageType.BIKEDATA, message);
             Send(toSend.GetBytes());
         }
         public void ReceiveHeartrateData(byte heartrate, HeartrateMonitor heartrateMonitor)
