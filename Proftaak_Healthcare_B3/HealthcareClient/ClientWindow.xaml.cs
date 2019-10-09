@@ -174,6 +174,7 @@ namespace HealthcareClient
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
             Task.Run(() => session.Create());
+            dataManager.setChatMessageHandler(session);
         }
     }
 }

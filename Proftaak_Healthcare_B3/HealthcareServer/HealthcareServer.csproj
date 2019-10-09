@@ -73,6 +73,7 @@
     <Compile Include="HealthCareServer.cs" />
     <Compile Include="ILog.cs" />
     <Compile Include="IMessageHandler.cs" />
+    <Compile Include="Patient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -116,7 +117,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Data\Users\" />
+    <Folder Include="Data\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

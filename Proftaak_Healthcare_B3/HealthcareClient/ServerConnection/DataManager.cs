@@ -2,7 +2,9 @@
 
 using HealthcareClient.Bike;
 using HealthcareClient.BikeConnection;
+using HealthcareServer.Vr;
 using Networking.Client;
+using Networking.HealthCare;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +23,7 @@ namespace HealthcareClient.ServerConnection
         private Client DataServerClient;
 
         private IClientMessageReceiver observer;
+        private IDoctorChatMessageReceiver chathandler;
 
         [Flags] public enum CheckBits { SESSIE = 0b0001000, BIKE_ERROR = 0b0000100, HEARTRATE_ERROR = 0b00000010, VRERROR = 0b00000001 };
 
@@ -125,8 +128,23 @@ namespace HealthcareClient.ServerConnection
 #if DEBUG
             Console.WriteLine("Received response from data server - response not handled");
 #endif
+            Message message = Message.ParseMessage(data);
+
+            switch ((Message.MessageTypes)message.GetPrefix())
+            {
+                case Message.MessageTypes.CHAT_MESSAGE:
+                    {
+                        //Assuming chat message arrives without client ID: just a raw string
+                        string chatMessage = Encoding.UTF8.GetString(message.GetBytes());
+                        this.chathandler.handleChatMessage(chatMessage);
+                        break;
+                    }
+            }
         }
 
-       
+        internal void setChatMessageHandler(Session session)
+        {
+            this.chathandler = session;
+        }
     }
 }

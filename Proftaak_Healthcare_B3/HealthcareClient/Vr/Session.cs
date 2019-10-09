@@ -1,4 +1,5 @@
-﻿using HealthcareServer.Vr.Actions;
+﻿using HealthcareClient.ServerConnection;
+using HealthcareServer.Vr.Actions;
 using HealthcareServer.Vr.World;
 using Networking.Client;
 using Newtonsoft.Json.Linq;
@@ -12,7 +13,7 @@ using System.Windows;
 
 namespace HealthcareServer.Vr
 {
-    public class Session : IResponseValidator
+    public class Session : IResponseValidator, IDoctorChatMessageReceiver
     {
         public List<ActionRequest> ActionRequests;
         public Dictionary<ActionRequest, string> ActionsCache;
@@ -183,6 +184,15 @@ namespace HealthcareServer.Vr
         public Scene GetScene()
         {
             return this.scene;
+        }
+
+        /// <summary>
+        /// This method displays a chat message in the VR environment
+        /// </summary>
+        /// <param name="message"></param>
+        public void handleChatMessage(string message)
+        {
+            throw new NotImplementedException();
         }
     }
 }
