@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthcareClient", "Healthc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthcareDoctor", "HealthcareDoctor\HealthcareDoctor.csproj", "{27F191E6-E366-4310-8C26-D88C0E630494}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "projectTests", "projectTests\projectTests.csproj", "{D9D01B58-EF80-4C98-AA80-30868C697223}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{27F191E6-E366-4310-8C26-D88C0E630494}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27F191E6-E366-4310-8C26-D88C0E630494}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27F191E6-E366-4310-8C26-D88C0E630494}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9D01B58-EF80-4C98-AA80-30868C697223}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9D01B58-EF80-4C98-AA80-30868C697223}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9D01B58-EF80-4C98-AA80-30868C697223}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9D01B58-EF80-4C98-AA80-30868C697223}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
