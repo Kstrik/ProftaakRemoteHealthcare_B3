@@ -45,6 +45,9 @@ namespace HealthcareClient
             dataManager = new DataManager(dataManager);
             GetCurrentSessions();
             ConnectToBike(dataManager);
+
+            //SceneManager sceneManager = new SceneManager(new Session(ref this.client), this.client);
+            //sceneManager.Show();
         }
 
         private void ConnectToBike(IBikeDataReceiver bikeDataReceiver)
@@ -54,15 +57,30 @@ namespace HealthcareClient
 
         private async Task Initialize(string sessionHost)
         {
-            this.session = new Session(ref client, sessionHost);
-            await this.session.Create();
+            this.session = new Session(ref client);
+            await this.session.Create(sessionHost, "testtest");
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            string host = sessionBox.SelectedItem.ToString();
-            Task.Run(() => Initialize(host));
-            lblConnected.Content = "Verbonden";
+            if (sessionBox.SelectedItem != null)
+            {
+                string host = sessionBox.SelectedItem.ToString();
+                await Initialize(host);
+                lblConnected.Content = "Verbonden";
+
+                SceneManager sceneManager = new SceneManager(this.session, this.client);
+                sceneManager.Show();
+            }
+            else
+            {
+                MessageBox.Show("No seession selected!");
+            }
+        }
+
+        private void Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            GetCurrentSessions();
         }
 
         private StackPanel GetInputField(string header, string text, bool isNumber)
@@ -173,7 +191,7 @@ namespace HealthcareClient
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
-            Task.Run(() => session.Create());
+            //Task.Run(() => session.Create());
         }
     }
 }

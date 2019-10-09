@@ -19,6 +19,11 @@ namespace HealthcareServer.Vr.VectorMath
             this.Z = z;
         }
 
+        public Vector3 Clone()
+        {
+            return new Vector3(this.X, this.Y, this.Z);
+        }
+
         public JToken GetJsonObject()
         {
             JArray jsonArray = new JArray();

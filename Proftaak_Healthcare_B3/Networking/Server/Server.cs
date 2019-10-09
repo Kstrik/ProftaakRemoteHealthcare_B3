@@ -116,5 +116,10 @@ namespace Networking.Server
             if (connection != null)
                 connection.Transmit(data);
         }
+
+        public void SetLogger(ILogger logger)
+        {
+            this.logger = logger;
+        }
     }
 }

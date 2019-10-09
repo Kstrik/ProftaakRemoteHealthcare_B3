@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -52,15 +53,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Fields\ImageSelectionField.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Fields\NumberField.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Fields\TextField.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Container.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -74,17 +75,18 @@
     </Page>
     <Compile Include="Charts\GraphPoint.cs" />
     <Compile Include="Charts\LiveChart.cs" />
+    <Compile Include="Container.cs" />
     <Compile Include="Fields\ComboBoxField.xaml.cs">
       <DependentUpon>ComboBoxField.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Fields\ImageSelectionField.xaml.cs">
+      <DependentUpon>ImageSelectionField.xaml</DependentUpon>
     </Compile>
     <Compile Include="Fields\NumberField.xaml.cs">
       <DependentUpon>NumberField.xaml</DependentUpon>
     </Compile>
     <Compile Include="Fields\TextField.xaml.cs">
       <DependentUpon>TextField.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Container.xaml.cs">
-      <DependentUpon>Container.xaml</DependentUpon>
     </Compile>
     <Compile Include="Fields\Vector3Field.xaml.cs">
       <DependentUpon>Vector3Field.xaml</DependentUpon>

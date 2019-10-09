@@ -51,13 +51,13 @@ namespace HealthcareServer.Vr
 
             await Task.Run(() =>
             {
-                if(jsonData.ContainsKey("data"))
+                if (jsonData.ContainsKey("data"))
                 {
                     JObject data = jsonData.GetValue("data").ToObject<JObject>();
 
                     status = data.GetValue("status").ToString();
 
-                    if(data.ContainsKey("id"))
+                    if (data.ContainsKey("id"))
                         tunnelId = data.GetValue("id").ToString();
                 }
             });

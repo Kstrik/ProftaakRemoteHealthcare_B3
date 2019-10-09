@@ -14,17 +14,17 @@ namespace HealthcareServer.Vr.World.Components
         private Route route;
         public string Id { get; set; }
 
-        private string diffuse;
-        private string normal;
-        private string specular;
-        private float heightOffset;
+        public string Diffuse { get; set; }
+        public string Normal { get; set; }
+        public string Specular { get; set; }
+        public float HeightOffset { get; set; }
 
         public Road(string diffuse, string normal, string specular, float heightOffset, Route route, Session session)
         {
-            this.diffuse = diffuse;
-            this.normal = normal;
-            this.specular = specular;
-            this.heightOffset = heightOffset;
+            this.Diffuse = diffuse;
+            this.Normal = normal;
+            this.Specular = specular;
+            this.HeightOffset = heightOffset;
 
             this.route = route;
             this.session = session;
@@ -45,10 +45,10 @@ namespace HealthcareServer.Vr.World.Components
         {
             JObject data = new JObject();
             data.Add("route", this.route.Id);
-            data.Add("diffuse", this.diffuse);
-            data.Add("normal", this.normal);
-            data.Add("specular", this.specular);
-            data.Add("heightoffset", this.heightOffset);
+            data.Add("diffuse", this.Diffuse);
+            data.Add("normal", this.Normal);
+            data.Add("specular", this.Specular);
+            data.Add("heightoffset", this.HeightOffset);
 
             JObject roadAdd = new JObject();
             roadAdd.Add("id", "scene/road/add");
@@ -62,14 +62,15 @@ namespace HealthcareServer.Vr.World.Components
             JObject data = new JObject();
             data.Add("id", this.Id);
             data.Add("route", this.route.Id);
-            data.Add("diffuse", this.diffuse);
-            data.Add("normal", this.normal);
-            data.Add("specular", this.specular);
-            data.Add("heightoffset", this.heightOffset);
+            data.Add("diffuse", this.Diffuse);
+            data.Add("normal", this.Normal);
+            data.Add("specular", this.Specular);
+            data.Add("heightoffset", this.HeightOffset);
 
             JObject roadUpdate = new JObject();
             roadUpdate.Add("id", "scene/road/update");
             roadUpdate.Add("data", data);
+            string test = roadUpdate.ToString();
 
             return this.session.GetTunnelSendRequest(roadUpdate);
         }

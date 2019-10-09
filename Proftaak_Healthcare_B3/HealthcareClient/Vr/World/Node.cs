@@ -35,7 +35,7 @@ namespace HealthcareServer.Vr.World
 
         public async Task Add()
         {
-            if(this.terrain != null)
+            if (this.terrain != null)
                 await Task.Run(() => this.terrain.Add());
 
             Response response = await this.session.SendAction(GetAddJsonObject(), new ActionRequest("tunnel/send", "scene/node/add", this));
@@ -43,7 +43,7 @@ namespace HealthcareServer.Vr.World
 
             if (!String.IsNullOrEmpty(this.Id))
             {
-                if(this.panel != null)
+                if (this.panel != null)
                     this.panel.NodeId = this.Id;
                 if (this.terrain != null)
                 {
@@ -76,7 +76,7 @@ namespace HealthcareServer.Vr.World
                 components.Add("transform", this.transform.GetJsonObject());
             if (this.model != null)
                 components.Add("model", this.model.GetJsonObject());
-            if(this.terrain != null)
+            if (this.terrain != null)
             {
                 JObject jsonTerrain = new JObject();
                 jsonTerrain.Add("smoothnormals", this.terrain.SmoothNormals);
@@ -110,6 +110,7 @@ namespace HealthcareServer.Vr.World
         private JObject GetUpdateJsonObject()
         {
             JObject data = new JObject();
+            data.Add("id", this.Id);
             data.Add("name", this.Name);
             if (!String.IsNullOrEmpty(this.ParentId))
                 data.Add("parent", this.ParentId);

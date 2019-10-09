@@ -1,0 +1,13 @@
+# Blender MTL File: 'None'
+# Material Count: 1
+
+newmtl tree7
+Ns 94.117644
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.0 0.0 0.0
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Kenley Strik\\Documents\\School\\Avans Hogeschool\\Leerjaar 2019-2020\\Periode 1\\Proftaak Remote Healthcare\\Sprint 2\\NetworkEngine.18.10.10.1\\NetworkEngine\\data\\NetworkEngine\\models\\trees\\fantasy\\Tree_07.png

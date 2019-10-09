@@ -67,5 +67,14 @@ namespace UIControls.Fields
         {
             InitializeComponent();
         }
+
+        public void ApplyDarkTheme()
+        {
+            this.HeaderForeground = Brushes.White;
+            this.ValueForeground = Brushes.White;
+            this.ValueBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF2D2D30"));
+            this.ValueBorderBrush = Brushes.Transparent;
+            this.FontSize = 12;
+        }
     }
 }

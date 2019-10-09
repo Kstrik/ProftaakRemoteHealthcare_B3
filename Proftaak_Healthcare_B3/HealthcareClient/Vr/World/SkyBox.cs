@@ -33,5 +33,10 @@ namespace HealthcareServer.Vr.World
 
             await this.session.SendAction(this.session.GetTunnelSendRequest(setTime), new ActionRequest("tunnel/send", "scene/skybox/settime"));
         }
+
+        public int GetTime()
+        {
+            return this.time;
+        }
     }
 }

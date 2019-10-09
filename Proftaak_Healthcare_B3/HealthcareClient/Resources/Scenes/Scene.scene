@@ -1,0 +1,62 @@
+{
+    "name": "SceneName",
+    "objects": [
+        {
+            "type": "node",
+            "name": "Node1",
+            "transform": {
+                "position": [0,0,0],
+                "scale": 1.0,
+                "rotation": [0,0,0]
+            },
+            "model": {
+                "filename": "data/NetworkEngine/models/bike/Bike.fbx",
+                "cullbackfaces": false,
+                "animated": false,
+                "animation": ""
+            },
+          "terrain": {
+            "smoothnormals": true,
+            "width": 256,
+            "depth": 256,
+            "maxheight": 50,
+            "heightmap": "C:/Users/Kenley Strik/Documents/GitKraken/ProftaakRemoteHealthcare_B3/ProftaakRemoteHealthcare_B3/Proftaak_Healthcare_B3/HealthcareClient/Resources/Textures/Heightmaps/HeightMap.jpeg",
+            "texturelayers": [
+              {
+                "diffuse": "data/NetworkEngine/textures/terrain/savanna_green_d.jpg",
+                "normal": "data/NetworkEngine/textures/terrain/savanna_green_n.jpg",
+                "minheight": "0",
+                "maxheight": "50",
+                "fadedistance": "1"
+              }
+            ]
+          },
+            "panel": {
+                "size": [1,1],
+                "resolution": [256, 256],
+                "background": [255, 255, 255, 1],
+                "castshadows": true
+            }
+        },
+        {
+            "type": "route",
+            "name": "Route1",
+			      "road": {
+				      "diffuse": "data/NetworkEngine/textures/tarmac_diffuse.png",
+				      "normal": "data/NetworkEngine/textures/tarmac_normal.png",
+				      "specular": "data/NetworkEngine/textures/tarmac_specular.png",
+				      "heightoffset": 0.0
+			      },
+			      "nodes": [
+				        {
+					        "pos": [0,0,0],
+					        "dir": [0,0,0]
+				        },
+				        {
+					        "pos": [10,10,0],
+					        "dir": [0,0,0]
+				        }
+			      ]
+        }
+    ]
+}

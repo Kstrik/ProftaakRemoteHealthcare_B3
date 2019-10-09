@@ -47,6 +47,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -59,6 +60,21 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.6.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.6.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.6.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.6.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.6.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -68,7 +84,22 @@
     <Compile Include="Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Resources\ResourcesDictionary.cs" />
     <Compile Include="SceneLoader.cs" />
+    <Compile Include="SceneManagement\Actor.cs" />
+    <Compile Include="SceneManagement\Controls\ModelSelectionField.xaml.cs">
+      <DependentUpon>ModelSelectionField.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SceneManagement\Controls\NodePropertiesView.cs" />
+    <Compile Include="SceneManagement\Controls\RoutePropertiesView.cs" />
+    <Compile Include="SceneManagement\ModelLoading\Model.cs" />
+    <Compile Include="SceneManagement\ModelLoading\OBJModelLoader.cs" />
+    <Compile Include="SceneManagement\ModelLoading\TriangleFace.cs" />
+    <Compile Include="SceneManagement\ModelLoading\Vertex.cs" />
+    <Compile Include="SceneManagement\World.cs" />
+    <Compile Include="SceneManager.xaml.cs">
+      <DependentUpon>SceneManager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ServerConnection\Bike.cs" />
     <Compile Include="ServerConnection\ClientMessage.cs" />
     <Compile Include="ServerConnection\DataManager.cs" />
@@ -112,6 +143,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="SceneManagement\Controls\ModelSelectionField.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SceneManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -149,6 +188,16 @@
       <Project>{26c1d311-4195-41c6-87b0-f96de976452d}</Project>
       <Name>UIControls</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\Models\Bike\" />
+    <Folder Include="Resources\Models\Trees\" />
+    <Folder Include="Resources\Scenes\" />
+    <Folder Include="Resources\Textures\Diffuse\" />
+    <Folder Include="Resources\Textures\Heightmaps\" />
+    <Folder Include="Resources\Textures\Normal\" />
+    <Folder Include="Resources\Textures\Skybox\" />
+    <Folder Include="Resources\Textures\Specular\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

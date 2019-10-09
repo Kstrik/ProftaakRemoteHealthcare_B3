@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,7 +27,7 @@ namespace UIControls.Fields
         public static readonly DependencyProperty ValueForegroundProperty = DependencyProperty.Register("ValueForeground", typeof(Brush), typeof(ComboBoxField));
         public static readonly DependencyProperty ValueBackgroundProperty = DependencyProperty.Register("ValueBackground", typeof(Brush), typeof(ComboBoxField));
         public static readonly DependencyProperty ValueBorderBrushProperty = DependencyProperty.Register("ValueBorderBrush", typeof(Brush), typeof(ComboBoxField));
-        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(IEnumerable<object>), typeof(ComboBoxField));
+        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(IEnumerable<object>), typeof(ComboBoxField), null);
 
         public Brush HeaderForeground
         {
@@ -63,10 +65,24 @@ namespace UIControls.Fields
             set { this.SetValue(ValueProperty, value); }
         }
 
+        public object SelectedValue
+        {
+            get { return cmbValue.SelectedItem; }
+        }
+
         public ComboBoxField()
         {
             InitializeComponent();
-            cmbValue.ItemsSource = Value;
+            cmbValue.DataContext = ValueProperty;
+        }
+
+        public void ApplyDarkTheme()
+        {
+            this.HeaderForeground = Brushes.White;
+            this.ValueForeground = Brushes.White;
+            this.ValueBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF2D2D30"));
+            this.ValueBorderBrush = Brushes.Transparent;
+            this.FontSize = 12;
         }
     }
 }

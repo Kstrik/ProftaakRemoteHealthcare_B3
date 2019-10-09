@@ -22,13 +22,12 @@ namespace HealthcareServer.Vr
 
         private Client client;
 
-        public string id;
+        public string Id;
         private string key;
-        private bool isReady;
 
         private string hostname;
 
-        public Session(ref Client client, string hostname)
+        public Session(ref Client client)
         {
             this.ActionRequests = new List<ActionRequest>();
             this.ActionsCache = new Dictionary<ActionRequest, string>();
@@ -37,16 +36,17 @@ namespace HealthcareServer.Vr
             this.scene = new Scene(this);
 
             this.client = client;
-            this.isReady = false;
-
-            this.hostname = hostname;
         }
 
-        public async Task Create()
+        public async Task Create(string hostname, string key)
         {
-            await Task.Run(() => RequestSession());
-            await this.tunnel.Create(this.id, this.key);
-            this.isReady = true;
+            if (!String.IsNullOrEmpty(hostname))
+            {
+                this.hostname = hostname;
+                this.key = key;
+                await Task.Run(() => RequestSession());
+                await this.tunnel.Create(this.Id, this.key);
+            }
         }
 
         public void Destroy()
@@ -57,19 +57,24 @@ namespace HealthcareServer.Vr
         private async Task RequestSession()
         {
             Response response = await Task.Run(() => SendAction(GetSessionsListRequest(), new ActionRequest("session/list", "", this)));
-            this.id = (response.Status == Response.ResponseStatus.SUCCES) ? (string)response.Value : "";
+            this.Id = (response.Status == Response.ResponseStatus.SUCCES) ? (string)response.Value : "";
         }
 
-        public async Task<Response> SendAction(JObject action, ActionRequest actionRequest = null)
+        public async Task<Response> SendAction(JObject action)
         {
-            if(actionRequest != null)
+            return await SendAction(action, null);
+        }
+
+        public async Task<Response> SendAction(JObject action, ActionRequest actionRequest)
+        {
+            if (actionRequest != null)
                 this.ActionRequests.Add(actionRequest);
 
             this.client.Transmit(Encoding.UTF8.GetBytes(action.ToString()));
 
             string jsonResponse = "";
 
-            if(actionRequest != null)
+            if (actionRequest != null)
             {
                 while (true)
                 {
@@ -122,7 +127,7 @@ namespace HealthcareServer.Vr
                 if (this.ActionRequests.Contains(actionRequest))
                     this.ActionsCache.Add(actionRequest, jsonString);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 MessageBox.Show("Error!");
             }
@@ -156,7 +161,7 @@ namespace HealthcareServer.Vr
             string sessionId = "";
             JObject jsonData = JObject.Parse(jsonResponse);
 
-            await Task.Run(() => 
+            await Task.Run(() =>
             {
                 foreach (JObject session in jsonData.GetValue("data").ToObject<JToken>().Children())
                 {
@@ -177,7 +182,7 @@ namespace HealthcareServer.Vr
 
         public string GetId()
         {
-            return this.id;
+            return this.Id;
         }
 
         public Scene GetScene()

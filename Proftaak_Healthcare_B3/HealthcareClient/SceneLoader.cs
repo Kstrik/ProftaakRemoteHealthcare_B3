@@ -15,16 +15,17 @@ namespace HealthcareClient
 {
     public class SceneLoader
     {
-        private Session session;
-        private List<Node> nodes;
-        private List<Route> routes;
-        private SkyBox skyBox;
+        public Session Session;
+        public List<Node> Nodes;
+        public List<Route> Routes;
+        public SkyBox SkyBox;
+
         public SceneLoader(ref Session session)
         {
-            this.session = session;
-            this.nodes = new List<Node>();
-            this.routes = new List<Route>();
-            this.skyBox = new SkyBox(12, null);
+            this.Session = session;
+            this.Nodes = new List<Node>();
+            this.Routes = new List<Route>();
+            this.SkyBox = new SkyBox(12, null);
         }
 
         public void LoadSceneFile(string fileName)
@@ -98,10 +99,10 @@ namespace HealthcareClient
                 int depth = int.Parse(jTerrain.GetValue("depth").ToString());
                 float maxHeight = float.Parse(jTerrain.GetValue("maxheight").ToString());
                 string heightMap = jTerrain.GetValue("heightmap").ToString();
-                terrain = new Terrain(width, depth, maxHeight, heightMap, smoothNormals, session);
+                terrain = new Terrain(width, depth, maxHeight, heightMap, smoothNormals, Session);
 
                 JArray layers = jTerrain.GetValue("texturelayers").ToObject<JArray>();
-  
+
                 foreach (JObject layer in layers.Children())
                 {
                     string diffuse = layer.GetValue("diffuse").ToString();
@@ -122,10 +123,10 @@ namespace HealthcareClient
                 Vector2 resolution = new Vector2(float.Parse(jResolution[0].ToString()), float.Parse(jResolution[1].ToString()));
                 Vector4 background = new Vector4(float.Parse(jBackground[0].ToString()), float.Parse(jBackground[1].ToString()), float.Parse(jBackground[2].ToString()), float.Parse(jBackground[2].ToString()));
                 bool castshadows = (jPanel.GetValue("castshadows").ToString().ToLower() == "true") ? true : false;
-                panel = new Panel(size, resolution, background, castshadows, session);
+                panel = new Panel(size, resolution, background, castshadows, Session);
             }
 
-            Node node = new Node(name, session, parent);
+            Node node = new Node(name, Session, parent);
             node.SetTransform(transform);
             if (model != null)
                 node.SetModel(model);
@@ -134,13 +135,13 @@ namespace HealthcareClient
             if (panel != null)
                 node.SetPanel(panel);
 
-            nodes.Add(node);
+            Nodes.Add(node);
         }
 
         private void LoadRoute(JObject jObject)
         {
             string name = jObject.GetValue("name").ToString();
-            Route route = new Route(session); 
+            Route route = new Route(Session);
             Road road = null;
 
             if (jObject.ContainsKey("road"))
@@ -149,8 +150,8 @@ namespace HealthcareClient
                 string diffuse = jRoad.GetValue("diffuse").ToString();
                 string normal = jRoad.GetValue("normal").ToString();
                 string specular = jRoad.GetValue("specular").ToString();
-                float heightOffset = float.Parse(jRoad.GetValue("heightoffset").ToString());               
-                road = new Road(diffuse, normal, specular,heightOffset, route, session);
+                float heightOffset = float.Parse(jRoad.GetValue("heightoffset").ToString());
+                road = new Road(diffuse, normal, specular, heightOffset, route, Session);
             }
             if (jObject.ContainsKey("nodes"))
             {
@@ -168,16 +169,16 @@ namespace HealthcareClient
                 }
             }
             route.SetRoad(road);
-            routes.Add(route);
+            Routes.Add(route);
         }
 
         public void SubmitScene()
         {
             Task.Run(async () =>
             {
-                foreach (Route route in this.routes)
+                foreach (Route route in this.Routes)
                     await route.Add();
-                foreach (Node node in this.nodes)
+                foreach (Node node in this.Nodes)
                     await node.Add();
             });
         }

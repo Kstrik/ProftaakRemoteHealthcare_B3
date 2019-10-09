@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -80,6 +81,30 @@ namespace UIControls.Fields
         public Vector3Field()
         {
             InitializeComponent();
+        }
+
+        public Vector3 GetVector3()
+        {
+            return new Vector3(this.X, this.Y, this.Z);
+        }
+
+        public void SetVector3(Vector3 vector3)
+        {
+            if (vector3 != null)
+            {
+                this.X = vector3.X;
+                this.Y = vector3.Y;
+                this.Z = vector3.Z;
+            }
+        }
+
+        public void ApplyDarkTheme()
+        {
+            this.HeaderForeground = Brushes.White;
+            this.ValueForeground = Brushes.White;
+            this.ValueBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF2D2D30"));
+            this.ValueBorderBrush = Brushes.Transparent;
+            this.FontSize = 12;
         }
     }
 }

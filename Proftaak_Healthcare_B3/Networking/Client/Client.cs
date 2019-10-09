@@ -146,5 +146,10 @@ namespace Networking.Client
                 return new byte[0];
             }
         }
+
+        public void SetLogger(ILogger logger)
+        {
+            this.logger = logger;
+        }
     }
 }

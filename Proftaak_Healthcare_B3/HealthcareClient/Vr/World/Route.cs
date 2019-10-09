@@ -51,7 +51,7 @@ namespace HealthcareServer.Vr.World
 
         public void SetRoad(Road road)
         {
-            if(road != null)
+            if (road != null)
             {
                 this.Road = road;
                 //await this.Road.Add();
@@ -67,11 +67,19 @@ namespace HealthcareServer.Vr.World
                 await Task.Run(() => this.Road.Add());
         }
 
+        public async Task Update()
+        {
+            await this.session.SendAction(GetUpdateJsonObject());
+
+            if (this.Road != null)
+                await Task.Run(() => this.Road.Update());
+        }
+
         private JObject GetAddJsonObject()
         {
             JArray nodes = new JArray();
 
-            foreach(RouteNode routeNode in this.routeNodes)
+            foreach (RouteNode routeNode in this.routeNodes)
             {
                 JObject node = new JObject();
                 node.Add("pos", routeNode.Position.GetJsonObject());
@@ -85,6 +93,35 @@ namespace HealthcareServer.Vr.World
 
             JObject routeAdd = new JObject();
             routeAdd.Add("id", "route/add");
+            routeAdd.Add("data", data);
+
+            string test = routeAdd.ToString();
+
+            return this.session.GetTunnelSendRequest(routeAdd);
+        }
+
+        private JObject GetUpdateJsonObject()
+        {
+            JArray nodes = new JArray();
+
+            int index = 0;
+            foreach (RouteNode routeNode in this.routeNodes)
+            {
+                JObject node = new JObject();
+                node.Add("index", index);
+                node.Add("pos", routeNode.Position.GetJsonObject());
+                node.Add("dir", routeNode.Direction.GetJsonObject());
+
+                nodes.Add(node);
+                index++;
+            }
+
+            JObject data = new JObject();
+            data.Add("id", this.Id);
+            data.Add("nodes", nodes);
+
+            JObject routeAdd = new JObject();
+            routeAdd.Add("id", "route/update");
             routeAdd.Add("data", data);
 
             string test = routeAdd.ToString();
@@ -112,6 +149,11 @@ namespace HealthcareServer.Vr.World
             //Documentatie geeft een verkeerde plaatst aan van het status veld of dit is mogelijk een fout op de VR server
 
             return new Response((!String.IsNullOrEmpty(routeId) && status.ToLower() == "ok") ? Response.ResponseStatus.SUCCES : Response.ResponseStatus.ERROR, routeId);
+        }
+
+        public List<RouteNode> GetRouteNodes()
+        {
+            return this.routeNodes;
         }
     }
 }
