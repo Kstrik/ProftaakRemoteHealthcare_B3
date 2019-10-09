@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using static HealthcareDoctor.DataManager;
+using Networking.Client;
 
 namespace HealthcareDoctor
 {
@@ -21,14 +22,12 @@ namespace HealthcareDoctor
     /// </summary>
     public partial class MainWindow : Window
     {
-        Doctor doctor;
         DataManager dataManager;
-        TestClient TestClient;
-        public MainWindow()
+        public MainWindow(Client TCPClient)
         {
             InitializeComponent();
 
-            dataManager = new DataManager();
+            dataManager = new DataManager(TCPClient);
 
             foreach (TestClient client in dataManager.GetClients())
             {

@@ -12,6 +12,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Networking.Client;
+using System.Runtime.Remoting.Messaging;
 
 namespace HealthcareClient
 {
@@ -20,11 +22,16 @@ namespace HealthcareClient
     /// </summary>
     public partial class Login : Window
     {
+        Client TCPClient;
         public Login()
         {
             InitializeComponent();
+            TCPClient = new Client("192.168.0.0", 80, null, null); //nulls waar in?
+            //connectToServer(TCPClient, new AsyncCallback(connectedToServer));
+            TCPClient.Connect();
         }
 
+        
         private void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
 
@@ -35,20 +42,27 @@ namespace HealthcareClient
             if (string.IsNullOrEmpty(txtBName.Text) || string.IsNullOrEmpty(passBox.Password)){
                 MessageBox.Show("Ongeldige invoer of leeg!");
             }
+            else if(false)
+            {
+                MessageBox.Show("Geen verbinding met server!");
+
+            }
             else
             {
-                DataManager dataManager = new DataManager();
+                DataManager dataManager = new DataManager(TCPClient);
                 dataManager.SendLogin(txtBName.Text, passBox.Password);
 
                 if (true)
                 {
-
+                    // Todo: implement login check
                 }
 
-                MainWindow main = new MainWindow();
+                MainWindow main = new MainWindow(TCPClient);
                 main.Show();
                 this.Close();
             }
         }
+
+       
     }
 }

@@ -6,25 +6,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Networking.Client;
 
 namespace HealthcareDoctor
 {
     class DataManager
     {
         private List<TestClient> clients = new List<TestClient>();
-        public DataManager()
+        private Client TCPClient;
+        public DataManager(Client TCPClient)
         {
+            this.TCPClient = TCPClient;
 
         }
 
         public void SendLogin(string username, string password)
         {
-            byte[] usernameBytes = Encoding.UTF8.GetBytes(username.PadRight(16));
+            byte[] usernameBytes = Encoding.UTF8.GetBytes(username.PadRight(16)); //wat gebeurt er als de username langer dan 16 char is ?
             byte[] passwordBytes = Encoding.UTF8.GetBytes(password.PadRight(16));
             byte[] messageContent = new byte[32];
             Buffer.BlockCopy(usernameBytes, 0, messageContent, 0, 16);
             Buffer.BlockCopy(passwordBytes, 0, messageContent, 0, 16);
-            Message message = new Message(true,(byte)Message.MessageTypes.DOCTOR_LOGIN, messageContent);
+            Message message = new Message(true, (byte)Message.MessageTypes.DOCTOR_LOGIN, messageContent);
+            TCPClient.Transmit(message.GetBytes());
+        }
+
+        public void SendChatMessage(int clientID, string chatMessage)
+        {
+            byte[] chatMessageBytes = Encoding.UTF8.GetBytes(chatMessage);
+            byte clientIDByte = (byte)clientID;
+            chatMessageBytes.Prepend(clientIDByte);
+            Message message = new Message(true, (byte)Message.MessageTypes.CHAT_MESSAGE, chatMessageBytes);
+            TCPClient.Transmit(message.GetBytes());
         }
 
         public List<TestClient> GetClients()
