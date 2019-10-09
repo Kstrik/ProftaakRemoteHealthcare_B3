@@ -26,7 +26,7 @@ namespace HealthcareClient
         public Login()
         {
             InitializeComponent();
-            TCPClient = new Client("192.168.0.0", 80, null, null); //nulls waar in?
+            TCPClient = new Client("localhost", 80, null, null); //nulls waar in?
             //connectToServer(TCPClient, new AsyncCallback(connectedToServer));
             TCPClient.Connect();
         }

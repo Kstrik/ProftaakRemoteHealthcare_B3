@@ -3,7 +3,10 @@ using Networking.HealthCare;
 using Networking.Server;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,22 +17,27 @@ namespace HealthcareServer
         private Server server;
         private Client client;
         private ILog logger;
-
+        private Dictionary<int, string> connectedClients;
+        private List<Patient> patients;
        
 
-        public HealthCareServer(string ip, int host, ILog logger)
+        public HealthCareServer(string ip, int port, ILog logger)
         {
-            this.server = new Server(ip, host, this, this, null);
+            this.server = new Server(ip, port, this, this, null);
             this.server.Start();
-            this.client = new Client("127.0.0.1", 1331, null, null);
-            this.client.Connect();
+            /*this.client = new Client("127.0.0.1", 1331, null, null);
+            this.client.Connect();*/
             this.logger = logger;
 
             byte[] bytes = new byte[2];
             bytes[0] = 1;
             bytes[1] = 20;
-            Message message = new Message(false, 1, bytes);
-            this.client.Transmit(message.GetBytes());
+            connectedClients = new Dictionary<int, string>();
+            patients = new List<Patient>();
+
+            
+           /* Message message = new Message(false, 1, bytes);
+            this.client.Transmit(message.GetBytes());*/
         }
 
         public void OnDataReceived(byte[] data, string clientId)
@@ -46,11 +54,25 @@ namespace HealthcareServer
                 case Message.MessageTypes.CHAT_MESSAGE:
                     {
                         this.logger.Log($"Chatmessage: {Encoding.UTF8.GetString(message.ContentMessage)}");
+                        //Todo: send message to proper client
+                        int BSN = BitConverter.ToInt32(message.GetBytes(), 0);
+                        byte[] chatBytes = message.GetBytes();
+                        chatBytes.CopyTo(chatBytes, 4);
+                        //string chatmessage = Encoding.UTF8.GetString(chatBytes);
+                        Message chatMessage = new Message(true, (byte)Message.MessageTypes.CHAT_MESSAGE, chatBytes);
+                        server.Transmit(chatMessage.GetBytes(), connectedClients[BSN]);
                         break;
                     }
                 case Message.MessageTypes.CLIENT_LOGIN:
                     {
                         this.logger.Log($"Cliënt login");
+                        int BSN = BitConverter.ToInt32(message.GetBytes(), 0);
+                        byte[] nameBytes = message.GetBytes();
+                        nameBytes.CopyTo(nameBytes, 4);
+                        string name = Encoding.UTF8.GetString(nameBytes);
+                        Patient newPatient = new Patient(BSN, name);
+                        connectedClients.Add(BSN, clientId);
+                        patients.Add(newPatient);
                         break;
                     }
                 case Message.MessageTypes.DOCTOR_LOGIN:
@@ -95,5 +117,7 @@ namespace HealthcareServer
 
 
         }
+
+       
     }
 }

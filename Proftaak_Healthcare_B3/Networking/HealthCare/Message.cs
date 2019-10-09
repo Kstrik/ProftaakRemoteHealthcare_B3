@@ -38,6 +38,7 @@ namespace Networking.HealthCare
             this.IdPrefix += prefix;
         }
 
+        //TODO: fix and test bit shifting.
         public static Message ParseMessage(byte[] messageData)
         {
             List<byte> bytes = new List<byte>(messageData);

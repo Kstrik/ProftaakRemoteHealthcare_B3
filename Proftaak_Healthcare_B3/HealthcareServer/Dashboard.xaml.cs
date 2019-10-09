@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,13 +21,12 @@ namespace HealthcareServer
     /// </summary>
     public partial class Dashboard : Window, ILog
     {
-        //private HealthCareServer healthcareServer;
+        private HealthCareServer healthcareServer;
 
         public Dashboard()
         {
             InitializeComponent();
-
-            //this.healthcareServer = new HealthCareServer(txbIp.Text, int.Parse(txbPort.Text), this);
+            this.healthcareServer = new HealthCareServer("localhost", 80, this); ;
             List<string> test = new List<string>() { "Test1", "Test2", "Test3", "Test4" };
             this.Loaded += Dashboard_Loaded;
         }
