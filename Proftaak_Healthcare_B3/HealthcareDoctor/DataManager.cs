@@ -17,22 +17,13 @@ namespace HealthcareDoctor
 
         }
 
-        public void SendLogin(string username, string password)
-        {
-            byte[] usernameBytes = Encoding.UTF8.GetBytes(username.PadRight(16));
-            byte[] passwordBytes = Encoding.UTF8.GetBytes(password.PadRight(16));
-            byte[] messageContent = new byte[32];
-            Buffer.BlockCopy(usernameBytes, 0, messageContent, 0, 16);
-            Buffer.BlockCopy(passwordBytes, 0, messageContent, 0, 16);
-            Message message = new Message(true,(byte)Message.MessageTypes.DOCTOR_LOGIN, messageContent);
-        }
 
         public List<TestClient> GetClients()
         {
             //test waarden
-            TestClient client1 = new TestClient(1, "levi");
-            TestClient client2 = new TestClient(2, "test");
-            TestClient client3 = new TestClient(3, "Kenley");
+            TestClient client1 = new TestClient(1123421, "levi");
+            TestClient client2 = new TestClient(2124, "test");
+            TestClient client3 = new TestClient(1241243, "Kenley");
 
             clients.Add(client1);
             clients.Add(client2);
@@ -40,6 +31,8 @@ namespace HealthcareDoctor
 
             return clients;
         }
+
+
 
         public class TestClient
         {

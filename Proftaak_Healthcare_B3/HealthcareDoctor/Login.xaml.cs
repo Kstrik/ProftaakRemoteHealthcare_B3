@@ -1,4 +1,6 @@
 ﻿using HealthcareDoctor;
+using Networking.Client;
+using Networking.HealthCare;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,37 +20,47 @@ namespace HealthcareClient
     /// <summary>
     /// Interaction logic for Login.xaml
     /// </summary>
-    public partial class Login : Window
+    public partial class Login : Window, IServerDataReceiver
     {
+        Client client;
         public Login()
         {
             InitializeComponent();
+            client = new Client("localhost", 1337, null, null);
         }
 
         private void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
 
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrEmpty(txtBName.Text) || string.IsNullOrEmpty(passBox.Password)){
+            if (string.IsNullOrEmpty(txtBName.Text) || string.IsNullOrEmpty(passBox.Password))
+            {
                 MessageBox.Show("Ongeldige invoer of leeg!");
             }
             else
             {
-                DataManager dataManager = new DataManager();
-                dataManager.SendLogin(txtBName.Text, passBox.Password);
-
-                if (true)
-                {
-
-                }
+                SendLogin(txtBName.Text, passBox.Password);
 
                 MainWindow main = new MainWindow();
                 main.Show();
                 this.Close();
             }
+        }
+
+        public void SendLogin(string username, string password)
+        {
+            byte[] usernameBytes = Encoding.UTF8.GetBytes(username.PadRight(16));
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(password.PadRight(16));
+            byte[] messageContent = new byte[32];
+            Buffer.BlockCopy(usernameBytes, 0, messageContent, 0, 16);
+            Buffer.BlockCopy(passwordBytes, 0, messageContent, 0, 16);
+            Message message = new Message(true, (byte)Message.MessageTypes.DOCTOR_LOGIN, messageContent);
+
+            this.client.Transmit(message.GetBytes());
+        }
+
+        public void OnDataReceived(byte[] data)
+        {
+            Message message = Message.ParseMessage(data);
         }
     }
 }

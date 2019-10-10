@@ -8,7 +8,7 @@
         Title="Login" Height="450" Width="800">
     <Grid Background="#FF2D2D30">
         <Grid x:Name="btnGrid" HorizontalAlignment="Center" Height="112" Margin="234,262,279.6,46" VerticalAlignment="Center" Width="280">
-            <Button Content="Login" HorizontalAlignment="Left" Margin="41,10,0,0" VerticalAlignment="Top" Width="181" Background="#FF3F3F46" Foreground="White" Click="Button_Click"/>
+            <Button Content="Login" HorizontalAlignment="Left" Margin="41,10,0,0" VerticalAlignment="Top" Width="181" Background="#FF3F3F46" Foreground="White" Click="BtnLogin_Click"/>
 
         </Grid>
         <Grid x:Name="loginGrid" HorizontalAlignment="Center" Height="112" Margin="234,150,231.6,158" VerticalAlignment="Center" Width="328">

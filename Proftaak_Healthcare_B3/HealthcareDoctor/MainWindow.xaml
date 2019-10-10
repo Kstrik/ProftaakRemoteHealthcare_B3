@@ -7,11 +7,19 @@
         mc:Ignorable="d"
         Title="Dokter" Height="1000" Width="1400" Background="#FF2D2D30">
     <Grid>
-        <Grid Margin="10,10,0,10.4" Width="220" Background="#FF1E1E1E" HorizontalAlignment="Left">
-            <Label Name="lblClients" Content="Clients" HorizontalAlignment="Left" FontSize="20" Margin="10,10,0,0" VerticalAlignment="Top" Foreground="White" Width="200" Height="44"/>
-            <Label Name="lblClient" Content="Clients" HorizontalAlignment="Left" FontSize="20" Margin="10,10,0,0" VerticalAlignment="Top" Foreground="White" Width="200" Height="44" Background="#FF39437D"/>
-            <StackPanel Name="clientConnectedStack" HorizontalAlignment="Left" Height="881" Margin="10,59,0,0" VerticalAlignment="Top" Width="200" Background="#FF2D2D30">
-            </StackPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Background="#FF2D2D30" HorizontalAlignment="Stretch">
+            <Label Name="lblClient" Content="Clients" HorizontalAlignment="Stretch" FontSize="20" Margin="10,10,10.4,0" VerticalAlignment="Top" Foreground="White" Height="44" Background="#FF39437D"/>
+            <StackPanel Name="clientConnectedStack" HorizontalAlignment="Stretch" Height="822"  VerticalAlignment="Top" Background="#FF252526" Margin="10,59,10.4,0"/>
+        </Grid>
+        <Grid Grid.Column="1" Grid.ColumnSpan="4"  Name="clientDataGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF1E1E1E" >
+            <StackPanel Name="clientDataPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         </Grid>
     </Grid>
 </Window>

@@ -49,6 +49,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Charts\LiveChartControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Fields\ComboBoxField.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -75,6 +79,9 @@
     </Page>
     <Compile Include="Charts\GraphPoint.cs" />
     <Compile Include="Charts\LiveChart.cs" />
+    <Compile Include="Charts\LiveChartControl.xaml.cs">
+      <DependentUpon>LiveChartControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Container.cs" />
     <Compile Include="Fields\ComboBoxField.xaml.cs">
       <DependentUpon>ComboBoxField.xaml</DependentUpon>

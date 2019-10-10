@@ -108,6 +108,10 @@
       <Project>{A68611BB-92F9-4E03-B042-05CA9881A624}</Project>
       <Name>Networking</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UIControls\UIControls.csproj">
+      <Project>{26C1D311-4195-41C6-87B0-F96DE976452D}</Project>
+      <Name>UIControls</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
