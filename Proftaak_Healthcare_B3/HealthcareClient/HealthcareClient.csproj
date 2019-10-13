@@ -103,8 +103,10 @@
     <Compile Include="ServerConnection\Bike.cs" />
     <Compile Include="ServerConnection\ClientMessage.cs" />
     <Compile Include="ServerConnection\DataManager.cs" />
+    <Compile Include="ServerConnection\HeartrateMonitor.cs" />
     <Compile Include="ServerConnection\IBikeDataReceiver.cs" />
     <Compile Include="ServerConnection\IClientMessageReceiver.cs" />
+    <Compile Include="ServerConnection\IHeartrateDataReceiver.cs" />
     <Compile Include="ServerConnection\RealBike.cs" />
     <Compile Include="ServerConnection\TacxTranslater.cs" />
     <Compile Include="Vr\Actions\ActionRequest.cs" />

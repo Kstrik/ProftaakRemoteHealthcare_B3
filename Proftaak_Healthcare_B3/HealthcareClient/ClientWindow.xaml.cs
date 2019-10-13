@@ -45,14 +45,17 @@ namespace HealthcareClient
             dataManager = new DataManager(dataManager);
             GetCurrentSessions();
             ConnectToBike(dataManager);
-
-            //SceneManager sceneManager = new SceneManager(new Session(ref this.client), this.client);
-            //sceneManager.Show();
+            ConnectToHeartrateMonitor(dataManager);
         }
 
         private void ConnectToBike(IBikeDataReceiver bikeDataReceiver)
         {
             RealBike bike = new RealBike("00438", dataManager);
+        }
+
+        private void ConnectToHeartrateMonitor(IHeartrateDataReceiver heartrateDataReceiver)
+        {
+            HeartrateMonitor heartrateMonitor = new HeartrateMonitor(heartrateDataReceiver);
         }
 
         private async Task Initialize(string sessionHost)
@@ -63,24 +66,24 @@ namespace HealthcareClient
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (sessionBox.SelectedItem != null)
-            {
-                string host = sessionBox.SelectedItem.ToString();
-                await Initialize(host);
-                lblConnected.Content = "Verbonden";
-
-                SceneManager sceneManager = new SceneManager(this.session, this.client);
-                sceneManager.Show();
+            if (sessionBox.SelectedItem != null)
+            {
+                string host = sessionBox.SelectedItem.ToString();
+                await Initialize(host);
+                lblConnected.Content = "Verbonden";
+
+                SceneManager sceneManager = new SceneManager(this.session, this.client);
+                sceneManager.Show();
             }
-            else
-            {
-                MessageBox.Show("No seession selected!");
+            else
+            {
+                MessageBox.Show("No seession selected!");
             }
-        }
-
-        private void Refresh_Click(object sender, RoutedEventArgs e)
-        {
-            GetCurrentSessions();
+        }
+
+        private void Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            GetCurrentSessions();
         }
 
         private StackPanel GetInputField(string header, string text, bool isNumber)

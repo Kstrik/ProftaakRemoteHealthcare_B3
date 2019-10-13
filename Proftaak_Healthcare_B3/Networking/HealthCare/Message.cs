@@ -1,59 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Networking.HealthCare
 {
     public class Message
     {
-        [Flags] public enum MessageTypes
+        public enum MessageType : byte
         {
-            BIKEDATA = 0x01,
-            CHAT_MESSAGE = 0x02,
-            CLIENT_LOGIN = 0x03,
-            DOCTOR_LOGIN = 0x04,
-            CHANGE_RESISTANCE = 0x05,
-            SERVER_ERROR = 0x06,
-            SERVER_OK = 0x07
+            BIKEDATA,
+            CHAT_MESSAGE,
+            CLIENT_LOGIN,
+            DOCTOR_LOGIN,
+            CHANGE_RESISTANCE,
+            SERVER_ERROR,
+            SERVER_OK
         }
 
-        [Flags] public enum ValueIds
+        public enum ValueId : byte
         {
-            HEARTRATE = 0x01,
-            DISTANCE = 0x02,
-            SPEED = 0x03,
-            CYCLE_RITHM = 0x04
+            HEARTRATE,
+            DISTANCE,
+            SPEED,
+            CYCLE_RHYTHM
         }
 
-        public byte MessageLength { get; }
-        public byte IdPrefix { get; }
+        public bool isDoctor { get; }
+        public MessageType messageType{ get; }
         public byte[] ContentMessage { get; }
 
-        public Message(bool isDoctor, byte prefix, byte[] message)
+        public Message(bool isDoctor, MessageType messageType, byte[] message)
         {
-            this.MessageLength = (byte)message.Length;
+            this.isDoctor = isDoctor;
+            this.messageType = messageType;
             this.ContentMessage = message;
-            this.IdPrefix = (isDoctor) ? (byte)1 : (byte)0;
-            this.IdPrefix = (byte)(this.IdPrefix << 7);
-            this.IdPrefix += prefix;
+            
         }
-
-        public static Message ParseMessage(byte[] messageData)
+        /// <summary>
+        /// This method allows the receiver of a byte array via TCP, to rebuild that into a Message class
+        /// </summary>
+        /// <param name="messageData"></param>
+        /// <returns></returns>
+        public static Message ParseMessage(byte[] messageData) 
         {
             List<byte> bytes = new List<byte>(messageData);
-            return new Message((bytes[0] == 1), bytes[1], bytes.GetRange(2, (int)bytes[0]).ToArray());
+            //decompress boolean and enum from one byte:
+            bool isDoctor = bytes[1] >> 7 == 1;
+            MessageType messageType = (MessageType) (bytes[1] << 1 >> 1);
+            //grab data according to message length in first byte:
+            byte[] contentMessage = bytes.GetRange(2, (int)bytes[0]).ToArray(); 
+            return new Message(isDoctor, messageType, contentMessage);
         }
 
-        public byte GetPrefix()
-        {
-            return (byte)(this.IdPrefix & 127);
-        }
-
+        /// <summary>
+        /// This method allows the sender of data to parse it into a byte array that conforms to our network protocol.
+        /// This byte array is ready to be sent via TCP
+        /// </summary>
+        /// <returns></returns>
         public byte[] GetBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.Add(this.MessageLength);
-            bytes.Add(this.IdPrefix);
+            bytes.Add((byte)this.ContentMessage.Length);
+            //compress boolean and eum into one byte:
+            byte IdPrefix = (isDoctor) ? (byte)1 : (byte)0;
+            IdPrefix = (byte)(IdPrefix << 7);
+            IdPrefix += (byte)messageType;
+            bytes.Add(IdPrefix);
+
             bytes.AddRange(this.ContentMessage);
             return bytes.ToArray();
         }

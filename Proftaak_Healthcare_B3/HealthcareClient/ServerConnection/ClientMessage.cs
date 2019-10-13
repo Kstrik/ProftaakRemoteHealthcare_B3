@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Networking.HealthCare;
 
 namespace HealthcareClient.BikeConnection
 {
@@ -21,29 +22,28 @@ namespace HealthcareClient.BikeConnection
         public Boolean hasPage16;
         public Boolean hasHeartbeat;
 
-        public byte[] toByteArray()
+        public byte[] getData()
         {
-            byte[] message = new byte[1];
-            message[0] = 0b00000001; //code for client
+            byte[] data = new byte[0];
             if(hasHeartbeat)
             {
-                message.Append((byte)0b0000001);
-                message.Append(Heartbeat);
+                data.Append((byte)Message.ValueId.HEARTRATE);
+                data.Append(Heartbeat);
             }
             if(hasPage16)
             {
-                message.Append((byte)0b00000010);
-                message.Append(Speed);
-                message.Append((byte)0b00000011);
-                message.Append(Distance);
+                data.Append((byte)Message.ValueId.SPEED);
+                data.Append(Speed);
+                data.Append((byte)Message.ValueId.DISTANCE);
+                data.Append(Distance);
             }
             if(hasPage25)
             {
                 
-                message.Append((byte)0b00000100);
-                message.Append(Cadence);
+                data.Append((byte)Message.ValueId.CYCLE_RHYTHM);
+                data.Append(Cadence);
             }
-            return message;
+            return data;
         }
     }
 
