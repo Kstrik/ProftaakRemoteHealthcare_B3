@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:HealthcareDoctor"
         mc:Ignorable="d"
         Title="Login" Height="500" Width="500">
-    <Grid Background="#FF333337">
+    <Grid Background="#FF1E1E1E">
         <StackPanel Width="400" VerticalAlignment="Center">
             <Label Content="Login" FontSize="16" Foreground="White" HorizontalContentAlignment="Center" Margin="5,5,5,5"></Label>
             <Label x:Name="lbl_LoginError" FontSize="12" Foreground="Red" HorizontalContentAlignment="Center" Visibility="Hidden"></Label>

@@ -29,6 +29,9 @@ namespace HealthcareServer
         {
             InitializeComponent();
 
+            this.healthcareServer = new HealthCareServer("127.0.0.1", 1551, null);
+            this.healthcareServer.Start();
+
             this.Loaded += Dashboard_Loaded;
 
             Authorizer.AddNewDoctorAuthorization("Test", "test", "Test");

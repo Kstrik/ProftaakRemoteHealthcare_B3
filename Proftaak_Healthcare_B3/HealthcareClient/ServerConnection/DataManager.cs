@@ -19,7 +19,7 @@ namespace HealthcareClient.ServerConnection
     class DataManager: IServerDataReceiver, IBikeDataReceiver, IHeartrateDataReceiver, IClientMessageReceiver
     {
         private ClientMessage clientMessage;
-        private HealthcareDoctor DataServerClient;
+        private Client DataServerClient;
 
         private IClientMessageReceiver observer;
 
@@ -28,7 +28,7 @@ namespace HealthcareClient.ServerConnection
         public DataManager(IClientMessageReceiver observer) //current observer is datamanager itself, rather than the client window
         {
             this.observer = this;
-            DataServerClient = new HealthcareDoctor("localhost", 80, this, null);
+            DataServerClient = new Client("localhost", 80, this, null);
         }
 
         public void AddPage25(int cadence)

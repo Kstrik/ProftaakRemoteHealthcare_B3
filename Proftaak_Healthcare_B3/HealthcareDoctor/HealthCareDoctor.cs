@@ -22,7 +22,7 @@ namespace HealthcareDoctor
 
         public void OnDataReceived(byte[] data)
         {
-            byte[] decryptedData = Encoding.UTF8.GetBytes(DataEncryptor.Decrypt(Encoding.UTF8.GetString(data), "Test"));
+            byte[] decryptedData = DataEncryptor.Decrypt(data, "Test");
             this.receiver?.OnMessageReceived(Message.ParseMessage(decryptedData));
         }
 
@@ -38,7 +38,7 @@ namespace HealthcareDoctor
 
         public void Transmit(Message message)
         {
-            byte[] encryptedMessage = Encoding.UTF8.GetBytes(DataEncryptor.Encrypt(Encoding.UTF8.GetString(message.GetBytes()), "Test"));
+            byte[] encryptedMessage = DataEncryptor.Encrypt(message.GetBytes(), "Test");
             this.client.Transmit(encryptedMessage);
         }
     }

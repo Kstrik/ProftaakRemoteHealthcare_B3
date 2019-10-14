@@ -24,25 +24,22 @@ namespace HealthcareDoctor
     /// </summary>
     public partial class Login : Window, IMessageReceiver
     {
-        HealthCareDoctor client;
+        private HealthCareDoctor client;
+
         public Login()
         {
             InitializeComponent();
 
-            client = new HealthCareDoctor("83.82.9.9", 25575, this);       
+            this.client = new HealthCareDoctor("127.0.0.1", 1551, this);
+            this.client.Connect();
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
-
             if (string.IsNullOrEmpty(txb_LoginUsername.Text) || string.IsNullOrEmpty(txb_LoginPassword.Password))
-            {
                 MessageBox.Show("Ongeldige invoer of leeg!");
-            }
             else
-            {
                 SendLogin(txb_LoginUsername.Text, txb_LoginPassword.Password);
-            }
         }
 
         public void SendLogin(string username, string password)
@@ -52,7 +49,7 @@ namespace HealthcareDoctor
             bytes.AddRange(Encoding.UTF8.GetBytes(HashUtil.HashSha256(password)));
             bytes.AddRange(Encoding.UTF8.GetBytes(username));
 
-            Message message = new Message(true, Message.MessageType.DOCTOR_LOGIN, bytes.ToArray());
+            Message message = new Message(true, Message.MessageType.BIKEDATA, bytes.ToArray());
             this.client.Transmit(message);
         }
 
