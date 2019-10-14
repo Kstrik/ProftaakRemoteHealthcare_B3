@@ -5,27 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HealthcareClient"
         mc:Ignorable="d"
-        Title="Login" Height="450" Width="800">
-    <Grid Background="#FF2D2D30">
-        <Grid x:Name="btnGrid" HorizontalAlignment="Center" Height="112" Margin="234,262,279.6,46" VerticalAlignment="Center" Width="280">
-            <Button Content="Login" HorizontalAlignment="Left" Margin="41,10,0,0" VerticalAlignment="Top" Width="181" Background="#FF3F3F46" Foreground="White" Click="BtnLogin_Click"/>
-
-        </Grid>
-        <Grid x:Name="loginGrid" HorizontalAlignment="Center" Height="112" Margin="234,150,231.6,158" VerticalAlignment="Center" Width="328">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="47*"/>
-                <RowDefinition Height="65*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="5*"/>
-            </Grid.ColumnDefinitions>
-            <TextBox Name="txtBName" HorizontalAlignment="Center" Height="20" Margin="15.4,20,99,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Background="#FF333337" Foreground="White" OpacityMask="Black" Grid.Column="1"/>
-            <Label Content="Naam" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,14,43.6,0" Background="#00000000" Foreground="White"/>
-            <Label Content="Wachtwoord" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,17.8,4.6,0" Background="#00000000" Foreground="White" Width="79" Grid.Row="1"/>
-            <Label Content="✔" Grid.Column="1" HorizontalAlignment="Center" Margin="147.4,14,60,0" VerticalAlignment="Top"/>
-            <Label Content="✔" Grid.Column="1" HorizontalAlignment="Center" Margin="147.4,17.6,60,0" VerticalAlignment="Top" Grid.Row="1"/>
-            <PasswordBox Name="passBox" Grid.Column="1" HorizontalAlignment="Left" Margin="15.4,25.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="120" Background="#FF333337" Foreground="White"/>
-        </Grid>
+        Title="Login" Height="500" Width="500">
+    <Grid Background="#FF333337">
+        <StackPanel Width="400" VerticalAlignment="Center">
+            <Label Content="Login" FontSize="16" Foreground="White" HorizontalContentAlignment="Center" Margin="5,5,5,5"></Label>
+            <Label x:Name="lbl_LoginError" FontSize="12" Foreground="Red" HorizontalContentAlignment="Center" Visibility="Hidden"></Label>
+            <Label Content="Username:" FontSize="14" Foreground="White" Margin="5,5,5,5"></Label>
+            <TextBox x:Name="txb_LoginUsername" FontSize="14" Margin="5,5,5,5" Foreground="White" Background="#FF2D2D30" BorderBrush="#FF3E3E42" MaxLength="20"></TextBox>
+            <Label Content="Password:" FontSize="14" Foreground="White" Margin="5,5,5,5"></Label>
+            <PasswordBox x:Name="txb_LoginPassword" FontSize="14" Margin="5,5,5,5" Foreground="White" Background="#FF2D2D30" BorderBrush="#FF3E3E42" MaxLength="20"></PasswordBox>
+            <WrapPanel Margin="0,5,0,5">
+                <Button x:Name="btn_Login" Content="Login" FontSize="14" Margin="5,5,5,5" Foreground="White" Background="#FF2D2D30" BorderBrush="#FF2D2D30" Width="190" Click="Login_Click"></Button>
+            </WrapPanel>
+        </StackPanel>
     </Grid>
 </Window>
