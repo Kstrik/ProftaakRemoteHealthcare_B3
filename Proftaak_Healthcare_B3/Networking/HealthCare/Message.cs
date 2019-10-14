@@ -17,7 +17,9 @@ namespace Networking.HealthCare
             GET_CLIENT_HISTORY,
             CLIENT_HISTORY_START,
             CLIENT_HISTORY_END,
-            CLIENT_HISTORY_DATA
+            CLIENT_HISTORY_DATA,
+            START_SESSION,
+            STOP_SESSION
         }
 
         public enum ValueId : byte
@@ -42,6 +44,7 @@ namespace Networking.HealthCare
 
             this.Content = content;
         }
+
         /// <summary>
         /// This method allows the receiver of a byte array via TCP, to rebuild that into a Message class
         /// </summary>

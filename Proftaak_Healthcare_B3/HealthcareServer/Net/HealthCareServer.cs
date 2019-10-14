@@ -99,6 +99,18 @@ namespace HealthcareServer.Net
                             this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.GET_CLIENT_HISTORY }).GetBytes(), clientId);
                         break;
                     }
+                case Message.MessageType.START_SESSION:
+                    {
+                        if (this.doctors.Where(d => d.ClientId == clientId).First().IsAuthorized)
+                            HandleStartSession(Encoding.UTF8.GetString(message.Content), clientId);
+                        break;
+                    }
+                case Message.MessageType.STOP_SESSION:
+                    {
+                        if (this.doctors.Where(d => d.ClientId == clientId).First().IsAuthorized)
+                            HandleStopSession(Encoding.UTF8.GetString(message.Content), clientId);
+                        break;
+                    }
                 default:
                     {
                         break;
@@ -215,6 +227,28 @@ namespace HealthcareServer.Net
             }
             else
                 this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.GET_CLIENT_HISTORY }).GetBytes(), clientId);
+        }
+
+        private void HandleStartSession(string bsn, string clientId)
+        {
+            if (this.cliënts.Where(c => c.BSN == bsn).Count() != 0)
+            {
+                string cliëntId = this.cliënts.Where(c => c.BSN == bsn).First().ClientId;
+                this.server.Transmit(new Message(true, Message.MessageType.START_SESSION, null).GetBytes(), cliëntId);
+            }
+            else
+                this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.START_SESSION }).GetBytes(), clientId);
+        }
+
+        private void HandleStopSession(string bsn, string clientId)
+        {
+            if (this.cliënts.Where(c => c.BSN == bsn).Count() != 0)
+            {
+                string cliëntId = this.cliënts.Where(c => c.BSN == bsn).First().ClientId;
+                this.server.Transmit(new Message(true, Message.MessageType.STOP_SESSION, null).GetBytes(), cliëntId);
+            }
+            else
+                this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.STOP_SESSION }).GetBytes(), clientId);
         }
 
         public void OnClientDisconnected(ClientConnection connection)

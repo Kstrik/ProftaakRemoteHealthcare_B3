@@ -147,6 +147,11 @@ namespace Networking.Client
             }
         }
 
+        public void SetReceiver(IServerDataReceiver receiver)
+        {
+            this.receiver = receiver;
+        }
+
         public void SetLogger(ILogger logger)
         {
             this.logger = logger;

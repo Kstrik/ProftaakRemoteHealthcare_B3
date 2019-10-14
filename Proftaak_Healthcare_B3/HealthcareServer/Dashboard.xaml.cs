@@ -29,6 +29,8 @@ namespace HealthcareServer
             InitializeComponent();
 
             this.Loaded += Dashboard_Loaded;
+
+            Authorizer.AddNewDoctorAuthorization("Test", "test", "Test");
         }
 
         private void Dashboard_Loaded(object sender, RoutedEventArgs e)

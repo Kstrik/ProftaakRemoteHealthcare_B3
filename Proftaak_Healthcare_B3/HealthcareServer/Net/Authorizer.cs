@@ -19,7 +19,7 @@ namespace HealthcareServer.Net
         {
             if (File.Exists(filesFolderPath + @"/Authentifications.json"))
             {
-                string fileContent = DataEncryptor.Encrypt(File.ReadAllText(filesFolderPath + @"/Authentifications.json"), cryptoKey);
+                string fileContent = DataEncryptor.Decrypt(File.ReadAllText(filesFolderPath + @"/Authentifications.json"), cryptoKey);
 
                 if (!String.IsNullOrEmpty(fileContent))
                 {
@@ -47,7 +47,7 @@ namespace HealthcareServer.Net
             {
                 if (File.Exists(filesFolderPath + @"/Authentifications.json"))
                 {
-                    string fileContent = File.ReadAllText(filesFolderPath + @"/Authentifications.json");
+                    string fileContent = DataEncryptor.Decrypt(File.ReadAllText(filesFolderPath + @"/Authentifications.json"), cryptoKey);
 
                     JObject json = null;
                     JArray authentifications = null;
