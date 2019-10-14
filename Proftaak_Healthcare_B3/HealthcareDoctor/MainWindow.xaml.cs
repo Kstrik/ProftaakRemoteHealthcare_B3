@@ -1,4 +1,7 @@
-﻿using Networking.Client;
+﻿using Networking;
+using Networking.Client;
+using Networking.HealthCare;
+using Networking.Server;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,9 +29,9 @@ namespace HealthcareDoctor
     /// </summary>
     public partial class MainWindow : Window
     {
-        Doctor doctor;
         DataManager dataManager;
         TestClient TestClient;
+        HealthCareDoctor client;
 
         DispatcherTimer dispatcherTimer = new DispatcherTimer();
         Stopwatch stopWatch = new Stopwatch();
@@ -47,8 +50,8 @@ namespace HealthcareDoctor
                 StackPanel stackpanel = new StackPanel();
                 stackpanel.Background = (Brush)(new BrushConverter().ConvertFromString("#FF39437D"));
 
-                stackpanel.Width = 300;
-                stackpanel.HorizontalAlignment = HorizontalAlignment.Left;
+                //stackpanel.Width = 300;
+                stackpanel.HorizontalAlignment = HorizontalAlignment.Stretch;
                 stackpanel.VerticalAlignment = VerticalAlignment.Top;
 
                 Label name = new Label();
@@ -85,12 +88,26 @@ namespace HealthcareDoctor
             }
         }
 
+        private void SendChatMessage(string chatMessage)
+        {
+            List<byte> bytes = new List<byte>();
+
+            bytes.AddRange(Encoding.UTF8.GetBytes(HashUtil.HashSha256(chatMessage)));
+
+            Message message = new Message(true, Message.MessageType.DOCTOR_LOGIN, bytes.ToArray());
+            string encryptedMessage = DataEncryptor.Encrypt(Encoding.UTF8.GetString(message.GetBytes()), "Test");
+            this.client.Transmit(message);
+        }
+
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             clientDataPanel.Children.Clear();
 
-            LiveChartControl heartrate = new LiveChartControl("Hartslag", "", "", 40, 400, 200, 20, LiveChart.BlueGreenTheme, false, true, true,
+            LiveChartControl heartrate = new LiveChartControl("Hartslag", "", "", 40, 400, 200, 20, LiveChart.BlueGreenTheme, true, true, true,
                                                                             true, false, false, true);
+
+            heartrate.HorizontalAlignment = HorizontalAlignment.Left;
+            heartrate.Margin = new Thickness(5, 5, 5, 5);
 
             ToggleButton btnStartStop = new ToggleButton();
             btnStartStop.Content = "Start/Stop Training";
@@ -100,18 +117,42 @@ namespace HealthcareDoctor
             btnStartStop.Click += BtnStartStop_Click;
 
             clock.Foreground = Brushes.White;
-            clock.HorizontalContentAlignment = HorizontalAlignment.Right;
+            clock.HorizontalContentAlignment = HorizontalAlignment.Center;
+            clock.FontSize = 20;
+
+            Button btnSendMessage = new Button();
+            btnSendMessage.Content = "Verstuur Bericht";
+            btnSendMessage.Height = 30;
+            btnSendMessage.Margin = new Thickness(5, 5, 5, 5);
+            btnSendMessage.HorizontalAlignment = HorizontalAlignment.Stretch;
+            btnSendMessage.Background = (Brush)(new BrushConverter().ConvertFromString("#FF1E1E1E"));
+            btnSendMessage.VerticalAlignment = VerticalAlignment.Bottom;
+            btnSendMessage.Foreground = Brushes.White;
 
 
+            TextBox messageBox = new TextBox();
+            messageBox.Text = "Type hier uw bericht naar de client......";
+            messageBox.Margin = new Thickness(5, 5, 5, 5);
+            messageBox.HorizontalAlignment = HorizontalAlignment.Stretch;
+            messageBox.Height = 200;
+            messageBox.VerticalAlignment = VerticalAlignment.Bottom;
+            messageBox.Background = (Brush)(new BrushConverter().ConvertFromString("#FF1E1E1E"));
+            messageBox.Foreground = Brushes.White;
 
             Label label = new Label();
+            label.HorizontalAlignment = HorizontalAlignment.Stretch;
+            label.Background = (Brush)(new BrushConverter().ConvertFromString("#FF2D2D30"));
+            label.FontSize = 30;
             label.Foreground = Brushes.White;
-            label.Margin = new Thickness(0, 0, 0, 10);
+            label.Margin = new Thickness(5, 5, 5, 10);
             label.Content = ((sender as StackPanel).Children[0] as Label).Content;
+            clientDataPanel.Children.Add(label);
             clientDataPanel.Children.Add(btnStartStop);
             clientDataPanel.Children.Add(clock);
             clientDataPanel.Children.Add(heartrate);
-            clientDataPanel.Children.Add(label);
+            clientDataPanel.Children.Add(messageBox);
+            clientDataPanel.Children.Add(btnSendMessage);
+
         }
 
         private void BtnStartStop_Click(object sender, RoutedEventArgs e)

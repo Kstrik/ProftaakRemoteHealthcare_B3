@@ -36,10 +36,10 @@ namespace HealthcareClient
         //private List<Node> nodes;
         //private List<Route> routes;
 
-        private Client client;
+        private HealthcareDoctor client;
         private Session session;
 
-        public SceneManager(Session session, Client client)
+        public SceneManager(Session session, HealthcareDoctor client)
         {
             InitializeComponent();
 
