@@ -21,7 +21,7 @@ namespace Networking.HealthCare
         {
             if(connection != null)
             {
-                connection.Transmit(new Message(true, Message.MessageType.CLIENT_HISTORY_START, null).GetBytes());
+                connection.Transmit(DataEncryptor.Encrypt(new Message(true, Message.MessageType.CLIENT_HISTORY_START, null).GetBytes(), "Test"));
 
                 int maxLength = GetMaxLength();
                 for(int i = 0; i < maxLength; i++)
@@ -56,10 +56,10 @@ namespace Networking.HealthCare
                         bytes.AddRange(bytes.GetRange(1, 19).ToArray());
                     }
 
-                    connection.Transmit(new Message(true, Message.MessageType.CLIENT_HISTORY_DATA, bytes.ToArray()).GetBytes());
+                    connection.Transmit(DataEncryptor.Encrypt(new Message(true, Message.MessageType.CLIENT_HISTORY_DATA, bytes.ToArray()).GetBytes(), "Test"));
                 }
 
-                connection.Transmit(new Message(true, Message.MessageType.CLIENT_HISTORY_END, null).GetBytes());
+                connection.Transmit(DataEncryptor.Encrypt(new Message(true, Message.MessageType.CLIENT_HISTORY_END, null).GetBytes(), "Test"));
             }
         }
 

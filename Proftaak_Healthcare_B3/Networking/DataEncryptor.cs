@@ -24,6 +24,11 @@ namespace Networking.Server
             return Encrypt<AesManaged>(value, password);
         }
 
+        public static byte[] Encrypt(byte[] value, string password)
+        {
+            return Encoding.UTF8.GetBytes(Encrypt<AesManaged>(Encoding.UTF8.GetString(value), password));
+        }
+
         private static string Encrypt<T>(string value, string password)
                 where T : SymmetricAlgorithm, new()
         {
@@ -60,6 +65,11 @@ namespace Networking.Server
         public static string Decrypt(string value, string password)
         {
             return Decrypt<AesManaged>(value, password);
+        }
+
+        public static byte[] Decrypt(byte[] value, string password)
+        {
+            return Encoding.UTF8.GetBytes(Decrypt<AesManaged>(Encoding.UTF8.GetString(value), password));
         }
 
         private static string Decrypt<T>(string value, string password) where T : SymmetricAlgorithm, new()

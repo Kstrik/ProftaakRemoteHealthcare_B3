@@ -1,5 +1,6 @@
 ﻿using HealthcareServer.Net;
 using Networking;
+using Networking.HealthCare;
 using System;
 using System.Collections.Generic;
 using System.Linq;

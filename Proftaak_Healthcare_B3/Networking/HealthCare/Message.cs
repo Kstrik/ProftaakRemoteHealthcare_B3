@@ -32,6 +32,7 @@ namespace Networking.HealthCare
 
         public bool isDoctor { get; }
         public MessageType messageType{ get; }
+        private byte[] contentLength;
         public byte[] Content { get; }
 
         public Message(bool isDoctor, MessageType messageType, byte[] content)
@@ -42,6 +43,20 @@ namespace Networking.HealthCare
             if (content == null)
                 content = new byte[0];
 
+            this.contentLength = new byte[4];
+            contentLength[0] = (byte)content.Length;
+            contentLength[1] = (byte)(content.Length >> 8);
+            contentLength[2] = (byte)(content.Length >> 16);
+            contentLength[3] = (byte)(content.Length >> 24);
+
+            this.Content = content;
+        }
+
+        public Message(bool isDoctor, MessageType messageType, byte[] contentLength, byte[] content)
+        {
+            this.isDoctor = isDoctor;
+            this.messageType = messageType;
+            this.contentLength = contentLength;
             this.Content = content;
         }
 
@@ -53,12 +68,15 @@ namespace Networking.HealthCare
         public static Message ParseMessage(byte[] messageData) 
         {
             List<byte> bytes = new List<byte>(messageData);
+            byte[] contentLength = new byte[] { bytes[0], bytes[1], bytes[2], bytes[3] };
+
             //decompress boolean and enum from one byte:
-            bool isDoctor = bytes[1] >> 7 == 1;
-            MessageType messageType = (MessageType) (bytes[1] & 127);
+            bool isDoctor = bytes[4] >> 7 == 1;
+            MessageType messageType = (MessageType)(bytes[4] & 127);
+
             //grab data according to message length in first byte:
-            byte[] contentMessage = bytes.GetRange(2, (int)bytes[0]).ToArray(); 
-            return new Message(isDoctor, messageType, contentMessage);
+            byte[] contentMessage = bytes.GetRange(5, bytes.Count - 5).ToArray(); 
+            return new Message(isDoctor, messageType, contentLength, contentMessage);
         }
 
         /// <summary>
@@ -69,7 +87,8 @@ namespace Networking.HealthCare
         public byte[] GetBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.Add((byte)this.Content.Length);
+            bytes.AddRange(this.contentLength);
+
             //compress boolean and eum into one byte:
             byte IdPrefix = (isDoctor) ? (byte)1 : (byte)0;
             IdPrefix = (byte)(IdPrefix << 7);

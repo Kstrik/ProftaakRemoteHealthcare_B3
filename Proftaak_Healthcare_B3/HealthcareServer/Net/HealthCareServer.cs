@@ -39,8 +39,8 @@ namespace HealthcareServer.Net
 
         public void OnDataReceived(byte[] data, string clientId)
         {
-            string decryptedData = DataEncryptor.Decrypt(Encoding.UTF8.GetString(data), "Test");
-            Message message = Message.ParseMessage(Encoding.UTF8.GetBytes(decryptedData));
+            byte[] decryptedData = DataEncryptor.Decrypt(data, "Test");
+            Message message = Message.ParseMessage(decryptedData);
 
             switch (message.messageType)
             {
@@ -60,7 +60,7 @@ namespace HealthcareServer.Net
                             HandleChatMessage(bsn, chatMessage, clientId);
                         }
                         else
-                            this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.CHAT_MESSAGE }).GetBytes(), clientId);
+                            this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.CHAT_MESSAGE })), clientId);
                         break;
                     }
                 case Message.MessageType.CLIENT_LOGIN:
@@ -85,7 +85,7 @@ namespace HealthcareServer.Net
                             HandleChangeResistance(bsn, bytes[0], clientId);
                         }
                         else
-                            this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.CHANGE_RESISTANCE }).GetBytes(), clientId);
+                            this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.CHANGE_RESISTANCE })), clientId);
                         break;
                     }
                 case Message.MessageType.GET_CLIENT_HISTORY:
@@ -96,7 +96,7 @@ namespace HealthcareServer.Net
                             HandleGetClientHistory(bsn, clientId);
                         }
                         else
-                            this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.GET_CLIENT_HISTORY }).GetBytes(), clientId);
+                            this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.GET_CLIENT_HISTORY })), clientId);
                         break;
                     }
                 case Message.MessageType.START_SESSION:
@@ -163,10 +163,10 @@ namespace HealthcareServer.Net
                     Authorizer.AddClient(bsn);
 
                 this.cliënts.Add(new Cliënt(bsn, clientId));
-                this.server.Transmit(new Message(false, Message.MessageType.SERVER_OK, new byte[1] { (byte)Message.MessageType.CLIENT_LOGIN }).GetBytes(), clientId);
+                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_OK, new byte[1] { (byte)Message.MessageType.CLIENT_LOGIN })), clientId);
             }
             else
-                this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.CLIENT_LOGIN }).GetBytes(), clientId);
+                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.CLIENT_LOGIN })), clientId);
         }
 
         private void HandleDoctorLogin(string username, string password, string clientId)
@@ -178,13 +178,13 @@ namespace HealthcareServer.Net
                     Doctor doctor = new Doctor(username, clientId);
                     this.doctors.Add(doctor);
                     doctor.IsAuthorized = true;
-                    this.server.Transmit(new Message(false, Message.MessageType.SERVER_OK, new byte[1] { (byte)Message.MessageType.DOCTOR_LOGIN }).GetBytes(), clientId);
+                    this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_OK, new byte[1] { (byte)Message.MessageType.DOCTOR_LOGIN })), clientId);
                 }
                 else
-                    this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.DOCTOR_LOGIN }).GetBytes(), clientId);
+                    this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.DOCTOR_LOGIN })), clientId);
             }
             else
-                this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.DOCTOR_LOGIN }).GetBytes(), clientId);
+                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.DOCTOR_LOGIN })), clientId);
         }
 
         private void HandleChangeResistance(string bsn, byte resistance, string clientId)
@@ -192,10 +192,10 @@ namespace HealthcareServer.Net
             if(this.cliënts.Where(c => c.BSN == bsn).Count() != 0)
             {
                 string cliëntId = this.cliënts.Where(c => c.BSN == bsn).First().ClientId;
-                this.server.Transmit(new Message(true, Message.MessageType.CHANGE_RESISTANCE, new byte[1] { resistance }).GetBytes(), cliëntId);
+                this.server.Transmit(EncryptMessage(new Message(true, Message.MessageType.CHANGE_RESISTANCE, new byte[1] { resistance })), cliëntId);
             }
             else
-                this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.CHANGE_RESISTANCE }).GetBytes(), clientId);
+                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.CHANGE_RESISTANCE })), clientId);
         }
 
         private void HandleChatMessage(string bsn, byte[] chatMessage, string clientId)
@@ -203,10 +203,10 @@ namespace HealthcareServer.Net
             if (this.cliënts.Where(c => c.BSN == bsn).Count() != 0)
             {
                 string cliëntId = this.cliënts.Where(c => c.BSN == bsn).First().ClientId;
-                this.server.Transmit(new Message(true, Message.MessageType.CHAT_MESSAGE, chatMessage).GetBytes(), cliëntId);
+                this.server.Transmit(EncryptMessage(new Message(true, Message.MessageType.CHAT_MESSAGE, chatMessage)), cliëntId);
             }
             else
-                this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.CHAT_MESSAGE }).GetBytes(), clientId);
+                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.CHAT_MESSAGE })), clientId);
         }
 
         private void HandleGetClientHistory(string bsn, string clientId)
@@ -223,10 +223,10 @@ namespace HealthcareServer.Net
                 if(historyData != null)
                     historyData.Transmit(this.server.GetConnection(clientId));
                 else
-                    this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.GET_CLIENT_HISTORY }).GetBytes(), clientId);
+                    this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.GET_CLIENT_HISTORY })), clientId);
             }
             else
-                this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.GET_CLIENT_HISTORY }).GetBytes(), clientId);
+                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.GET_CLIENT_HISTORY })), clientId);
         }
 
         private void HandleStartSession(string bsn, string clientId)
@@ -234,10 +234,10 @@ namespace HealthcareServer.Net
             if (this.cliënts.Where(c => c.BSN == bsn).Count() != 0)
             {
                 string cliëntId = this.cliënts.Where(c => c.BSN == bsn).First().ClientId;
-                this.server.Transmit(new Message(true, Message.MessageType.START_SESSION, null).GetBytes(), cliëntId);
+                this.server.Transmit(EncryptMessage(new Message(true, Message.MessageType.START_SESSION, null)), cliëntId);
             }
             else
-                this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.START_SESSION }).GetBytes(), clientId);
+                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.START_SESSION })), clientId);
         }
 
         private void HandleStopSession(string bsn, string clientId)
@@ -245,10 +245,10 @@ namespace HealthcareServer.Net
             if (this.cliënts.Where(c => c.BSN == bsn).Count() != 0)
             {
                 string cliëntId = this.cliënts.Where(c => c.BSN == bsn).First().ClientId;
-                this.server.Transmit(new Message(true, Message.MessageType.STOP_SESSION, null).GetBytes(), cliëntId);
+                this.server.Transmit(EncryptMessage(new Message(true, Message.MessageType.STOP_SESSION, null)), cliëntId);
             }
             else
-                this.server.Transmit(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.STOP_SESSION }).GetBytes(), clientId);
+                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.STOP_SESSION })), clientId);
         }
 
         public void OnClientDisconnected(ClientConnection connection)
@@ -269,8 +269,13 @@ namespace HealthcareServer.Net
             foreach(Doctor doctor in this.doctors)
             {
                 if (doctor.IsAuthorized)
-                    this.server.Transmit(data, doctor.ClientId);
+                    this.server.Transmit(DataEncryptor.Encrypt(data, "Test"), doctor.ClientId);
             }
+        }
+
+        public byte[] EncryptMessage(Message message)
+        {
+            return DataEncryptor.Encrypt(message.GetBytes(), "Test");
         }
     }
 }
