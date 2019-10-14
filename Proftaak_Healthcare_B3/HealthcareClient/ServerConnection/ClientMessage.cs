@@ -18,26 +18,26 @@ namespace HealthcareClient.BikeConnection
 
         public byte CheckBits { get; set; }
 
-        public Boolean hasPage25;
-        public Boolean hasPage16;
-        public Boolean hasHeartbeat;
+        public Boolean HasHeartbeat;
+        public Boolean HasPage16;
+        public Boolean HasPage25;
 
-        public byte[] getData()
+        public byte[] GetData()
         {
             byte[] data = new byte[0];
-            if(hasHeartbeat)
+            if(HasHeartbeat)
             {
                 data.Append((byte)Message.ValueId.HEARTRATE);
                 data.Append(Heartbeat);
             }
-            if(hasPage16)
+            if(HasPage16)
             {
                 data.Append((byte)Message.ValueId.SPEED);
                 data.Append(Speed);
                 data.Append((byte)Message.ValueId.DISTANCE);
                 data.Append(Distance);
             }
-            if(hasPage25)
+            if(HasPage25)
             {
                 
                 data.Append((byte)Message.ValueId.CYCLE_RHYTHM);
@@ -46,7 +46,4 @@ namespace HealthcareClient.BikeConnection
             return data;
         }
     }
-
-    
-
 }
