@@ -1,4 +1,7 @@
-﻿using Networking.Client;
+﻿using Networking;
+using Networking.Client;
+using Networking.HealthCare;
+using Networking.Server;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,6 +31,7 @@ namespace HealthcareDoctor
     {
         DataManager dataManager;
         TestClient TestClient;
+        HealthCareDoctor client;
 
         DispatcherTimer dispatcherTimer = new DispatcherTimer();
         Stopwatch stopWatch = new Stopwatch();
@@ -82,6 +86,17 @@ namespace HealthcareDoctor
                 
                 clientConnectedStack.Children.Add(stackpanel);     
             }
+        }
+
+        private void SendChatMessage(string chatMessage)
+        {
+            List<byte> bytes = new List<byte>();
+
+            bytes.AddRange(Encoding.UTF8.GetBytes(HashUtil.HashSha256(chatMessage)));
+
+            Message message = new Message(true, Message.MessageType.DOCTOR_LOGIN, bytes.ToArray());
+            string encryptedMessage = DataEncryptor.Encrypt(Encoding.UTF8.GetString(message.GetBytes()), "Test");
+            this.client.Transmit(message);
         }
 
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)

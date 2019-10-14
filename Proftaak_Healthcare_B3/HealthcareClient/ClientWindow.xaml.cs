@@ -34,13 +34,13 @@ namespace HealthcareClient
     /// </summary>
     public partial class ClientWindow : Window, IServerDataReceiver
     {
-        private Client client;
+        private HealthcareDoctor client;
         private Session session;
         private DataManager dataManager;
         public ClientWindow()
         {
             InitializeComponent();
-            this.client = new Client("145.48.6.10", 6666, this, null);
+            this.client = new HealthcareDoctor("145.48.6.10", 6666, this, null);
             this.client.Connect();
             dataManager = new DataManager(dataManager);
             GetCurrentSessions();

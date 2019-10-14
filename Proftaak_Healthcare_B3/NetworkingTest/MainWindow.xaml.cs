@@ -28,7 +28,7 @@ namespace NetworkingTest
     public partial class MainWindow : Window, IServerDataReceiver, IServerConnector
     {
         //private Server server;
-        private Client client;
+        private HealthcareDoctor client;
 
         private LogField serverLogField;
         private LogField clientLogField;
@@ -42,7 +42,7 @@ namespace NetworkingTest
 
             //this.server = new Server("127.0.0.1", 1330, this, this, this.serverLogField);
             //this.client = new Client("127.0.0.1", 1330, this, this.clientLogField);
-            this.client = new Client("145.48.6.10", 6666, this, this.clientLogField);
+            this.client = new HealthcareDoctor("145.48.6.10", 6666, this, this.clientLogField);
 
             //Packet packet = new Packet();
             //packet.AddItem("id", "session/list");

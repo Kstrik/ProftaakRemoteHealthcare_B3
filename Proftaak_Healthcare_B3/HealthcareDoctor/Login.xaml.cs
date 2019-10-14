@@ -17,20 +17,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace HealthcareClient
+namespace HealthcareDoctor
 {
     /// <summary>
     /// Interaction logic for Login.xaml
     /// </summary>
-    public partial class Login : Window, IServerDataReceiver
+    public partial class Login : Window, IMessageReceiver
     {
-        Client client;
+        HealthCareDoctor client;
         public Login()
         {
             InitializeComponent();
-            client = new Client("83.82.9.9", 25575, this, null);
 
-            client.Connect();
+            client = new HealthCareDoctor("83.82.9.9", 25575, this);       
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)
@@ -54,15 +53,11 @@ namespace HealthcareClient
             bytes.AddRange(Encoding.UTF8.GetBytes(username));
 
             Message message = new Message(true, Message.MessageType.DOCTOR_LOGIN, bytes.ToArray());
-            string encryptedMessage = DataEncryptor.Encrypt(Encoding.UTF8.GetString(message.GetBytes()), "Test");
-            this.client.Transmit(Encoding.UTF8.GetBytes(encryptedMessage));
+            this.client.Transmit(message);
         }
 
-        public void OnDataReceived(byte[] data)
+        public void OnMessageReceived(Message message)
         {
-            byte[] decryptedData = Encoding.UTF8.GetBytes(DataEncryptor.Decrypt(Encoding.UTF8.GetString(data), "Test"));
-            Message message = Message.ParseMessage(decryptedData);
-
             switch (message.messageType)
             {
                 case Message.MessageType.SERVER_ERROR:
@@ -90,6 +85,6 @@ namespace HealthcareClient
                 default:
                     break;
             }
-        } 
+        }
     }
 }
