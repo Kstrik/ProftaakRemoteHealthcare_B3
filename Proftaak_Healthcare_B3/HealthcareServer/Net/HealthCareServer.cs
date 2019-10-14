@@ -47,7 +47,7 @@ namespace HealthcareServer.Net
                 case Message.MessageType.BIKEDATA:
                     {
                         BroadcastToDoctors(data);
-                        RecieveBikeData(message.Content, clientId);
+                        ReceiveBikeData(message.Content, clientId);
                         break;
                     }
                 case Message.MessageType.CHAT_MESSAGE:
@@ -106,9 +106,41 @@ namespace HealthcareServer.Net
             }
         }
 
-        private void RecieveBikeData(byte[] bikeData, string clientId)
+        private void ReceiveBikeData(byte[] bikeData, string clientId)
         {
-            
+            List<byte> bytes = new List<byte>(bikeData);
+
+            for(int i = 0; i < bytes.Count; i += 2)
+            {
+                Cliënt cliënt = this.cliënts.Where(c => c.ClientId == clientId).First();
+                Message.ValueId valueType = (Message.ValueId)bytes[i];
+                int value = bytes[i + 1];
+                DateTime dateTime = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
+
+                switch(valueType)
+                {
+                    case Message.ValueId.HEARTRATE:
+                        {
+                            cliënt.HistoryData.HeartrateValues.Add((heartRate: value, time: dateTime));
+                            break;
+                        }
+                    case Message.ValueId.DISTANCE:
+                        {
+                            cliënt.HistoryData.DistanceValues.Add((distance: value, time: dateTime));
+                            break;
+                        }
+                    case Message.ValueId.SPEED:
+                        {
+                            cliënt.HistoryData.SpeedValues.Add((speed: value, time: dateTime));
+                            break;
+                        }
+                    case Message.ValueId.CYCLE_RHYTHM:
+                        {
+                            cliënt.HistoryData.CycleRhythmValues.Add((cycleRhythm: value, time: dateTime));
+                            break;
+                        }
+                }
+            }
         }
 
         private void HandleClientLogin(string bsn, string clientId)
