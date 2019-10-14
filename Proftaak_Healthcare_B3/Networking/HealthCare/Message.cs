@@ -13,7 +13,11 @@ namespace Networking.HealthCare
             DOCTOR_LOGIN,
             CHANGE_RESISTANCE,
             SERVER_ERROR,
-            SERVER_OK
+            SERVER_OK,
+            GET_CLIENT_HISTORY,
+            CLIENT_HISTORY_START,
+            CLIENT_HISTORY_END,
+            CLIENT_HISTORY_DATA
         }
 
         public enum ValueId : byte
@@ -26,14 +30,17 @@ namespace Networking.HealthCare
 
         public bool isDoctor { get; }
         public MessageType messageType{ get; }
-        public byte[] ContentMessage { get; }
+        public byte[] Content { get; }
 
-        public Message(bool isDoctor, MessageType messageType, byte[] message)
+        public Message(bool isDoctor, MessageType messageType, byte[] content)
         {
             this.isDoctor = isDoctor;
             this.messageType = messageType;
-            this.ContentMessage = message;
-            
+
+            if (content == null)
+                content = new byte[0];
+
+            this.Content = content;
         }
         /// <summary>
         /// This method allows the receiver of a byte array via TCP, to rebuild that into a Message class
@@ -45,7 +52,7 @@ namespace Networking.HealthCare
             List<byte> bytes = new List<byte>(messageData);
             //decompress boolean and enum from one byte:
             bool isDoctor = bytes[1] >> 7 == 1;
-            MessageType messageType = (MessageType) (bytes[1] << 1 >> 1);
+            MessageType messageType = (MessageType) (bytes[1] & 127);
             //grab data according to message length in first byte:
             byte[] contentMessage = bytes.GetRange(2, (int)bytes[0]).ToArray(); 
             return new Message(isDoctor, messageType, contentMessage);
@@ -59,14 +66,14 @@ namespace Networking.HealthCare
         public byte[] GetBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.Add((byte)this.ContentMessage.Length);
+            bytes.Add((byte)this.Content.Length);
             //compress boolean and eum into one byte:
             byte IdPrefix = (isDoctor) ? (byte)1 : (byte)0;
             IdPrefix = (byte)(IdPrefix << 7);
             IdPrefix += (byte)messageType;
             bytes.Add(IdPrefix);
 
-            bytes.AddRange(this.ContentMessage);
+            bytes.AddRange(this.Content);
             return bytes.ToArray();
         }
     }

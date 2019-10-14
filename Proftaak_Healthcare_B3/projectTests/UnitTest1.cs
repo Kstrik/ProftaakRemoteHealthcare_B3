@@ -14,8 +14,8 @@ namespace projectTests
         public void TestMethod1()
         {
             string data = "This is a test message";
-            string encrypted = Cryptography.Encrypt(data, "testpass");
-            string decrypted = Cryptography.Decrypt(encrypted, "testpass");
+            string encrypted = DataEncryptor.Encrypt(data, "testpass");
+            string decrypted = DataEncryptor.Decrypt(encrypted, "testpass");
 
             Assert.AreEqual(data, decrypted);
 

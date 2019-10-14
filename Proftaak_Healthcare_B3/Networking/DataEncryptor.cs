@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 
 namespace Networking.Server
 {
-    public static class Cryptography
+    public static class DataEncryptor
     {
         #region Settings
 
@@ -23,7 +23,8 @@ namespace Networking.Server
         {
             return Encrypt<AesManaged>(value, password);
         }
-        public static string Encrypt<T>(string value, string password)
+
+        private static string Encrypt<T>(string value, string password)
                 where T : SymmetricAlgorithm, new()
         {
             byte[] vectorBytes = Encoding.ASCII.GetBytes(_vector);
@@ -60,7 +61,8 @@ namespace Networking.Server
         {
             return Decrypt<AesManaged>(value, password);
         }
-        public static string Decrypt<T>(string value, string password) where T : SymmetricAlgorithm, new()
+
+        private static string Decrypt<T>(string value, string password) where T : SymmetricAlgorithm, new()
         {
             byte[] vectorBytes = Encoding.ASCII.GetBytes(_vector);
             byte[] saltBytes = Encoding.ASCII.GetBytes(_salt);

@@ -28,27 +28,27 @@ namespace HealthcareServer
                 byte valueId = data[i];
                 byte lastvalue = data[i + 1];
 
-                switch ((Message.ValueIds)valueId)
+                switch ((Message.ValueId)valueId)
                 {
-                    case Message.ValueIds.HEARTRATE:
+                    case Message.ValueId.HEARTRATE:
                         {
                             skip = 2;
                             bikeData.Append( $"Heartrate: {lastvalue}\r\n" );
                             break;
                         }
-                    case Message.ValueIds.DISTANCE:
+                    case Message.ValueId.DISTANCE:
                         {
                             skip = 2;
                             bikeData.Append( $"Power: {lastvalue}\r\n" );
                             break;
                         }
-                    case Message.ValueIds.SPEED:
+                    case Message.ValueId.SPEED:
                         {
                             skip = 2;
                             bikeData.Append( $"Speed: {lastvalue}\r\n" );
                             break;
                         }
-                    case Message.ValueIds.CYCLE_RITHM:
+                    case Message.ValueId.CYCLE_RHYTHM:
                         {
                             skip = 2;
                             bikeData.Append( $"Cycle rithm: {lastvalue}\r\n" );

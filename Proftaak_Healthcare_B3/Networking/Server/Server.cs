@@ -62,16 +62,23 @@ namespace Networking.Server
         {
             if(this.isReady && !this.isRunning)
             {
-                this.isRunning = true;
-                this.listener = new TcpListener(this.host, this.port);
-                this.listener.Start();
+                try
+                {
+                    this.isRunning = true;
+                    this.listener = new TcpListener(this.host, this.port);
+                    this.listener.Start();
 
-                InitilizeListenerThread();
-                this.listenerThread.Start();
+                    InitilizeListenerThread();
+                    this.listenerThread.Start();
 
-                this.logger?.Log($"Server started on {this.host} using port {this.port}\n");
+                    this.logger?.Log($"Server started on {this.host} using port {this.port}\n");
 
-                return true;
+                    return true;
+                }
+                catch(Exception e)
+                {
+                    return false;
+                }
             }
             else if(!this.isReady)
             {
@@ -115,6 +122,14 @@ namespace Networking.Server
             ClientConnection connection = this.connections.Where(c => c.Id == clientId).First();
             if (connection != null)
                 connection.Transmit(data);
+        }
+
+        public ClientConnection GetConnection(string clientId)
+        {
+            if (this.connections.Where(c => c.Id == clientId).Count() != 0)
+                return this.connections.Where(c => c.Id == clientId).First();
+            else
+                return null;
         }
 
         public void SetLogger(ILogger logger)

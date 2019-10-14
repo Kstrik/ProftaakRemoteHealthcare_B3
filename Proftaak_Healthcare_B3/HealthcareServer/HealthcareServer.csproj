@@ -70,7 +70,11 @@
     <Compile Include="Dashboard.xaml.cs">
       <DependentUpon>Dashboard.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HealthCareServer.cs" />
+    <Compile Include="Files\FileHandler.cs" />
+    <Compile Include="Net\Authorizer.cs" />
+    <Compile Include="Net\Cliënt.cs" />
+    <Compile Include="Net\Doctor.cs" />
+    <Compile Include="Net\HealthCareServer.cs" />
     <Compile Include="ILog.cs" />
     <Compile Include="IMessageHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -115,8 +119,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Data\Users\" />
+    <None Include="Files\Users\Authorizations.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
