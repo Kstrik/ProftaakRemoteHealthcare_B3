@@ -5,21 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HealthcareClient"
         mc:Ignorable="d"
-        Title="Login" Height="450" Width="800">
-    <Grid Background="#FF2D2D30">
-        <Grid x:Name="loginGrid" HorizontalAlignment="Center" Height="112" Margin="281,149,231,158" VerticalAlignment="Center" Width="280">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="5*"/>
-            </Grid.ColumnDefinitions>
-            <TextBox HorizontalAlignment="Left" Height="20" Margin="10,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Background="#FF333337" Foreground="#FF493539" OpacityMask="Black" Grid.ColumnSpan="2"/>
-            <Label Content="Naam" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0" Background="#00000000" Foreground="White"/>
-            <TextBox HorizontalAlignment="Left" Height="20" Margin="10,71,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Background="#FF333337" Foreground="#FF493539" OpacityMask="Black" Grid.ColumnSpan="2"/>
-            <Label Content="BSN" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,45,0,0" Background="#00000000" Foreground="White"/>
-            <Label Content="✔" Grid.Column="1" HorizontalAlignment="Left" Margin="55,14,0,0" VerticalAlignment="Top"/>
-            <Label Content="✔" Grid.Column="1" HorizontalAlignment="Left" Margin="55,65,0,0" VerticalAlignment="Top"/>
-        </Grid>
-        <Button Background="#FF2D2D30" Name="btnLogin" Content="Login" HorizontalAlignment="Left" Margin="293,266,0,0" VerticalAlignment="Top" Width="221" Foreground="White" Click="BtnLogin_Click"/>
-
+        Title="Login" Height="600" Width="500">
+    <Grid Background="#FF1E1E1E">
+        <StackPanel x:Name="stk_Login" Width="400" VerticalAlignment="Center">
+            <Label Content="Login" FontSize="16" Foreground="White" HorizontalContentAlignment="Center" Margin="5,5,5,5"></Label>
+            <Label x:Name="lbl_Error" FontSize="12" Foreground="Red" HorizontalContentAlignment="Center" Visibility="Hidden"></Label>
+            <Label Content="Name:" FontSize="14" Foreground="White" Margin="5,5,5,5"></Label>
+            <TextBox x:Name="txb_Name" FontSize="14" Margin="5,5,5,5" Foreground="White" Background="#FF2D2D30" BorderBrush="#FF3E3E42" MaxLength="20"></TextBox>
+            <Label Content="BSN:" FontSize="14" Foreground="White" Margin="5,5,5,5"></Label>
+            <TextBox x:Name="txb_BSN" FontSize="14" Margin="5,5,5,5" Foreground="White" Background="#FF2D2D30" BorderBrush="#FF3E3E42" MaxLength="20"></TextBox>
+            <Button x:Name="btn_Connect" Content="Login" FontSize="14" Margin="5,10,5,10" Foreground="White" Background="#FF2D2D30" BorderBrush="#FF2D2D30" Width="400" Click="Login_Click"></Button>
+        </StackPanel>
     </Grid>
 </Window>

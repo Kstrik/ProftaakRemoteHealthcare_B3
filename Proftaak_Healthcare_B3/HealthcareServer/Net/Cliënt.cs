@@ -12,12 +12,14 @@ namespace HealthcareServer.Net
     {
         public string BSN;
         public string ClientId;
+        public string Name;
 
         public HistoryData HistoryData;
 
-        public Cliënt(string bsn, string clientId)
+        public Cliënt(string bsn, string name, string clientId)
         {
             this.BSN = bsn;
+            this.Name = name;
             this.ClientId = clientId;
             this.HistoryData = FileHandler.GetHistoryData(bsn, "Test");
         }

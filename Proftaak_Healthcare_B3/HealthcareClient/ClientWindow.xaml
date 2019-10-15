@@ -6,46 +6,13 @@
         xmlns:local="clr-namespace:HealthcareClient"
         mc:Ignorable="d"
         Title="Client" Height="450" Width="800">
-    <Grid x:Name="mainGrid" Background="#FF2D2D30">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="7*"/>
-            <ColumnDefinition Width="81*"/>
-        </Grid.ColumnDefinitions>
-        <Grid Name="vrGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Height="302" Grid.ColumnSpan="2">
-            <StackPanel>
-                <ComboBox Name="sessionBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="469" Margin="5,5,5,5"/>
-                <Button Content="Refresh" HorizontalAlignment="Left" VerticalAlignment="Top" Width="469" Margin="5,5,5,5" Click="Refresh_Click" Background="#FF3F3F46" Foreground="White"/>
-                <Button Content="Verbinden naar VR Server" HorizontalAlignment="Left" VerticalAlignment="Top" Width="469" Margin="5,5,5,5" Click="Button_Click" Background="#FF3F3F46" Foreground="White"/>
-                <Label Name="lblConnected" Content="Geen Connectie" HorizontalContentAlignment="Center" Margin="5,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" Width="469" RenderTransformOrigin="0.5,0.5" Foreground="White"></Label>
-                <Button Name="btnScene" Content="Zoek scene" HorizontalAlignment="Left" VerticalAlignment="Top" Width="469" Margin="5,5,5,5" Click="BtnScene_Click" Background="#FF3F3F46" Foreground="White"/>
-                <Label x:Name="lblScene" Content="Geen scene geselecteerd" HorizontalContentAlignment="Center" Margin="5,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" Width="469" RenderTransformOrigin="0.5,0.5" Foreground="White"></Label>
-                <Button Name="btnStart" Content="Start!" HorizontalAlignment="Center" VerticalAlignment="Top" Width="339" Margin="5,5,5,5" Click="BtnStart_Click" Background="#FF3F3F46" Foreground="White"/>
-            </StackPanel>
-            <!--<Button Content="Refresg" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="469" Click="Button_Click" Background="#FF3F3F46" Foreground="White"/>
-            <Button Content="Verbinden naar VR Server" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="469" Click="Button_Click" Background="#FF3F3F46" Foreground="White"/>
-            <Label Name="lblConnected" Content="Geen Connectie" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="7,70,0,0" VerticalAlignment="Top" Width="469" RenderTransformOrigin="0.5,0.5" Foreground="White">
-                <Label.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform AngleY="0.157"/>
-                        <RotateTransform/>
-                        <TranslateTransform Y="0.264"/>
-                    </TransformGroup>
-                </Label.RenderTransform>
-            </Label>
-            <ComboBox Name="sessionBox" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="469"/>
-            <Button Name="btnScene" Content="Zoek scene" HorizontalAlignment="Left" Margin="10,119,0,0" VerticalAlignment="Top" Width="469" Click="BtnScene_Click" Background="#FF3F3F46" Foreground="White"/>
-            <Label x:Name="lblScene" Content="Geen scene geselecteerd" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="9,152,0,0" VerticalAlignment="Top" Width="469" RenderTransformOrigin="0.5,0.5" Foreground="White">
-                <Label.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform AngleY="0.157"/>
-                        <RotateTransform/>
-                        <TranslateTransform Y="0.264"/>
-                    </TransformGroup>
-                </Label.RenderTransform>
-            </Label>
-            <Button Name="btnStart" Content="Start!" HorizontalAlignment="Left" Margin="70,197,0,0" VerticalAlignment="Top" Width="339" Click="BtnStart_Click" Background="#FF3F3F46" Foreground="White"/>-->
-        </Grid>
+    <Grid x:Name="mainGrid" Background="#FF1E1E1E">
+        
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <ComboBox Name="sessionBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="469" Margin="5,5,5,5"/>
+            <Button Content="Refresh" HorizontalAlignment="Left" VerticalAlignment="Top" Width="469" Margin="5,5,5,5" Click="Refresh_Click" Background="#FF3F3F46" Foreground="White"/>
+            <Button Content="Verbinden naar VR Server" HorizontalAlignment="Left" VerticalAlignment="Top" Width="469" Margin="5,5,5,5" Click="Connect_Click" Background="#FF3F3F46" Foreground="White"/>
+            <Label Name="lbl_Connected" Content="Geen Connectie" HorizontalContentAlignment="Center" Margin="5,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" Width="469" RenderTransformOrigin="0.5,0.5" Foreground="White"></Label>
+        </StackPanel>
     </Grid>
 </Window>

@@ -23,6 +23,8 @@ namespace HealthcareServer.Vr.World
         private Terrain terrain;
         private Panel panel;
 
+        private Route currentRoute;
+
         public Node(string name, Session session, string parentId)
         {
             this.Name = name;
@@ -66,7 +68,20 @@ namespace HealthcareServer.Vr.World
 
         public async Task FollowRoute(Route route, float speed, Vector3 positionOffset, Vector3 rotateOffset, bool followHeight = false, float offset = 0.0f, float smoothing = 1.0f)
         {
+            this.currentRoute = route;
             await this.session.SendAction(GetFollowRouteJsonObject(route, speed, positionOffset, rotateOffset, followHeight, offset, smoothing));
+        }
+
+        public async Task StopFollowRoute()
+        {
+            await this.session.SendAction(GetFollowRouteJsonObject(this.currentRoute, 0.0f, new Vector3(0, 0, 0), new Vector3(0, 0, 0), false, 0.0f, 1.0f));
+            this.currentRoute = null;
+        }
+
+        public async Task SetFollowSpeed(float speed)
+        {
+            if(this.currentRoute != null)
+                await this.session.SendAction(GetSetFollowSpeedJsonObject(speed));
         }
 
         private JObject GetAddJsonObject()
@@ -170,6 +185,19 @@ namespace HealthcareServer.Vr.World
 
             JObject followRoute = new JObject();
             followRoute.Add("id", "route/follow");
+            followRoute.Add("data", data);
+
+            return this.session.GetTunnelSendRequest(followRoute);
+        }
+
+        private JObject GetSetFollowSpeedJsonObject(float speed)
+        {
+            JObject data = new JObject();
+            data.Add("node", this.Id);
+            data.Add("speed", speed);
+
+            JObject followRoute = new JObject();
+            followRoute.Add("id", "route/follow/speed");
             followRoute.Add("data", data);
 
             return this.session.GetTunnelSendRequest(followRoute);

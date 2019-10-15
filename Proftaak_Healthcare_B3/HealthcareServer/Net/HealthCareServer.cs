@@ -64,7 +64,11 @@ namespace HealthcareServer.Net
                     }
                 case Message.MessageType.CLIENT_LOGIN:
                     {
-                        HandleClientLogin(Encoding.UTF8.GetString(message.Content), clientId);
+                        BroadcastToDoctors(message.GetBytes());
+                        List<byte> bytes = new List<byte>(message.Content);
+                        string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
+                        string name = Encoding.UTF8.GetString(bytes.GetRange(bytes[0] + 1, bytes.Count() - (bytes[0] + 1)).ToArray());
+                        HandleClientLogin(bsn, name, clientId);
                         break;
                     }
                 case Message.MessageType.DOCTOR_LOGIN:
@@ -161,14 +165,14 @@ namespace HealthcareServer.Net
             }
         }
 
-        private void HandleClientLogin(string bsn, string clientId)
+        private void HandleClientLogin(string bsn, string name, string clientId)
         {
             if (this.cliënts.Where(c => c.BSN == bsn).Count() == 0)
             {
                 if (!Authorizer.ClientExists(bsn))
                     Authorizer.AddClient(bsn);
 
-                this.cliënts.Add(new Cliënt(bsn, clientId));
+                this.cliënts.Add(new Cliënt(bsn, name, clientId));
                 this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_OK, new byte[1] { (byte)Message.MessageType.CLIENT_LOGIN })), clientId);
             }
             else
@@ -198,7 +202,7 @@ namespace HealthcareServer.Net
             if(this.cliënts.Where(c => c.BSN == bsn).Count() != 0)
             {
                 string cliëntId = this.cliënts.Where(c => c.BSN == bsn).First().ClientId;
-                this.server.Transmit(EncryptMessage(new Message(true, Message.MessageType.CHANGE_RESISTANCE, new byte[1] { resistance })), cliëntId);
+                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.CHANGE_RESISTANCE, new byte[1] { resistance })), cliëntId);
             }
             else
                 this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.CHANGE_RESISTANCE })), clientId);
@@ -209,7 +213,7 @@ namespace HealthcareServer.Net
             if (this.cliënts.Where(c => c.BSN == bsn).Count() != 0)
             {
                 string cliëntId = this.cliënts.Where(c => c.BSN == bsn).First().ClientId;
-                this.server.Transmit(EncryptMessage(new Message(true, Message.MessageType.CHAT_MESSAGE, chatMessage)), cliëntId);
+                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.CHAT_MESSAGE, chatMessage)), cliëntId);
             }
             else
                 this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.CHAT_MESSAGE })), clientId);
@@ -240,7 +244,7 @@ namespace HealthcareServer.Net
             if (this.cliënts.Where(c => c.BSN == bsn).Count() != 0)
             {
                 string cliëntId = this.cliënts.Where(c => c.BSN == bsn).First().ClientId;
-                this.server.Transmit(EncryptMessage(new Message(true, Message.MessageType.START_SESSION, null)), cliëntId);
+                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.START_SESSION, null)), cliëntId);
             }
             else
             {
@@ -256,7 +260,7 @@ namespace HealthcareServer.Net
             if (this.cliënts.Where(c => c.BSN == bsn).Count() != 0)
             {
                 string cliëntId = this.cliënts.Where(c => c.BSN == bsn).First().ClientId;
-                this.server.Transmit(EncryptMessage(new Message(true, Message.MessageType.STOP_SESSION, null)), cliëntId);
+                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.STOP_SESSION, null)), cliëntId);
             }
             else
             {

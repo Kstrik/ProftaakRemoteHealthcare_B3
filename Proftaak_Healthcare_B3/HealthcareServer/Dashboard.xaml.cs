@@ -30,7 +30,7 @@ namespace HealthcareServer
         {
             InitializeComponent();
 
-            this.healthcareServer = new HealthCareServer("127.0.0.1", 1551, null);
+            this.healthcareServer = new HealthCareServer("127.0.0.1", 1551, this);
             this.healthcareServer.Start();
 
             this.Loaded += Dashboard_Loaded;

@@ -16,11 +16,13 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using HealthcareClient.Bike;
 using HealthcareClient.BikeConnection;
+using HealthcareClient.Net;
 using HealthcareClient.ServerConnection;
 using HealthcareServer.Vr;
 using HealthcareServer.Vr.World;
 using Microsoft.Win32;
 using Networking.Client;
+using Networking.HealthCare;
 using Networking.Server;
 using Networking.VrServer;
 using Newtonsoft.Json.Linq;
@@ -32,20 +34,27 @@ namespace HealthcareClient
     /// <summary>
     /// Interaction logic for ClientWindow.xaml
     /// </summary>
-    public partial class ClientWindow : Window, IServerDataReceiver
+    public partial class ClientWindow : Window, IServerDataReceiver, IMessageReceiver
     {
-        private Client client;
+        private Client vrClient;
         private Session session;
         private DataManager dataManager;
-        public ClientWindow()
+
+        private HealthCareClient healthCareClient;
+
+        public ClientWindow(HealthCareClient healthCareClient)
         {
             InitializeComponent();
-            this.client = new Client("145.48.6.10", 6666, this, null);
-            this.client.Connect();
-            dataManager = new DataManager(dataManager);
+
+            this.vrClient = new Client("145.48.6.10", 6666, this, null);
+            this.vrClient.Connect();
+            this.healthCareClient = healthCareClient;
+            this.healthCareClient.SetReciever(this);
+
+            this.dataManager = new DataManager(this.dataManager);
             GetCurrentSessions();
-            ConnectToBike(dataManager);
-            ConnectToHeartrateMonitor(dataManager);
+            ConnectToBike(this.dataManager);
+            ConnectToHeartrateMonitor(this.dataManager);
         }
 
         private void ConnectToBike(IBikeDataReceiver bikeDataReceiver)
@@ -60,94 +69,38 @@ namespace HealthcareClient
 
         private async Task Initialize(string sessionHost)
         {
-            this.session = new Session(ref client);
+            this.session = new Session(ref vrClient);
             await this.session.Create(sessionHost, "testtest");
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void Connect_Click(object sender, RoutedEventArgs e)
         {
-            if (sessionBox.SelectedItem != null)
-            {
-                string host = sessionBox.SelectedItem.ToString();
-                await Initialize(host);
-                lblConnected.Content = "Verbonden";
-
-                SceneManager sceneManager = new SceneManager(this.session, this.client);
-                sceneManager.Show();
-            }
-            else
-            {
-                MessageBox.Show("No seession selected!");
-            }
-        }
-
-        private void Refresh_Click(object sender, RoutedEventArgs e)
-        {
-            GetCurrentSessions();
-        }
-
-        private StackPanel GetInputField(string header, string text, bool isNumber)
-        {
-            Label label = new Label();
-            label.Content = header;
-            label.Foreground = Brushes.White;
-            TextBox textBox = new TextBox();
-            textBox.Text = text;
-            textBox.MinWidth = 50;
-            textBox.Foreground = Brushes.White;
-            textBox.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236"));
-            textBox.BorderBrush = Brushes.Transparent;
-
-            textBox.LostFocus += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
+            if (sessionBox.SelectedItem != null)
             {
-                if (isNumber && (sender as TextBox).Text == "")
-                {
-                    (sender as TextBox).Text = "0";
-                }
-            });
+                string host = sessionBox.SelectedItem.ToString();
+                await Initialize(host);
+                lbl_Connected.Content = "Verbonden";
 
-            StackPanel stackPanel = new StackPanel();
-            stackPanel.Children.Add(label);
-            stackPanel.Children.Add(textBox);
-            return stackPanel;
+                SceneManager sceneManager = new SceneManager(this.session, this.vrClient);
+                sceneManager.Show();
+            }
+            else
+            {
+                MessageBox.Show("No seession selected!");
+            }
         }
 
-        private WrapPanel GetPosDirField()
+        private void Refresh_Click(object sender, RoutedEventArgs e)
         {
-            WrapPanel posDirField = new WrapPanel();
-            posDirField.Children.Add(GetInputField("PosX:", "0", true));
-            posDirField.Children.Add(GetInputField("PosY:", "0", true));
-            posDirField.Children.Add(GetInputField("PosZ:", "0", true));
-            posDirField.Children.Add(GetInputField("DirX:", "0", true));
-            posDirField.Children.Add(GetInputField("DirY:", "0", true));
-            posDirField.Children.Add(GetInputField("DirZ:", "0", true));
-            return posDirField;
-        }
-
-        private StackPanel GetComboBoxField(string header, List<string> items)
-        {
-            Label label = new Label();
-            label.Content = header;
-            label.Foreground = Brushes.White;
-            ComboBox comboBox = new ComboBox();
-            comboBox.ItemsSource = items;
-            StackPanel stackPanel = new StackPanel();
-            stackPanel.Children.Add(label);
-            stackPanel.Children.Add(comboBox);
-
-            return stackPanel;
+            GetCurrentSessions();
         }
 
         public void OnDataReceived(byte[] data)
         {
             if (this.session != null)
-            {
                 this.session.OnDataReceived(data);
-            }
             else
-            {
                 HandleRecieve(JObject.Parse(Encoding.UTF8.GetString(data)));
-            }
         }
 
         private void HandleRecieve(JObject jsonData)
@@ -171,30 +124,38 @@ namespace HealthcareClient
 
         private void GetCurrentSessions()
         {
-            this.client.Transmit(Encoding.UTF8.GetBytes(Session.GetSessionsListRequest().ToString()));
+            this.vrClient.Transmit(Encoding.UTF8.GetBytes(Session.GetSessionsListRequest().ToString()));
         }
 
-        private async Task RemoveGroundPlane()
+        public void OnMessageReceived(Message message)
         {
-            Node node = await this.session.GetScene().FindNode("GroundPlane");
-            await node.Delete();
-        }
-
-        private void BtnScene_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Text files (*.Scene)|*.Scene";
-            if (openFileDialog.ShowDialog() == true)
+            switch (message.messageType)
             {
-                SceneLoader sceneLoader = new SceneLoader(ref this.session);
-                sceneLoader.LoadSceneFile(openFileDialog.FileName);
-                sceneLoader.SubmitScene();
-            }
-        }
+                case Message.MessageType.CHAT_MESSAGE:
+                    {
 
-        private void BtnStart_Click(object sender, RoutedEventArgs e)
-        {
-            //Task.Run(() => session.Create());
+                        break;
+                    }
+                case Message.MessageType.CHANGE_RESISTANCE:
+                    {
+
+                        break;
+                    }
+                case Message.MessageType.START_SESSION:
+                    {
+
+                        break;
+                    }
+                case Message.MessageType.STOP_SESSION:
+                    {
+
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
         }
     }
 }

@@ -52,15 +52,23 @@ namespace Networking.Client
         {
             if (this.isReady && !this.isConnected)
             {
-                this.isConnected = true;
-                this.client = new TcpClient(this.host.ToString(), this.port);
-                this.stream = this.client.GetStream();
+                try
+                {
+                    this.isConnected = true;
+                    this.client = new TcpClient(this.host.ToString(), this.port);
+                    this.stream = this.client.GetStream();
 
-                InitilizeListenerThread();
-                this.listenerThread.Start();
+                    InitilizeListenerThread();
+                    this.listenerThread.Start();
 
-                this.logger?.Log($"Client connected to {this.host} on port {this.port}\n");
-                return true;
+                    this.logger?.Log($"Client connected to {this.host} on port {this.port}\n");
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    this.logger?.Log("Client could not connect, host not found!\n");
+                    return false;
+                }
             }
             else if (!this.isReady)
             {

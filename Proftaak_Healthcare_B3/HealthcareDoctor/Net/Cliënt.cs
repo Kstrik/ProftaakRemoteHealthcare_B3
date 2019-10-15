@@ -13,12 +13,14 @@ namespace HealthcareDoctor.Net
     {
         public ClientControl ClientControl;
         public string BSN;
+        public string Name;
 
         private HealthCareDoctor healthcareDoctor;
 
-        public Cliënt(string bsn, HealthCareDoctor healthcareDoctor)
+        public Cliënt(string bsn, string name, HealthCareDoctor healthcareDoctor)
         {
             this.BSN = bsn;
+            this.Name = name;
             this.ClientControl = new ClientControl(OnSendMessage, OnStartSession, OnStopSession, this.BSN);
             this.healthcareDoctor = healthcareDoctor;
         }
