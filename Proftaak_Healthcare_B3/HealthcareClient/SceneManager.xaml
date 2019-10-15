@@ -55,7 +55,7 @@
         <!--<Rectangle Fill="White" Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="1"></Rectangle>
         <Viewport3D x:Name="vwp_Viewport" Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="1"></Viewport3D>-->
 
-        <uicontrols:Container x:Name="con_Scene" Grid.RowSpan="3" Header="Scene" Background="#FF1E1E1E" Foreground="#FF2D2D30" HeaderForeground="White" Margin="2,2,2,2">
+        <uicontrols:Container x:Name="con_Scene" Grid.RowSpan="2" Header="Scene" Background="#FF1E1E1E" Foreground="#FF2D2D30" HeaderForeground="White" Margin="2,2,2,2">
             <TreeView Background="#FF1E1E1E" BorderBrush="Transparent" Margin="0,4,4,0">
                 <TreeViewItem Header="Scene" Foreground="White">
                     <TreeViewItem Header="Skybox" Foreground="White"></TreeViewItem>

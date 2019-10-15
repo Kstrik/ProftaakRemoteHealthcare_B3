@@ -26,6 +26,7 @@ namespace HealthcareClient.SceneManagement.Controls
 
         private StackPanel nodePanel;
         private TextField nameField;
+        private TextField parentIdField;
         private Vector3Field positionField;
         private NumberField scaleField;
         private Vector3Field rotationField;
@@ -73,6 +74,7 @@ namespace HealthcareClient.SceneManagement.Controls
         {
             this.nodePanel = new StackPanel();
             this.nameField = new TextField();
+            this.parentIdField = new TextField();
             this.positionField = new Vector3Field();
             this.scaleField = new NumberField();
             this.rotationField = new Vector3Field();
@@ -139,6 +141,7 @@ namespace HealthcareClient.SceneManagement.Controls
         private void SetupValues()
         {
             this.nameField.Value = this.node.Name;
+            this.parentIdField.Value = this.node.ParentId;
             this.positionField.SetVector3(new System.Numerics.Vector3(this.node.GetTransform().Position.X, this.node.GetTransform().Position.Y, this.node.GetTransform().Position.Z));
             this.scaleField.Value = this.node.GetTransform().Scale;
             this.rotationField.SetVector3(new System.Numerics.Vector3(this.node.GetTransform().Rotation.X, this.node.GetTransform().Rotation.Y, this.node.GetTransform().Rotation.Z));
@@ -207,6 +210,7 @@ namespace HealthcareClient.SceneManagement.Controls
             this.modelSelection.Children.Add(this.cullbackFacesCheckBox);
 
             this.nodePanel.Children.Add(this.nameField);
+            this.nodePanel.Children.Add(this.parentIdField);
             this.nodePanel.Children.Add(this.positionField);
             this.nodePanel.Children.Add(this.scaleField);
             this.nodePanel.Children.Add(this.rotationField);
@@ -295,6 +299,7 @@ namespace HealthcareClient.SceneManagement.Controls
             }
 
             this.nameField.Header = "Name:";
+            this.parentIdField.Header = "ParentId:";
             this.positionField.Header = "Position:";
             this.scaleField.Header = "Scale:";
             this.rotationField.Header = "Rotation:";
@@ -317,6 +322,7 @@ namespace HealthcareClient.SceneManagement.Controls
             this.labelBackground.Content = "Background:";
 
             this.nameField.ApplyDarkTheme();
+            this.parentIdField.ApplyDarkTheme();
             this.positionField.ApplyDarkTheme();
             this.scaleField.ApplyDarkTheme();
             this.rotationField.ApplyDarkTheme();
@@ -389,7 +395,12 @@ namespace HealthcareClient.SceneManagement.Controls
                 Vector3 rotation = new Vector3(this.rotationField.X, this.rotationField.Y, this.rotationField.Z);
 
                 if(!this.isUpdateProperties)
-                    this.node = new Node(this.nameField.Value, this.session);
+                {
+                    if(!String.IsNullOrEmpty(this.parentIdField.Value))
+                        this.node = new Node(this.nameField.Value, this.session, this.parentIdField.Value);
+                    else
+                        this.node = new Node(this.nameField.Value, this.session);
+                }
                 this.node.SetTransform(new HealthcareServer.Vr.World.Components.Transform(position, this.scaleField.Value, rotation));
 
                 if (this.modelSelectionField.SelectedValue != null && !String.IsNullOrEmpty(this.modelSelectionField.SelectedValue.ToString()))
