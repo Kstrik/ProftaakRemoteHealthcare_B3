@@ -1,6 +1,7 @@
 ﻿using HealthcareServer.Net;
 using Networking;
 using Networking.HealthCare;
+using Networking.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,12 @@ namespace HealthcareServer
 
             this.Loaded += Dashboard_Loaded;
 
-            Authorizer.AddNewDoctorAuthorization("Test", "test", "Test");
+            Authorizer.AddNewDoctorAuthorization("Test", HashUtil.HashSha256("test"), "Test");
+
+            string test = "D\0\0\0�9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08Test";
+
+            string encryptedData = Encoding.ASCII.GetString(DataEncryptor.Encrypt(Encoding.ASCII.GetBytes(test), "Test"));
+            string decryptedData = Encoding.ASCII.GetString(DataEncryptor.Decrypt(Encoding.ASCII.GetBytes(encryptedData), "Test"));
         }
 
         private void Dashboard_Loaded(object sender, RoutedEventArgs e)

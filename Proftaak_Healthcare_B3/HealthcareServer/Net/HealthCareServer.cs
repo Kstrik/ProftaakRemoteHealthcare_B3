@@ -46,7 +46,6 @@ namespace HealthcareServer.Net
             {
                 case Message.MessageType.BIKEDATA:
                     {
-                        BroadcastToDoctors(data);
                         ReceiveBikeData(message.Content, clientId);
                         break;
                     }
@@ -120,11 +119,18 @@ namespace HealthcareServer.Net
 
         private void ReceiveBikeData(byte[] bikeData, string clientId)
         {
+            Cliënt cliënt = this.cliënts.Where(c => c.ClientId == clientId).First();
+
+            List<byte> bikeDataBytes = new List<byte>();
+            bikeDataBytes.Add((byte)cliënt.BSN.Length);
+            bikeDataBytes.AddRange(Encoding.UTF8.GetBytes(cliënt.BSN));
+            bikeDataBytes.AddRange(bikeData);
+            BroadcastToDoctors(new Message(false, Message.MessageType.BIKEDATA, bikeDataBytes.ToArray()).GetBytes());
+
             List<byte> bytes = new List<byte>(bikeData);
 
-            for(int i = 0; i < bytes.Count; i += 2)
+            for (int i = 0; i < bytes.Count; i += 20)
             {
-                Cliënt cliënt = this.cliënts.Where(c => c.ClientId == clientId).First();
                 Message.ValueId valueType = (Message.ValueId)bytes[i];
                 int value = bytes[i + 1];
                 DateTime dateTime = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
@@ -173,7 +179,7 @@ namespace HealthcareServer.Net
         {
             if (this.doctors.Where(c => c.Username == username).Count() == 0)
             {
-                if (!Authorizer.CheckDoctorAuthorization(username, password, "Test"))
+                if (Authorizer.CheckDoctorAuthorization(username, password, "Test"))
                 {
                     Doctor doctor = new Doctor(username, clientId);
                     this.doctors.Add(doctor);
@@ -221,7 +227,7 @@ namespace HealthcareServer.Net
                     historyData = FileHandler.GetHistoryData(bsn, "Test");
 
                 if(historyData != null)
-                    historyData.Transmit(this.server.GetConnection(clientId));
+                    historyData.Transmit(this.server.GetConnection(clientId), bsn);
                 else
                     this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.GET_CLIENT_HISTORY })), clientId);
             }
@@ -237,7 +243,12 @@ namespace HealthcareServer.Net
                 this.server.Transmit(EncryptMessage(new Message(true, Message.MessageType.START_SESSION, null)), cliëntId);
             }
             else
-                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.START_SESSION })), clientId);
+            {
+                List<byte> bytes = new List<byte>();
+                bytes.Add((byte)Message.MessageType.START_SESSION);
+                bytes.AddRange(Encoding.UTF8.GetBytes(bsn));
+                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, bytes.ToArray())), clientId);
+            }
         }
 
         private void HandleStopSession(string bsn, string clientId)
@@ -248,13 +259,23 @@ namespace HealthcareServer.Net
                 this.server.Transmit(EncryptMessage(new Message(true, Message.MessageType.STOP_SESSION, null)), cliëntId);
             }
             else
-                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.STOP_SESSION })), clientId);
+            {
+                List<byte> bytes = new List<byte>();
+                bytes.Add((byte)Message.MessageType.STOP_SESSION);
+                bytes.AddRange(Encoding.UTF8.GetBytes(bsn));
+                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, bytes.ToArray())), clientId);
+            }
         }
 
         public void OnClientDisconnected(ClientConnection connection)
         { 
             if(this.cliënts.Where(c => c.ClientId == connection.Id).Count() != 0)
-                this.cliënts.Remove(this.cliënts.Where(c => c.ClientId == connection.Id).First());
+            {
+                Cliënt cliënt = this.cliënts.Where(c => c.ClientId == connection.Id).First();
+                this.cliënts.Remove(cliënt);
+                BroadcastToDoctors(EncryptMessage(new Message(true, Message.MessageType.REMOVE_CLIENT, Encoding.UTF8.GetBytes(cliënt.BSN))));
+                FileHandler.SaveHistoryData(cliënt.BSN, cliënt.HistoryData, "Test");
+            }
             else if (this.doctors.Where(c => c.ClientId == connection.Id).Count() != 0)
                 this.doctors.Remove(this.doctors.Where(c => c.ClientId == connection.Id).First());
         }

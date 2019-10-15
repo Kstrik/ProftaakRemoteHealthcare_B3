@@ -4,7 +4,7 @@ using System.Text;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace Networking.Server
+namespace Networking
 {
     public static class DataEncryptor
     {

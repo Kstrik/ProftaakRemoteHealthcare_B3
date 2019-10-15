@@ -19,7 +19,8 @@ namespace Networking.HealthCare
             CLIENT_HISTORY_END,
             CLIENT_HISTORY_DATA,
             START_SESSION,
-            STOP_SESSION
+            STOP_SESSION,
+            REMOVE_CLIENT
         }
 
         public enum ValueId : byte
@@ -68,7 +69,7 @@ namespace Networking.HealthCare
         public static Message ParseMessage(byte[] messageData) 
         {
             List<byte> bytes = new List<byte>(messageData);
-            byte[] contentLength = new byte[] { bytes[0], bytes[1], bytes[2], bytes[3] };
+            byte[] contentLength = new byte[4] { bytes[0], bytes[1], bytes[2], bytes[3] };
 
             //decompress boolean and enum from one byte:
             bool isDoctor = bytes[4] >> 7 == 1;

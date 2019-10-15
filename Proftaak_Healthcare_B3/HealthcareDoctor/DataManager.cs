@@ -31,29 +31,26 @@ namespace HealthcareDoctor
 
             return clients;
         }
+    }
+    public class TestClient
+    {
+        private int id;
+        private string name;
 
-
-
-        public class TestClient
+        public TestClient(int id, string name)
         {
-            private int id;
-            private string name;
-           
-            public TestClient(int id, string name)
-            {
-                this.id = id;
-                this.name = name;
-            }
+            this.id = id;
+            this.name = name;
+        }
 
-            public int GetId()
-            {
-                return id;
-            }
+        public int GetId()
+        {
+            return id;
+        }
 
-            public string GetName()
-            {
-                return name;
-            }
+        public string GetName()
+        {
+            return name;
         }
     }
 }

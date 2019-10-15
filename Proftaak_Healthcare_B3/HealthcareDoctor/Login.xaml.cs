@@ -1,4 +1,5 @@
 ﻿using HealthcareDoctor;
+using HealthcareDoctor.Net;
 using Networking;
 using Networking.Client;
 using Networking.HealthCare;
@@ -16,6 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace HealthcareDoctor
 {
@@ -49,39 +51,42 @@ namespace HealthcareDoctor
             bytes.AddRange(Encoding.UTF8.GetBytes(HashUtil.HashSha256(password)));
             bytes.AddRange(Encoding.UTF8.GetBytes(username));
 
-            Message message = new Message(true, Message.MessageType.BIKEDATA, bytes.ToArray());
+            Message message = new Message(false, Message.MessageType.DOCTOR_LOGIN, bytes.ToArray());
             this.client.Transmit(message);
         }
 
         public void OnMessageReceived(Message message)
         {
-            switch (message.messageType)
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
-                case Message.MessageType.SERVER_ERROR:
-                    {
-                        Message.MessageType type = (Message.MessageType)message.Content[0];
-
-                        if (type == Message.MessageType.DOCTOR_LOGIN)
+                switch (message.messageType)
+                {
+                    case Message.MessageType.SERVER_ERROR:
                         {
-                            MessageBox.Show("Fout tijdens login!");
-                        }
-                        break;
-                    }
-                case Message.MessageType.SERVER_OK:
-                    {
-                        Message.MessageType type = (Message.MessageType)message.Content[0];
+                            Message.MessageType type = (Message.MessageType)message.Content[0];
 
-                        if (type == Message.MessageType.DOCTOR_LOGIN)
-                        {
-                            MainWindow main = new MainWindow();
-                            main.Show();
-                            this.Close();
+                            if (type == Message.MessageType.DOCTOR_LOGIN)
+                            {
+                                MessageBox.Show("Fout tijdens login!");
+                            }
+                            break;
                         }
+                    case Message.MessageType.SERVER_OK:
+                        {
+                            Message.MessageType type = (Message.MessageType)message.Content[0];
+
+                            if (type == Message.MessageType.DOCTOR_LOGIN)
+                            {
+                                MainWindow main = new MainWindow(this.client);
+                                main.Show();
+                                this.Close();
+                            }
+                            break;
+                        }
+                    default:
                         break;
-                    }
-                default:
-                    break;
-            }
+                }
+            }));
         }
     }
 }

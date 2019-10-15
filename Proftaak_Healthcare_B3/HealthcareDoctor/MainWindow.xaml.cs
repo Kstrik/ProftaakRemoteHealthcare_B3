@@ -1,4 +1,5 @@
-﻿using Networking;
+﻿using HealthcareDoctor.Net;
+using Networking;
 using Networking.Client;
 using Networking.HealthCare;
 using Networking.Server;
@@ -20,72 +21,65 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using UIControls.Charts;
-using static HealthcareDoctor.DataManager;
 
 namespace HealthcareDoctor
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IMessageReceiver
     {
-        DataManager dataManager;
-        TestClient TestClient;
-        HealthCareDoctor client;
+        private HealthCareDoctor healthCareDoctor;
+        private List<Cliënt> clients;
 
-        DispatcherTimer dispatcherTimer = new DispatcherTimer();
-        Stopwatch stopWatch = new Stopwatch();
-        string currentTime = string.Empty;
-        Label clock = new Label();
-        public MainWindow()
+        //DataManager dataManager;
+        //TestClient TestClient;
+
+        //DispatcherTimer dispatcherTimer = new DispatcherTimer();
+        //Stopwatch stopWatch = new Stopwatch();
+        //string currentTime = string.Empty;
+        //Label clock = new Label();
+
+        private Cliënt selectedClient;
+        private ClientHistoryWindow clientHistoryWindow;
+
+        public MainWindow(HealthCareDoctor healthCareDoctor)
         {
             InitializeComponent();
 
-            dispatcherTimer.Tick += new EventHandler(dt_Tick);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
-            dataManager = new DataManager();
+            this.healthCareDoctor = healthCareDoctor;
+            this.healthCareDoctor.SetReciever(this);
 
-            foreach (TestClient client in dataManager.GetClients())
-            {
-                StackPanel stackpanel = new StackPanel();
-                stackpanel.Background = (Brush)(new BrushConverter().ConvertFromString("#FF39437D"));
+            this.clients = new List<Cliënt>();
 
-                //stackpanel.Width = 300;
-                stackpanel.HorizontalAlignment = HorizontalAlignment.Stretch;
-                stackpanel.VerticalAlignment = VerticalAlignment.Top;
+            //dispatcherTimer.Tick += new EventHandler(dt_Tick);
+            //dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
+            //dataManager = new DataManager();
 
-                Label name = new Label();
-                Label id = new Label();
+            //foreach (TestClient client in dataManager.GetClients())
+            //{
+            //    StackPanel stackpanel = new StackPanel();
+            //    stackpanel.Background = (Brush)(new BrushConverter().ConvertFromString("#FF39437D"));
+            //    stackpanel.HorizontalAlignment = HorizontalAlignment.Stretch;
+            //    stackpanel.VerticalAlignment = VerticalAlignment.Top;
 
-                name.Foreground = Brushes.White;
-                name.Margin = new Thickness(10, 10, 10, 1);
+            //    Label name = new Label();
+            //    name.Foreground = Brushes.White;
+            //    name.Margin = new Thickness(10, 10, 10, 1);
+            //    name.Content = "Naam: " + client.GetName();
 
-                id.Foreground = Brushes.White;
-                id.Margin = new Thickness(10, 10, 10, 10);
+            //    Label id = new Label();
+            //    id.Foreground = Brushes.White;
+            //    id.Margin = new Thickness(10, 10, 10, 10);
+            //    id.Content = "ID: " + client.GetId();
 
+            //    stackpanel.MouseDown += Cliënt_MouseDown;
+
+            //    stackpanel.Children.Add(name);
+            //    stackpanel.Children.Add(id);
                 
-
-                name.Content = "Naam: " + client.GetName();
-                id.Content = "ID: " + client.GetId();
-
-                stackpanel.MouseDown += Canvas_MouseDown;
-
-                //grid.Name = client.GetId().ToString();
-                //grid.HorizontalAlignment = HorizontalAlignment.Center;
-                //grid.VerticalAlignment = VerticalAlignment.Stretch;
-
-                //grid.Width = clientDataGrid.ActualWidth;
-                //grid.Height = clientDataGrid.ActualWidth;
-                //clientDataPanel.Width = clientDataGrid.ActualWidth;
-                //clientDataPanel.Height = clientDataGrid.ActualHeight;
-
-
-                stackpanel.Children.Add(name);
-                stackpanel.Children.Add(id);
-
-                
-                clientConnectedStack.Children.Add(stackpanel);     
-            }
+            //    clientConnectedStack.Children.Add(stackpanel);     
+            //}
         }
 
         private void SendChatMessage(string chatMessage)
@@ -96,89 +90,259 @@ namespace HealthcareDoctor
 
             Message message = new Message(true, Message.MessageType.DOCTOR_LOGIN, bytes.ToArray());
             string encryptedMessage = DataEncryptor.Encrypt(Encoding.UTF8.GetString(message.GetBytes()), "Test");
-            this.client.Transmit(message);
+            this.healthCareDoctor.Transmit(message);
         }
 
-        private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Cliënt_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            clientDataPanel.Children.Clear();
+            stk_ClientData.Children.Clear();
 
-            LiveChartControl heartrate = new LiveChartControl("Hartslag", "", "", 40, 400, 200, 20, LiveChart.BlueGreenTheme, true, true, true,
-                                                                            true, false, false, true);
-
-            heartrate.HorizontalAlignment = HorizontalAlignment.Left;
-            heartrate.Margin = new Thickness(5, 5, 5, 5);
-
-            ToggleButton btnStartStop = new ToggleButton();
-            btnStartStop.Content = "Start/Stop Training";
-            btnStartStop.HorizontalAlignment = HorizontalAlignment.Center;
-            btnStartStop.VerticalAlignment = VerticalAlignment.Top;
-            btnStartStop.Margin = new Thickness(0, 20, 0, 10);
-            btnStartStop.Click += BtnStartStop_Click;
-
-            clock.Foreground = Brushes.White;
-            clock.HorizontalContentAlignment = HorizontalAlignment.Center;
-            clock.FontSize = 20;
-
-            Button btnSendMessage = new Button();
-            btnSendMessage.Content = "Verstuur Bericht";
-            btnSendMessage.Height = 30;
-            btnSendMessage.Margin = new Thickness(5, 5, 5, 5);
-            btnSendMessage.HorizontalAlignment = HorizontalAlignment.Stretch;
-            btnSendMessage.Background = (Brush)(new BrushConverter().ConvertFromString("#FF1E1E1E"));
-            btnSendMessage.VerticalAlignment = VerticalAlignment.Bottom;
-            btnSendMessage.Foreground = Brushes.White;
-
-
-            TextBox messageBox = new TextBox();
-            messageBox.Text = "Type hier uw bericht naar de client......";
-            messageBox.Margin = new Thickness(5, 5, 5, 5);
-            messageBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-            messageBox.Height = 200;
-            messageBox.VerticalAlignment = VerticalAlignment.Bottom;
-            messageBox.Background = (Brush)(new BrushConverter().ConvertFromString("#FF1E1E1E"));
-            messageBox.Foreground = Brushes.White;
-
-            Label label = new Label();
-            label.HorizontalAlignment = HorizontalAlignment.Stretch;
-            label.Background = (Brush)(new BrushConverter().ConvertFromString("#FF2D2D30"));
-            label.FontSize = 30;
-            label.Foreground = Brushes.White;
-            label.Margin = new Thickness(5, 5, 5, 10);
-            label.Content = ((sender as StackPanel).Children[0] as Label).Content;
-            clientDataPanel.Children.Add(label);
-            clientDataPanel.Children.Add(btnStartStop);
-            clientDataPanel.Children.Add(clock);
-            clientDataPanel.Children.Add(heartrate);
-            clientDataPanel.Children.Add(messageBox);
-            clientDataPanel.Children.Add(btnSendMessage);
 
         }
 
-        private void BtnStartStop_Click(object sender, RoutedEventArgs e)
+        //private void BtnStartStop_Click(object sender, RoutedEventArgs e)
+        //{
+
+        //    if ((sender as ToggleButton).IsChecked == true)
+        //    {
+        //        stopWatch.Reset();
+        //        clock.Content = "00:00:00";
+        //        stopWatch.Start();
+        //        dispatcherTimer.Start();
+        //    }
+        //    else
+        //    {
+        //        stopWatch.Stop();
+        //    }
+        //}
+
+        //void dt_Tick(object sender, EventArgs e)
+        //{
+        //    if (stopWatch.IsRunning)
+        //    {
+        //        TimeSpan ts = stopWatch.Elapsed;
+        //        currentTime = String.Format("{0:00}:{1:00}:{2:00}",
+        //        ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+        //        clock.Content = currentTime;
+        //    }
+        //}
+
+        private void HandleAddClient(string bsn)
         {
-            
-            if ((sender as ToggleButton).IsChecked == true)
+            Cliënt cliënt = new Cliënt(bsn, this.healthCareDoctor);
+            this.clients.Add(cliënt);
+
+            StackPanel stackpanel = new StackPanel();
+            stackpanel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF2D2D30"));
+            stackpanel.HorizontalAlignment = HorizontalAlignment.Stretch;
+            stackpanel.VerticalAlignment = VerticalAlignment.Top;
+
+            Label bsnLabel = new Label();
+            bsnLabel.Foreground = Brushes.White;
+            bsnLabel.Margin = new Thickness(10, 10, 10, 1);
+            bsnLabel.Content = bsn;
+
+            stackpanel.MouseDown += new MouseButtonEventHandler((object sender, MouseButtonEventArgs e) =>
             {
-                stopWatch.Reset();
-                clock.Content = "00:00:00";
-                stopWatch.Start();
-                dispatcherTimer.Start();
+                if (bsnLabel.Content.ToString() == bsn)
+                {
+                    this.selectedClient = cliënt;
+
+                    stackpanel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC"));
+                    bsnLabel.Content = $"[{bsn}]";
+
+                    foreach (StackPanel panel in stk_ConnectedClients.Children)
+                    {
+                        panel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC"));
+                        (panel.Children[0] as Label).Content = (panel.Children[0] as Label).Content.ToString().Trim(new char[2] { '[', ']' });
+                    }
+                }
+                else if (bsnLabel.Content.ToString() == $"[{bsn}]")
+                {
+                    stackpanel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC"));
+                    bsnLabel.Content = bsn;
+                }
+            });
+
+            stk_ConnectedClients.Children.Add(stackpanel);
+        }
+
+        private void HandleRemoveClient(string bsn)
+        {
+            if(this.clients.Where(c => c.BSN == bsn).Count() != 0)
+            {
+                Cliënt cliënt = this.clients.Where(c => c.BSN == bsn).First();
+                this.clients.Remove(cliënt);
+
+                if (this.selectedClient == cliënt)
+                    stk_ClientData.Children.Clear();
+
+                StackPanel removeStackPanel = null;
+                foreach(StackPanel stackPanel in stk_ConnectedClients.Children)
+                {
+                    if ((stackPanel.Children[0] as Label).Content.ToString() == bsn)
+                    {
+                        removeStackPanel = stackPanel;
+                        break;
+                    }
+                }
+
+                if (removeStackPanel != null)
+                    stk_ConnectedClients.Children.Remove(removeStackPanel);
             }
-            else
+        }
+
+        public void OnMessageReceived(Message message)
+        {
+            switch(message.messageType)
             {
-                stopWatch.Stop();
+                case Message.MessageType.SERVER_OK:
+                    {
+                        HandleServerOk(message);
+                        break;
+                    }
+                case Message.MessageType.SERVER_ERROR:
+                    {
+                        HandleServerError(message);
+                        break;
+                    }
+                case Message.MessageType.REMOVE_CLIENT:
+                    {
+                        HandleRemoveClient(Encoding.UTF8.GetString(message.Content));
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
             }
         }
 
-        void dt_Tick(object sender, EventArgs e)
+        private void HandleServerOk(Message message)
         {
-            if (stopWatch.IsRunning)
+            List<byte> bytes = new List<byte>(message.Content);
+
+            switch ((Message.MessageType)message.Content[0])
             {
-                TimeSpan ts = stopWatch.Elapsed;
-                currentTime = String.Format("{0:00}:{1:00}:{2:00}",
-                ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-                clock.Content = currentTime;
+                case Message.MessageType.BIKEDATA:
+                    {
+                        string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
+
+                        if (this.clients.Where(c => c.BSN == bsn).Count() == 0)
+                            HandleAddClient(bsn);
+
+                        Cliënt cliënt = this.clients.Where(c => c.BSN == bsn).First();
+                        cliënt.HandleBikeData(bytes.GetRange(bytes[0] + 1, bytes.Count - (bytes[0] + 1)));
+                        break;
+                    }
+                case Message.MessageType.CLIENT_HISTORY_START:
+                    {
+                        string bsn = Encoding.UTF8.GetString(message.Content);
+                        this.clientHistoryWindow = new ClientHistoryWindow(bsn, 20);
+                        break;
+                    }
+                case Message.MessageType.CLIENT_HISTORY_END:
+                    {
+                        if(this.clientHistoryWindow != null)
+                        {
+                            this.clientHistoryWindow.ProcessHistoryData();
+                            this.clientHistoryWindow.Show();
+                            this.clientHistoryWindow = null;
+                        }
+                        break;
+                    }
+                case Message.MessageType.CLIENT_HISTORY_DATA:
+                    {
+                        string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
+                        HandleHistoryData(bsn, bytes.GetRange(bytes[0] + 1, message.Content.Count() - (bytes[0] + 1)));
+                        break;
+                    }
+                case Message.MessageType.START_SESSION:
+                    {
+                        string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
+                        Cliënt cliënt = this.clients.Where(c => c.BSN == bsn).First();
+                        cliënt.StartSessionOK();
+                        break;
+                    }
+                case Message.MessageType.STOP_SESSION:
+                    {
+                        string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
+                        Cliënt cliënt = this.clients.Where(c => c.BSN == bsn).First();
+                        cliënt.StopSessionOk();
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+        }
+
+        private void HandleServerError(Message message)
+        {
+            List<byte> bytes = new List<byte>(message.Content);
+
+            switch ((Message.MessageType)message.Content[0])
+            {
+                case Message.MessageType.GET_CLIENT_HISTORY:
+                    {
+                        MessageBox.Show("Could not get history of cliënt!");
+                        break;
+                    }
+                case Message.MessageType.START_SESSION:
+                    {
+                        string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
+                        Cliënt cliënt = this.clients.Where(c => c.BSN == bsn).First();
+                        cliënt.StartSessionError();
+                        break;
+                    }
+                case Message.MessageType.STOP_SESSION:
+                    {
+                        string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
+                        Cliënt cliënt = this.clients.Where(c => c.BSN == bsn).First();
+                        cliënt.StopSessionError();
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+        }
+
+        private void HandleHistoryData(string bsn, List<byte> bytes)
+        {
+            if(this.clientHistoryWindow != null)
+            {
+                for (int i = 0; i < bytes.Count(); i += 21)
+                {
+                    int value = bytes[i + 1];
+                    DateTime time = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
+
+                    switch ((Message.ValueId)bytes[i])
+                    {
+                        case Message.ValueId.HEARTRATE:
+                            {
+                                this.clientHistoryWindow.AddHeartRate((value, time));
+                                break;
+                            }
+                        case Message.ValueId.DISTANCE:
+                            {
+                                this.clientHistoryWindow.AddDistance((value, time));
+                                break;
+                            }
+                        case Message.ValueId.SPEED:
+                            {
+                                this.clientHistoryWindow.AddSpeed((value, time));
+                                break;
+                            }
+                        case Message.ValueId.CYCLE_RHYTHM:
+                            {
+                                this.clientHistoryWindow.AddCycleRyhthm((value, time));
+                                break;
+                            }
+                    }
+                }
             }
         }
     }
