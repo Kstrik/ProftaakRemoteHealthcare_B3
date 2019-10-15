@@ -156,6 +156,9 @@ namespace HealthcareDoctor
                         panel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC"));
                         (panel.Children[0] as Label).Content = (panel.Children[0] as Label).Content.ToString().Trim(new char[2] { '[', ']' });
                     }
+
+                    stk_ClientData.Children.Clear();
+                    stk_ClientData.Children.Add(cliënt.ClientControl);
                 }
                 else if (bsnLabel.Content.ToString() == $"[{bsn}]")
                 {

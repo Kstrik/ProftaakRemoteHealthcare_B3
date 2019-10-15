@@ -21,7 +21,7 @@
         </Grid>
         <Grid Grid.Column="1" Grid.ColumnSpan="4"  Name="clientDataGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <StackPanel Name="stk_ClientData" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <ui:ClientControl Foreground="White" Background="#FF2D2D30" BorderBrush="#FF686868"></ui:ClientControl>
+                <!--<ui:ClientControl Foreground="White" Background="#FF2D2D30" BorderBrush="#FF686868"></ui:ClientControl>-->
             </StackPanel>
         </Grid>
     </Grid>
