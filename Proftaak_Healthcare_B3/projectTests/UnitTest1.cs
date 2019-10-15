@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Security.Cryptography;
-using Networking.Server;
+using Networking;
 
 namespace projectTests
 {

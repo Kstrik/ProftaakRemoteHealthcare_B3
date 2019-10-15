@@ -10,13 +10,6 @@ namespace HealthcareServer
     class BikeDataHandler : IMessageHandler
     {
 
-
-        public BikeDataHandler()
-        {
-
-        }
-
-
         public void HandleMessage(Byte[] data)
         {
 
