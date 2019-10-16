@@ -133,7 +133,7 @@ namespace HealthcareDoctor.UI
             this.detailsPanel.Children.Add(this.sendMessageButton);
 
             this.canvas = new Canvas();
-            this.liveChart = new LiveChart("Hartslag", "", "", 40, 400, 200, 20, LiveChart.BlueGreenTheme, this.canvas, true, true, true, true, false, false, true);
+            this.liveChart = new LiveChart("Hartslag", "", "", 40, 400, 200, 20, LiveChart.BlueGreenDarkTheme, this.canvas, true, true, true, true, false, false, true);
 
             this.grid.Children.Add(this.detailsPanel);
             this.grid.Children.Add(this.canvas);

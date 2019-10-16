@@ -1,4 +1,5 @@
-﻿using HealthcareServer.Net;
+﻿using HealthcareServer.Files;
+using HealthcareServer.Net;
 using Networking;
 using Networking.HealthCare;
 using Networking.Server;
@@ -30,12 +31,18 @@ namespace HealthcareServer
         {
             InitializeComponent();
 
-            this.healthcareServer = new HealthCareServer("127.0.0.1", 1551, this);
-            this.healthcareServer.Start();
-
             this.Loaded += Dashboard_Loaded;
 
             Authorizer.AddNewDoctorAuthorization("Test", HashUtil.HashSha256("test"), "Test");
+            FileHandler.GetAllClientBSNS();
+
+            this.Closed += Dashboard_Closed;
+        }
+
+        private void Dashboard_Closed(object sender, EventArgs e)
+        {
+            this.healthcareServer.Stop();
+            Environment.Exit(0);
         }
 
         private void Dashboard_Loaded(object sender, RoutedEventArgs e)

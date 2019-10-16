@@ -102,6 +102,14 @@ namespace HealthcareServer.Net
                             this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.GET_CLIENT_HISTORY })), clientId);
                         break;
                     }
+                case Message.MessageType.GET_CLIENTS:
+                    {
+                        if (this.doctors.Where(d => d.ClientId == clientId).First().IsAuthorized)
+                            HandleGetClients(clientId);
+                        else
+                            this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.GET_CLIENTS })), clientId);
+                        break;
+                    }
                 case Message.MessageType.START_SESSION:
                     {
                         if (this.doctors.Where(d => d.ClientId == clientId).First().IsAuthorized)
@@ -128,42 +136,43 @@ namespace HealthcareServer.Net
             List<byte> bikeDataBytes = new List<byte>();
             bikeDataBytes.Add((byte)cliënt.BSN.Length);
             bikeDataBytes.AddRange(Encoding.UTF8.GetBytes(cliënt.BSN));
+            bikeDataBytes.Add((byte)cliënt.Name.Length);
+            bikeDataBytes.AddRange(Encoding.UTF8.GetBytes(cliënt.Name));
             bikeDataBytes.AddRange(bikeData);
             BroadcastToDoctors(new Message(false, Message.MessageType.BIKEDATA, bikeDataBytes.ToArray()).GetBytes());
 
             List<byte> bytes = new List<byte>(bikeData);
 
-            //for (int i = 0; i < bytes.Count; i += 2)
-            //{
-            //    Message.ValueId valueType = (Message.ValueId)bytes[i];
-            //    int value = bytes[i + 1];
-            //    //DateTime dateTime = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
-            //    DateTime dateTime = DateTime.Now;
+            for (int i = 0; i < bytes.Count; i += 2)
+            {
+                Message.ValueId valueType = (Message.ValueId)bytes[i];
+                int value = bytes[i + 1];
+                DateTime dateTime = DateTime.Now;
 
-            //    switch (valueType)
-            //    {
-            //        case Message.ValueId.HEARTRATE:
-            //            {
-            //                cliënt.HistoryData.HeartrateValues.Add((heartRate: value, time: dateTime));
-            //                break;
-            //            }
-            //        case Message.ValueId.DISTANCE:
-            //            {
-            //                cliënt.HistoryData.DistanceValues.Add((distance: value, time: dateTime));
-            //                break;
-            //            }
-            //        case Message.ValueId.SPEED:
-            //            {
-            //                cliënt.HistoryData.SpeedValues.Add((speed: value, time: dateTime));
-            //                break;
-            //            }
-            //        case Message.ValueId.CYCLE_RHYTHM:
-            //            {
-            //                cliënt.HistoryData.CycleRhythmValues.Add((cycleRhythm: value, time: dateTime));
-            //                break;
-            //            }
-            //    }
-            //}
+                switch (valueType)
+                {
+                    case Message.ValueId.HEARTRATE:
+                        {
+                            cliënt.HistoryData.HeartrateValues.Add((heartRate: value, time: dateTime));
+                            break;
+                        }
+                    case Message.ValueId.DISTANCE:
+                        {
+                            cliënt.HistoryData.DistanceValues.Add((distance: value, time: dateTime));
+                            break;
+                        }
+                    case Message.ValueId.SPEED:
+                        {
+                            cliënt.HistoryData.SpeedValues.Add((speed: value, time: dateTime));
+                            break;
+                        }
+                    case Message.ValueId.CYCLE_RHYTHM:
+                        {
+                            cliënt.HistoryData.CycleRhythmValues.Add((cycleRhythm: value, time: dateTime));
+                            break;
+                        }
+                }
+            }
         }
 
         private void HandleClientLogin(string bsn, string name, string clientId)
@@ -226,15 +235,30 @@ namespace HealthcareServer.Net
             {
                 HistoryData historyData = null;
 
-                if (this.cliënts.Where(c => c.BSN == bsn).Count() != 0)
-                    historyData = this.cliënts.Where(c => c.BSN == bsn).First().HistoryData;
-                else
-                    historyData = FileHandler.GetHistoryData(bsn, "Test");
+                historyData = FileHandler.GetHistoryData(bsn, "Test");
 
                 if(historyData != null)
                     historyData.Transmit(this.server.GetConnection(clientId), bsn);
                 else
                     this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.GET_CLIENT_HISTORY })), clientId);
+            }
+            else
+                this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.GET_CLIENT_HISTORY })), clientId);
+        }
+
+        private void HandleGetClients(string clientId)
+        {
+            List<string> bsns = FileHandler.GetAllClientBSNS();
+
+            if(bsns.Count() != 0)
+            {
+                foreach(string bsn in bsns)
+                {
+                    List<byte> bytes = new List<byte>();
+                    bytes.Add((byte)bsn.Length);
+                    bytes.AddRange(Encoding.UTF8.GetBytes(bsn));
+                    this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.CLIENT_DATA, bytes.ToArray())), clientId);
+                }
             }
             else
                 this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.SERVER_ERROR, new byte[1] { (byte)Message.MessageType.GET_CLIENT_HISTORY })), clientId);

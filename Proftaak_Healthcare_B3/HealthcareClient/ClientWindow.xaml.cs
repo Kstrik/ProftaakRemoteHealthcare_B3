@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -55,6 +56,14 @@ namespace HealthcareClient
             this.dataManager = new DataManager(this.healthCareClient);
             GetCurrentSessions();
             ConnectToBike(this.dataManager);
+            SendTestBikeData();
+
+            this.Closed += ClientWindow_Closed;
+        }
+
+        private void ClientWindow_Closed(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
         }
 
         private void ConnectToBike(IBikeDataReceiver bikeDataReceiver)
@@ -158,6 +167,39 @@ namespace HealthcareClient
                         }
                 }
             }));
+        }
+
+        private void SendTestBikeData()
+        {
+            new Thread(() =>
+            {
+                Random random = new Random();
+
+                while (true)
+                {
+                    Thread.Sleep(1000);
+
+                    List<byte> bytes = new List<byte>();
+                    //bytes.Add((byte)Message.ValueId.HEARTRATE);
+                    //bytes.Add((byte)random.Next(10, 100));
+                    //bytes.Add((byte)Message.ValueId.DISTANCE);
+                    //bytes.Add((byte)random.Next(5, 20));
+                    //bytes.Add((byte)Message.ValueId.SPEED);
+                    //bytes.Add((byte)random.Next(0, 50));
+                    //bytes.Add((byte)Message.ValueId.CYCLE_RHYTHM);
+                    //bytes.Add((byte)random.Next(20, 60));
+                    bytes.Add((byte)Message.ValueId.HEARTRATE);
+                    bytes.Add((byte)random.Next(10, 100));
+                    bytes.Add((byte)Message.ValueId.DISTANCE);
+                    bytes.Add((byte)random.Next(10, 100));
+                    bytes.Add((byte)Message.ValueId.SPEED);
+                    bytes.Add((byte)random.Next(10, 100));
+                    bytes.Add((byte)Message.ValueId.CYCLE_RHYTHM);
+                    bytes.Add((byte)random.Next(10, 100));
+
+                    this.healthCareClient.Transmit(new Message(false, Message.MessageType.BIKEDATA, bytes.ToArray()));
+                }
+            }).Start();
         }
     }
 }

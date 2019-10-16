@@ -20,7 +20,9 @@ namespace Networking.HealthCare
             CLIENT_HISTORY_DATA,
             START_SESSION,
             STOP_SESSION,
-            REMOVE_CLIENT
+            REMOVE_CLIENT,
+            GET_CLIENTS,
+            CLIENT_DATA
         }
 
         public enum ValueId : byte

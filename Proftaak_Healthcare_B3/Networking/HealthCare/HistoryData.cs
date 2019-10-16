@@ -14,19 +14,27 @@ namespace Networking.HealthCare
 
         public HistoryData()
         {
-
+            this.HeartrateValues = new List<(int heartRate, DateTime time)>();
+            this.DistanceValues = new List<(int distance, DateTime time)>();
+            this.SpeedValues = new List<(int speed, DateTime time)>();
+            this.CycleRhythmValues = new List<(int cycleRhythm, DateTime time)>();
         }
 
         public void Transmit(ClientConnection connection, string bsn)
         {
             if(connection != null)
             {
-                connection.Transmit(DataEncryptor.Encrypt(new Message(true, Message.MessageType.CLIENT_HISTORY_START, Encoding.UTF8.GetBytes(bsn)).GetBytes(), "Test"));
+                List<byte> startBytes = new List<byte>();
+                startBytes.Add((byte)Message.MessageType.CLIENT_HISTORY_START);
+                startBytes.Add((byte)bsn.Length);
+                startBytes.AddRange(Encoding.UTF8.GetBytes(bsn));
+                connection.Transmit(DataEncryptor.Encrypt(new Message(false, Message.MessageType.SERVER_OK, startBytes.ToArray()).GetBytes(), "Test"));
 
                 int maxLength = GetMaxLength();
                 for(int i = 0; i < maxLength; i++)
                 {
                     List<byte> bytes = new List<byte>();
+                    bytes.Add((byte)Message.MessageType.CLIENT_HISTORY_DATA);
                     bytes.Add((byte)bsn.Length);
                     bytes.AddRange(Encoding.UTF8.GetBytes(bsn));
 
@@ -58,10 +66,14 @@ namespace Networking.HealthCare
                         bytes.AddRange(Encoding.UTF8.GetBytes(CycleRhythmValues[i].time.ToString()));
                     }
 
-                    connection.Transmit(DataEncryptor.Encrypt(new Message(true, Message.MessageType.CLIENT_HISTORY_DATA, bytes.ToArray()).GetBytes(), "Test"));
+                    connection.Transmit(DataEncryptor.Encrypt(new Message(false, Message.MessageType.SERVER_OK, bytes.ToArray()).GetBytes(), "Test"));
                 }
 
-                connection.Transmit(DataEncryptor.Encrypt(new Message(true, Message.MessageType.CLIENT_HISTORY_END, Encoding.UTF8.GetBytes(bsn)).GetBytes(), "Test"));
+                List<byte> endBytes = new List<byte>();
+                endBytes.Add((byte)Message.MessageType.CLIENT_HISTORY_END);
+                endBytes.Add((byte)bsn.Length);
+                endBytes.AddRange(Encoding.UTF8.GetBytes(bsn));
+                connection.Transmit(DataEncryptor.Encrypt(new Message(false, Message.MessageType.SERVER_OK, endBytes.ToArray()).GetBytes(), "Test"));
             }
         }
 

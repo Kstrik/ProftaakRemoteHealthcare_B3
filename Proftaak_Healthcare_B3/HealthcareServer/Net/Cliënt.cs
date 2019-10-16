@@ -21,7 +21,7 @@ namespace HealthcareServer.Net
             this.BSN = bsn;
             this.Name = name;
             this.ClientId = clientId;
-            this.HistoryData = FileHandler.GetHistoryData(bsn, "Test");
+            this.HistoryData = new HistoryData();
         }
     }
 }

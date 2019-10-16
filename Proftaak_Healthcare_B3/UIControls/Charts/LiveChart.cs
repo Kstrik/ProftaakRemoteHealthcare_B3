@@ -330,5 +330,11 @@ namespace UIControls.Charts
                                                                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC")),
                                                                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF2D2D30")),
                                                                 Brushes.Transparent);
+
+        public static ColorTheme BlueGreenDarkTheme = new ColorTheme(new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC")),
+                                                                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF047C50")),
+                                                                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC")),
+                                                                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF1E1E1E")),
+                                                                Brushes.Transparent);
     }
 }

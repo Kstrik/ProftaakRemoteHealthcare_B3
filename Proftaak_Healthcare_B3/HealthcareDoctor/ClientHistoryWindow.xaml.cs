@@ -70,11 +70,16 @@ namespace HealthcareDoctor
 
             foreach((LiveChartControl livechart, List<(int value, DateTime time)> history) data in dataHisory)
             {
-                int stepSize = data.history.Count() / this.maxIntervals;
+                int stepSize = (data.history.Count() >= this.maxIntervals) ? data.history.Count() / this.maxIntervals : 1;
                 int stepAmount = data.history.Count() / stepSize;
 
                 for (int i = 0; i < data.history.Count; i += stepSize)
-                    data.livechart.GetLiveChart().Update(GetAverage(data.history.GetRange(i, stepAmount)));
+                {
+                    if(data.history.Count > (i + stepAmount))
+                        data.livechart.GetLiveChart().Update(GetAverage(data.history.GetRange(i, stepAmount)));
+                    else
+                        data.livechart.GetLiveChart().Update(GetAverage(data.history.GetRange(i, data.history.Count - i)));
+                }
             }
         }
 

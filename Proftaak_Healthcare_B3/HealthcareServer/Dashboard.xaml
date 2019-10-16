@@ -61,8 +61,8 @@
         </uicontrols:Container>
         <uicontrols:Container Header="Instellingen" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="1" Background="#FF1E1E1E" Foreground="#FF333337" HeaderForeground="White" Margin="2.5,5,5,2.5">
             <WrapPanel>
-                <fields:TextField x:Name="txf_Ip" Header="Ip:" Foreground="White" HeaderForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="#FF686868" ValueForeground="White" Width="110"></fields:TextField>
-                <fields:TextField x:Name="txf_Port" Header="Poort:" Foreground="White" HeaderForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="#FF686868" ValueForeground="White" Width="110"></fields:TextField>
+                <fields:TextField x:Name="txf_Ip" Header="Ip:" Value="127.0.0.1" Foreground="White" HeaderForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="#FF686868" ValueForeground="White" Width="110"></fields:TextField>
+                <fields:TextField x:Name="txf_Port" Header="Poort:" Value="1551" Foreground="White" HeaderForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="#FF686868" ValueForeground="White" Width="110"></fields:TextField>
             </WrapPanel>
             <Button x:Name="btn_StartStop" Content="Start" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonControlTemplate}" Click="StartStop_Click"></Button>
         </uicontrols:Container>

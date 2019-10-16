@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:HealthcareDoctor"
         xmlns:ui="clr-namespace:HealthcareDoctor.UI"
         xmlns:uicontrols="clr-namespace:UIControls;assembly=UIControls"
+        xmlns:fields="clr-namespace:UIControls.Fields;assembly=UIControls"
         mc:Ignorable="d"
-        Title="Dokter" Height="500" Width="600" Background="#FF1E1E1E">
+        Title="Dokter" Height="600" Width="800" Background="#FF1E1E1E">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
@@ -16,10 +17,22 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <uicontrols:Container x:Name="con_ConnectedClients" Header="Cliënten" Background="#FF1E1E1E" Foreground="#FF2D2D30" HeaderForeground="White" Margin="2,2,2,2" ScrollbarVisibility="Hidden">
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <uicontrols:Container x:Name="con_ConnectedClients" Grid.RowSpan="2" Header="Cliënten" Background="#FF1E1E1E" Foreground="#FF2D2D30" HeaderForeground="White" Margin="2,2,2,2" ScrollbarVisibility="Hidden">
             
         </uicontrols:Container>
-        <uicontrols:Container x:Name="con_ClientData" Grid.Column="1" Grid.ColumnSpan="4" Header="Cliëntdata" Background="#FF1E1E1E" Foreground="#FF2D2D30" HeaderForeground="White" Margin="2,2,2,2" ScrollbarVisibility="Hidden">
+
+        <uicontrols:Container x:Name="con_History" Grid.Row="2" Header="Bestaande data" Background="#FF1E1E1E" Foreground="#FF2D2D30" HeaderForeground="White" Margin="2,2,2,2" ScrollbarVisibility="Hidden">
+            <fields:ComboBoxField x:Name="cmf_BSN" Header="BSN cliënten:" Background="#FF1E1E1E" HeaderForeground="White" ValueBackground="#FF2D2D30" ValueForeground="#FF333337"></fields:ComboBoxField>
+            <Button x:Name="btn_GetHistory" Content="Data opvragen" Margin="5,5,5,5" Foreground="White" Background="#FF2D2D30" BorderBrush="Transparent" Height="30" Click="GetHistory_Click"></Button>
+        </uicontrols:Container>
+        
+        <uicontrols:Container x:Name="con_ClientData" Grid.Column="1" Grid.ColumnSpan="4" Grid.RowSpan="3" Header="Cliëntdata" Background="#FF1E1E1E" Foreground="#FF2D2D30" HeaderForeground="White" Margin="2,2,2,2" ScrollbarVisibility="Hidden">
 
         </uicontrols:Container>
         <!--<Grid Grid.Column="0" Background="#FF2D2D30" HorizontalAlignment="Stretch">

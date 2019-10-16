@@ -32,6 +32,7 @@ namespace HealthcareDoctor
     {
         private HealthCareDoctor healthCareDoctor;
         private List<Cliënt> clients;
+        private List<string> clientBSNList;
 
         //DataManager dataManager;
         //TestClient TestClient;
@@ -52,35 +53,13 @@ namespace HealthcareDoctor
             this.healthCareDoctor.SetReciever(this);
 
             this.clients = new List<Cliënt>();
+            this.clientBSNList = new List<string>();
 
             //dispatcherTimer.Tick += new EventHandler(dt_Tick);
             //dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
             //dataManager = new DataManager();
 
-            //foreach (TestClient client in dataManager.GetClients())
-            //{
-            //    StackPanel stackpanel = new StackPanel();
-            //    stackpanel.Background = (Brush)(new BrushConverter().ConvertFromString("#FF39437D"));
-            //    stackpanel.HorizontalAlignment = HorizontalAlignment.Stretch;
-            //    stackpanel.VerticalAlignment = VerticalAlignment.Top;
-
-            //    Label name = new Label();
-            //    name.Foreground = Brushes.White;
-            //    name.Margin = new Thickness(10, 10, 10, 1);
-            //    name.Content = "Naam: " + client.GetName();
-
-            //    Label id = new Label();
-            //    id.Foreground = Brushes.White;
-            //    id.Margin = new Thickness(10, 10, 10, 10);
-            //    id.Content = "ID: " + client.GetId();
-
-            //    stackpanel.MouseDown += Cliënt_MouseDown;
-
-            //    stackpanel.Children.Add(name);
-            //    stackpanel.Children.Add(id);
-                
-            //    clientConnectedStack.Children.Add(stackpanel);     
-            //}
+            this.healthCareDoctor.Transmit(new Message(false, Message.MessageType.GET_CLIENTS, null));
         }
 
         private void SendChatMessage(string chatMessage)
@@ -228,12 +207,25 @@ namespace HealthcareDoctor
                     case Message.MessageType.BIKEDATA:
                         {
                             string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
+                            string name = Encoding.UTF8.GetString(bytes.GetRange(bytes[0] + 2, bytes[bytes[0] + 1]).ToArray());
 
-                            //if (this.clients.Where(c => c.BSN == bsn).Count() == 0)
-                            //    HandleAddClient(bsn);
+                            if (this.clients.Where(c => c.BSN == bsn).Count() == 0)
+                                HandleAddClient(bsn, name);
 
                             Cliënt cliënt = this.clients.Where(c => c.BSN == bsn).First();
-                            cliënt.HandleBikeData(bytes.GetRange(bytes[0] + 1, bytes.Count - (bytes[0] + 1)));
+                            //cliënt.HandleBikeData(bytes.GetRange(bytes[0] + 1, bytes.Count - (bytes[0] + 1)));
+                            cliënt.HandleBikeData(bytes.GetRange(bsn.Length + name.Length + 2, bytes.Count - (bsn.Length + name.Length + 2)));
+                            break;
+                        }
+                    case Message.MessageType.CLIENT_DATA:
+                        {
+                            string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
+
+                            if (!this.clientBSNList.Contains(bsn))
+                            {
+                                this.clientBSNList.Add(bsn);
+                                cmf_BSN.Value = this.clientBSNList.ToArray();
+                            }
                             break;
                         }
                     default:
@@ -252,7 +244,7 @@ namespace HealthcareDoctor
             {
                 case Message.MessageType.CLIENT_HISTORY_START:
                     {
-                        string bsn = Encoding.UTF8.GetString(message.Content);
+                        string bsn = Encoding.UTF8.GetString(bytes.GetRange(2, bytes[1]).ToArray());
                         this.clientHistoryWindow = new ClientHistoryWindow(bsn, 20);
                         break;
                     }
@@ -263,13 +255,14 @@ namespace HealthcareDoctor
                             this.clientHistoryWindow.ProcessHistoryData();
                             this.clientHistoryWindow.Show();
                             this.clientHistoryWindow = null;
+                            btn_GetHistory.IsEnabled = true;
                         }
                         break;
                     }
                 case Message.MessageType.CLIENT_HISTORY_DATA:
                     {
-                        string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
-                        HandleHistoryData(bsn, bytes.GetRange(bytes[0] + 1, message.Content.Count() - (bytes[0] + 1)));
+                        string bsn = Encoding.UTF8.GetString(bytes.GetRange(2, bytes[1]).ToArray());
+                        HandleHistoryData(bsn, bytes.GetRange(bytes[1] + 2, message.Content.Count() - (bytes[1] + 2)));
                         break;
                     }
                 case Message.MessageType.START_SESSION:
@@ -301,7 +294,8 @@ namespace HealthcareDoctor
             {
                 case Message.MessageType.GET_CLIENT_HISTORY:
                     {
-                        MessageBox.Show("Could not get history of cliënt!");
+                        MessageBox.Show("Kon geschiedenis van cliënt niet ophalen!");
+                        btn_GetHistory.IsEnabled = true;
                         break;
                     }
                 case Message.MessageType.START_SESSION:
@@ -359,6 +353,17 @@ namespace HealthcareDoctor
                     }
                 }
             }
+        }
+
+        private void GetHistory_Click(object sender, RoutedEventArgs e)
+        {
+            if (cmf_BSN.SelectedValue != null)
+            {
+                btn_GetHistory.IsEnabled = false;
+                this.healthCareDoctor.Transmit(new Message(false, Message.MessageType.GET_CLIENT_HISTORY, Encoding.UTF8.GetBytes((string)cmf_BSN.SelectedValue)));
+            }
+            else
+                MessageBox.Show("Er is geen BSN geselecteerd!");
         }
     }
 }

@@ -34,7 +34,7 @@ namespace HealthcareServer.Files
                             JArray heartratesJson = historydataJson.GetValue("heartrates").ToObject<JArray>();
                             JArray distancesJson = historydataJson.GetValue("distances").ToObject<JArray>();
                             JArray speedsJson = historydataJson.GetValue("speeds").ToObject<JArray>();
-                            JArray cycleRhythmsJson = historydataJson.GetValue("cyclerhythm").ToObject<JArray>();
+                            JArray cycleRhythmsJson = historydataJson.GetValue("cyclerhythms").ToObject<JArray>();
 
                             foreach (JObject heartrateJson in heartratesJson)
                                 historyData.HeartrateValues.Add((int.Parse(heartrateJson.GetValue("heartrate").ToString()), DateTime.Parse(heartrateJson.GetValue("time").ToString())));
@@ -57,8 +57,19 @@ namespace HealthcareServer.Files
             }
         }
 
-        public static void SaveHistoryData(string bsn, HistoryData historyData, string cryptoKey)
+        public static void SaveHistoryData(string bsn, HistoryData newData, string cryptoKey)
         {
+            HistoryData historyData = GetHistoryData(bsn, cryptoKey);
+            if (historyData != null)
+            {
+                historyData.HeartrateValues.AddRange(newData.HeartrateValues);
+                historyData.DistanceValues.AddRange(newData.DistanceValues);
+                historyData.SpeedValues.AddRange(newData.SpeedValues);
+                historyData.CycleRhythmValues.AddRange(newData.CycleRhythmValues);
+            }
+            else
+                historyData = newData;
+
             JArray heartratesJson = new JArray();
             JArray distancesJson = new JArray();
             JArray speedsJson = new JArray();
@@ -102,7 +113,24 @@ namespace HealthcareServer.Files
             historyJson.Add("speeds", speedsJson);
             historyJson.Add("cyclerhythms", cycleRhythmsjson);
 
-            File.WriteAllText(filesFolderPath + @"/" + bsn + ".json", DataEncryptor.Encrypt(historyData.ToString(), cryptoKey));
+            File.WriteAllText(filesFolderPath + @"/" + bsn + ".json", DataEncryptor.Encrypt(historyJson.ToString(), cryptoKey));
+        }
+
+        public static List<string> GetAllClientBSNS()
+        {
+            List<string> bsns = new List<string>();
+
+            string[] filePaths = Directory.GetFiles(filesFolderPath);
+
+            foreach(string filePath in filePaths)
+            {
+                string[] split = filePath.Split('\\');
+                string filename = split[split.Length - 1].Replace(".json", "");
+                if (filename.ToLower() != "authentifications")
+                    bsns.Add(filename);
+            }
+
+            return bsns;
         }
     }
 }

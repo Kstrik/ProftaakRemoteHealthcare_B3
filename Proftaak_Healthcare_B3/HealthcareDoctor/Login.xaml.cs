@@ -103,12 +103,11 @@ namespace HealthcareDoctor
                         }
                     case Message.MessageType.SERVER_ERROR:
                         {
-                            btn_Login.IsEnabled = true;
                             Message.MessageType type = (Message.MessageType)message.Content[0];
 
                             if (type == Message.MessageType.DOCTOR_LOGIN)
                             {
-                                btn_Login.IsEnabled = false;
+                                btn_Login.IsEnabled = true;
                                 lbl_Error.Content = "Het is niet gelukt om in te loggen!";
                                 lbl_Error.Visibility = Visibility.Visible;
                             }
