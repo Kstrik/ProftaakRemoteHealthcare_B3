@@ -144,7 +144,7 @@ namespace HealthcareServer.Vr
         public JObject GetTunnelSendRequest(JObject action)
         {
             JObject tunnelData = new JObject();
-            tunnelData.Add("dest", this.tunnel.GetId());
+            tunnelData.Add("dest", this.tunnel.Id);
             tunnelData.Add("data", action);
 
             JObject request = new JObject();
@@ -188,6 +188,11 @@ namespace HealthcareServer.Vr
         public Scene GetScene()
         {
             return this.scene;
+        }
+
+        public Tunnel GetTunnel()
+        {
+            return this.tunnel;
         }
     }
 }

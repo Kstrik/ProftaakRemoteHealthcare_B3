@@ -4,15 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HealthcareClient"
+        xmlns:fields="clr-namespace:UIControls.Fields;assembly=UIControls"
         mc:Ignorable="d"
         Title="Client" Height="450" Width="800">
     <Grid x:Name="mainGrid" Background="#FF1E1E1E">
         
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <ComboBox Name="sessionBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="469" Margin="5,5,5,5"/>
-            <Button Content="Refresh" HorizontalAlignment="Left" VerticalAlignment="Top" Width="469" Margin="5,5,5,5" Click="Refresh_Click" Background="#FF3F3F46" Foreground="White"/>
-            <Button Content="Verbinden naar VR Server" HorizontalAlignment="Left" VerticalAlignment="Top" Width="469" Margin="5,5,5,5" Click="Connect_Click" Background="#FF3F3F46" Foreground="White"/>
-            <Label Name="lbl_Connected" Content="Geen Connectie" HorizontalContentAlignment="Center" Margin="5,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" Width="469" RenderTransformOrigin="0.5,0.5" Foreground="White"></Label>
+            <WrapPanel>
+                <ComboBox Name="sessionBox" HorizontalAlignment="Left" VerticalAlignment="Center" Width="444" Margin="5,5,5,5"/>
+                <fields:TextField x:Name="txf_Key" Value="" Width="50" Header="Key:" HeaderForeground="White" ValueForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="Transparent" FontSize="12"></fields:TextField>
+            </WrapPanel>
+            <Button Content="Refresh" HorizontalAlignment="Center" VerticalAlignment="Top" Width="469" Margin="5,5,5,5" Click="Refresh_Click" Background="#FF3F3F46" Foreground="White"/>
+            <Button Content="Verbinden naar VR Server" HorizontalAlignment="Center" VerticalAlignment="Top" Width="469" Margin="5,5,5,5" Click="Connect_Click" Background="#FF3F3F46" Foreground="White"/>
+            <Label Name="lbl_Connected" Content="Geen Connectie" HorizontalContentAlignment="Center" Margin="5,5,5,5" HorizontalAlignment="Center" VerticalAlignment="Top" Width="469" RenderTransformOrigin="0.5,0.5" Foreground="White"></Label>
         </StackPanel>
     </Grid>
 </Window>

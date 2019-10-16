@@ -57,6 +57,19 @@ namespace HealthcareClient
             ConnectToHeartrateMonitor(this.dataManager);
         }
 
+        public ClientWindow()
+        {
+            InitializeComponent();
+
+            this.vrClient = new Client("145.48.6.10", 6666, this, null);
+            this.vrClient.Connect();
+
+            this.dataManager = new DataManager(this.dataManager);
+            GetCurrentSessions();
+            ConnectToBike(this.dataManager);
+            ConnectToHeartrateMonitor(this.dataManager);
+        }
+
         private void ConnectToBike(IBikeDataReceiver bikeDataReceiver)
         {
             RealBike bike = new RealBike("00438", dataManager);
@@ -67,10 +80,10 @@ namespace HealthcareClient
             HeartrateMonitor heartrateMonitor = new HeartrateMonitor(heartrateDataReceiver);
         }
 
-        private async Task Initialize(string sessionHost)
+        private async Task Initialize(string sessionHost, string key)
         {
             this.session = new Session(ref vrClient);
-            await this.session.Create(sessionHost, "testtest");
+            await this.session.Create(sessionHost, key);
         }
 
         private async void Connect_Click(object sender, RoutedEventArgs e)
@@ -78,11 +91,17 @@ namespace HealthcareClient
             if (sessionBox.SelectedItem != null)
             {
                 string host = sessionBox.SelectedItem.ToString();
-                await Initialize(host);
-                lbl_Connected.Content = "Verbonden";
+                await Initialize(host, txf_Key.Value);
 
-                SceneManager sceneManager = new SceneManager(this.session, this.vrClient);
-                sceneManager.Show();
+                if (!String.IsNullOrEmpty(this.session.GetTunnel().Id))
+                {
+                    lbl_Connected.Content = "Verbonden";
+
+                    SceneManager sceneManager = new SceneManager(this.session, this.vrClient);
+                    sceneManager.Show();
+                }
+                else
+                    MessageBox.Show("Could not start session invalid session or key!");
             }
             else
             {

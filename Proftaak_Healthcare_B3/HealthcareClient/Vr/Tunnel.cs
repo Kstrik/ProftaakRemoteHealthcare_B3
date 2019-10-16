@@ -12,7 +12,7 @@ namespace HealthcareServer.Vr
     public class Tunnel : IResponseValidator
     {
         private Session session;
-        public string id;
+        public string Id;
 
         public Tunnel(Session session)
         {
@@ -22,7 +22,7 @@ namespace HealthcareServer.Vr
         public async Task Create(string sessionId, string key)
         {
             Response response = await Task.Run(() => this.session.SendAction(RequestTunnel(sessionId, key), new ActionRequest("tunnel/create", "", this)));
-            this.id = (response.Status == Response.ResponseStatus.SUCCES) ? (string)response.Value : "";
+            this.Id = (response.Status == Response.ResponseStatus.SUCCES) ? (string)response.Value : "";
         }
 
         private JObject RequestTunnel(string sessionId, string key)
@@ -36,11 +36,6 @@ namespace HealthcareServer.Vr
             tunnelCreate.Add("data", data);
 
             return tunnelCreate;
-        }
-
-        public string GetId()
-        {
-            return this.id;
         }
 
         public async Task<Response> GetResponse(string jsonResponse)
