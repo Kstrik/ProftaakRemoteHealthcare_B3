@@ -1,4 +1,5 @@
 ﻿using HealthcareDoctor.Net;
+using HealthcareDoctor.UI;
 using Networking;
 using Networking.Client;
 using Networking.HealthCare;

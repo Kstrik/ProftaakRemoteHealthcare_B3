@@ -36,6 +36,7 @@ namespace HealthcareClient
         {
             if(!String.IsNullOrEmpty(txb_Name.Text) && !String.IsNullOrEmpty(txb_BSN.Text))
             {
+                btn_Login.IsEnabled = false;
                 List<byte> bytes = new List<byte>();
                 bytes.Add((byte)txb_BSN.Text.Length);
                 bytes.AddRange(Encoding.UTF8.GetBytes(txb_BSN.Text));
@@ -71,6 +72,7 @@ namespace HealthcareClient
                         {
                             if (type == Message.MessageType.CLIENT_LOGIN)
                             {
+                                btn_Login.IsEnabled = false;
                                 lbl_Error.Content = "Het is niet gelukt om in te loggen!";
                                 lbl_Error.Visibility = Visibility.Visible;
                             }

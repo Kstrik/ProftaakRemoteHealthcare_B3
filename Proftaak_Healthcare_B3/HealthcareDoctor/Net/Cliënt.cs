@@ -21,8 +21,16 @@ namespace HealthcareDoctor.Net
         {
             this.BSN = bsn;
             this.Name = name;
-            this.ClientControl = new ClientControl(OnSendMessage, OnStartSession, OnStopSession, this.BSN);
+            this.ClientControl = new ClientControl(OnSendResistance, OnSendMessage, OnStartSession, OnStopSession, this.BSN);
             this.healthcareDoctor = healthcareDoctor;
+        }
+
+        private void OnSendResistance(int resistance, string bsn)
+        {
+            List<byte> bytes = new List<byte>();
+            bytes.Add((byte)resistance);
+            bytes.AddRange(Encoding.UTF8.GetBytes(bsn));
+            this.healthcareDoctor.Transmit(new Message(false, Message.MessageType.CHANGE_RESISTANCE, bytes.ToArray()));
         }
 
         private void OnSendMessage(string text, string bsn)

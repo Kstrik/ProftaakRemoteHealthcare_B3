@@ -46,6 +46,7 @@ namespace HealthcareDoctor
 
         public void SendLogin(string username, string password)
         {
+            btn_Login.IsEnabled = false;
             List<byte> bytes = new List<byte>();
 
             bytes.AddRange(Encoding.UTF8.GetBytes(HashUtil.HashSha256(password)));
@@ -63,6 +64,7 @@ namespace HealthcareDoctor
                 {
                     case Message.MessageType.SERVER_ERROR:
                         {
+                            btn_Login.IsEnabled = true;
                             Message.MessageType type = (Message.MessageType)message.Content[0];
 
                             if (type == Message.MessageType.DOCTOR_LOGIN)

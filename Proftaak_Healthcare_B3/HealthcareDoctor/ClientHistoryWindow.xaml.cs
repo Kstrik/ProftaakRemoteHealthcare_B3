@@ -41,7 +41,7 @@ namespace HealthcareDoctor
             this.heartrateChart = new LiveChartControl("Hartslag", "", "", 40, 400, 200, this.maxIntervals, LiveChart.BlueGreenTheme, true, true, true, true, false, false, true);
             this.distanceChart = new LiveChartControl("Afstand", "", "", 40, 400, 200, this.maxIntervals, LiveChart.BlueGreenTheme, true, true, true, true, false, false, true);
             this.speedChart = new LiveChartControl("Snelheid", "", "", 40, 400, 200, this.maxIntervals, LiveChart.BlueGreenTheme, true, true, true, true, false, false, true);
-            this.cycleRhythmChart = new LiveChartControl("Omwentelingen", "", "", 40, 400, 200, this.maxIntervals, LiveChart.BlueGreenTheme, true, true, true, true, false, false, true);
+            this.cycleRhythmChart = new LiveChartControl("Rotaties per minuut", "", "", 40, 400, 200, this.maxIntervals, LiveChart.BlueGreenTheme, true, true, true, true, false, false, true);
 
             grd_Grid.Children.Add(this.heartrateChart);
             grd_Grid.Children.Add(this.distanceChart);
