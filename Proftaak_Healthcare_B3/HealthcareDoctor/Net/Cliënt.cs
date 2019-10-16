@@ -58,7 +58,7 @@ namespace HealthcareDoctor.Net
 
         public void HandleBikeData(List<byte> bytes)
         {
-            for (int i = 0; i < bytes.Count; i += 20)
+            for (int i = 0; i < bytes.Count; i += 2)
             {
                 int value = bytes[i + 1];
 

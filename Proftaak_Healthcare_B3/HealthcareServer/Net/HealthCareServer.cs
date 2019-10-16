@@ -133,36 +133,37 @@ namespace HealthcareServer.Net
 
             List<byte> bytes = new List<byte>(bikeData);
 
-            for (int i = 0; i < bytes.Count; i += 20)
-            {
-                Message.ValueId valueType = (Message.ValueId)bytes[i];
-                int value = bytes[i + 1];
-                DateTime dateTime = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
+            //for (int i = 0; i < bytes.Count; i += 2)
+            //{
+            //    Message.ValueId valueType = (Message.ValueId)bytes[i];
+            //    int value = bytes[i + 1];
+            //    //DateTime dateTime = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
+            //    DateTime dateTime = DateTime.Now;
 
-                switch(valueType)
-                {
-                    case Message.ValueId.HEARTRATE:
-                        {
-                            cliënt.HistoryData.HeartrateValues.Add((heartRate: value, time: dateTime));
-                            break;
-                        }
-                    case Message.ValueId.DISTANCE:
-                        {
-                            cliënt.HistoryData.DistanceValues.Add((distance: value, time: dateTime));
-                            break;
-                        }
-                    case Message.ValueId.SPEED:
-                        {
-                            cliënt.HistoryData.SpeedValues.Add((speed: value, time: dateTime));
-                            break;
-                        }
-                    case Message.ValueId.CYCLE_RHYTHM:
-                        {
-                            cliënt.HistoryData.CycleRhythmValues.Add((cycleRhythm: value, time: dateTime));
-                            break;
-                        }
-                }
-            }
+            //    switch (valueType)
+            //    {
+            //        case Message.ValueId.HEARTRATE:
+            //            {
+            //                cliënt.HistoryData.HeartrateValues.Add((heartRate: value, time: dateTime));
+            //                break;
+            //            }
+            //        case Message.ValueId.DISTANCE:
+            //            {
+            //                cliënt.HistoryData.DistanceValues.Add((distance: value, time: dateTime));
+            //                break;
+            //            }
+            //        case Message.ValueId.SPEED:
+            //            {
+            //                cliënt.HistoryData.SpeedValues.Add((speed: value, time: dateTime));
+            //                break;
+            //            }
+            //        case Message.ValueId.CYCLE_RHYTHM:
+            //            {
+            //                cliënt.HistoryData.CycleRhythmValues.Add((cycleRhythm: value, time: dateTime));
+            //                break;
+            //            }
+            //    }
+            //}
         }
 
         private void HandleClientLogin(string bsn, string name, string clientId)

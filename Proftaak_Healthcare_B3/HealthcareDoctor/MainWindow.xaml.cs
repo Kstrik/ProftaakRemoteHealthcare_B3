@@ -193,6 +193,8 @@ namespace HealthcareDoctor
 
         public void OnMessageReceived(Message message)
         {
+            List<byte> bytes = new List<byte>(message.Content);
+
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
                 switch (message.messageType)
@@ -209,7 +211,6 @@ namespace HealthcareDoctor
                         }
                     case Message.MessageType.CLIENT_LOGIN:
                         {
-                            List<byte> bytes = new List<byte>(message.Content);
                             string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
                             string name = Encoding.UTF8.GetString(bytes.GetRange(bytes[0] + 1, bytes.Count() - (bytes[0] + 1)).ToArray());
 
@@ -222,6 +223,17 @@ namespace HealthcareDoctor
                     case Message.MessageType.REMOVE_CLIENT:
                         {
                             HandleRemoveClient(Encoding.UTF8.GetString(message.Content));
+                            break;
+                        }
+                    case Message.MessageType.BIKEDATA:
+                        {
+                            string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
+
+                            //if (this.clients.Where(c => c.BSN == bsn).Count() == 0)
+                            //    HandleAddClient(bsn);
+
+                            Cliënt cliënt = this.clients.Where(c => c.BSN == bsn).First();
+                            cliënt.HandleBikeData(bytes.GetRange(bytes[0] + 1, bytes.Count - (bytes[0] + 1)));
                             break;
                         }
                     default:
@@ -238,17 +250,6 @@ namespace HealthcareDoctor
 
             switch ((Message.MessageType)message.Content[0])
             {
-                case Message.MessageType.BIKEDATA:
-                    {
-                        string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
-
-                        //if (this.clients.Where(c => c.BSN == bsn).Count() == 0)
-                        //    HandleAddClient(bsn);
-
-                        Cliënt cliënt = this.clients.Where(c => c.BSN == bsn).First();
-                        cliënt.HandleBikeData(bytes.GetRange(bytes[0] + 1, bytes.Count - (bytes[0] + 1)));
-                        break;
-                    }
                 case Message.MessageType.CLIENT_HISTORY_START:
                     {
                         string bsn = Encoding.UTF8.GetString(message.Content);

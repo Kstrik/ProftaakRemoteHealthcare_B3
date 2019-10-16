@@ -52,20 +52,14 @@ namespace HealthcareClient
             this.healthCareClient = healthCareClient;
             this.healthCareClient.SetReciever(this);
 
-            this.dataManager = new DataManager(this.dataManager);
+            this.dataManager = new DataManager(this.healthCareClient);
             GetCurrentSessions();
             ConnectToBike(this.dataManager);
-            ConnectToHeartrateMonitor(this.dataManager);
         }
 
         private void ConnectToBike(IBikeDataReceiver bikeDataReceiver)
         {
-            this.bike = new RealBike("00457", dataManager);
-        }
-
-        private void ConnectToHeartrateMonitor(IHeartrateDataReceiver heartrateDataReceiver)
-        {
-            HeartrateMonitor heartrateMonitor = new HeartrateMonitor(heartrateDataReceiver);
+            this.bike = new RealBike("00457", this.dataManager);
         }
 
         private async Task Initialize(string sessionHost, string key)
@@ -92,7 +86,7 @@ namespace HealthcareClient
                     MessageBox.Show("Could not start session invalid session or key!");
             }
             else
-                MessageBox.Show("No seession selected!");
+                MessageBox.Show("No session selected!");
         }
 
         private void Refresh_Click(object sender, RoutedEventArgs e)

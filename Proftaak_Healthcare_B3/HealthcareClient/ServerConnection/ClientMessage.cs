@@ -7,7 +7,7 @@ using Networking.HealthCare;
 
 namespace HealthcareClient.BikeConnection
 {
-    struct ClientMessage
+    public struct ClientMessage
     {
        
         public byte Distance { get; set; }
@@ -24,26 +24,34 @@ namespace HealthcareClient.BikeConnection
 
         public byte[] GetData()
         {
-            byte[] data = new byte[0];
+            List<byte> bytes = new List<byte>();
+            //byte[] data = new byte[0];
             if(HasHeartbeat)
             {
-                data.Append((byte)Message.ValueId.HEARTRATE);
-                data.Append(Heartbeat);
+                bytes.Add((byte)Message.ValueId.HEARTRATE);
+                bytes.Add(Heartbeat);
+                //data.Append((byte)Message.ValueId.HEARTRATE);
+                //data.Append(Heartbeat);
             }
             if(HasPage16)
             {
-                data.Append((byte)Message.ValueId.SPEED);
-                data.Append(Speed);
-                data.Append((byte)Message.ValueId.DISTANCE);
-                data.Append(Distance);
+                bytes.Add((byte)Message.ValueId.SPEED);
+                bytes.Add(Speed);
+                bytes.Add((byte)Message.ValueId.DISTANCE);
+                bytes.Add(Distance);
+                //data.Append((byte)Message.ValueId.SPEED);
+                //data.Append(Speed);
+                //data.Append((byte)Message.ValueId.DISTANCE);
+                //data.Append(Distance);
             }
             if(HasPage25)
             {
-                
-                data.Append((byte)Message.ValueId.CYCLE_RHYTHM);
-                data.Append(Cadence);
+                bytes.Add((byte)Message.ValueId.CYCLE_RHYTHM);
+                bytes.Add(Cadence);
+                //data.Append((byte)Message.ValueId.CYCLE_RHYTHM);
+                //data.Append(Cadence);
             }
-            return data;
+            return bytes.ToArray();
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HealthcareClient.Bike
 {
-     public interface IBikeDataReceiver
+    public interface IBikeDataReceiver
     {
         void ReceiveBikeData(byte[] data, Bike bike);
     }

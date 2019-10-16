@@ -39,7 +39,7 @@ namespace HealthcareClient.ServerConnection
             byte[] data = e.Data;
             byte heartbeat = data[1];
             Console.WriteLine("Heartbeat: {0}", heartbeat);
-            heartrateDataReceiver.ReceiveHeartrateData(heartbeat, this);
+            heartrateDataReceiver.ReceiveHeartrateData(heartbeat);
         }
     }
 }

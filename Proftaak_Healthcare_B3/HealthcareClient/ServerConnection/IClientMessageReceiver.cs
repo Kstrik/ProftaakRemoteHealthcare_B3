@@ -7,8 +7,8 @@ using HealthcareClient.BikeConnection;
 
 namespace HealthcareClient.ServerConnection
 {
-    interface IClientMessageReceiver
+    public interface IClientMessageReceiver
     {
-        void handleClientMessage(ClientMessage clientMessage);
+        void HandleClientMessage(ClientMessage clientMessage);
     }
 }

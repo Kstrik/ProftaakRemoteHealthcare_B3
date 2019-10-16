@@ -7,7 +7,7 @@
         xmlns:ui="clr-namespace:HealthcareDoctor.UI"
         xmlns:uicontrols="clr-namespace:UIControls;assembly=UIControls"
         mc:Ignorable="d"
-        Title="Dokter" Height="1000" Width="1400" Background="#FF1E1E1E">
+        Title="Dokter" Height="500" Width="600" Background="#FF1E1E1E">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
