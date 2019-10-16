@@ -64,14 +64,14 @@ namespace HealthcareClient
             openFileDialog.Filter = "Scene files (*.Scene)|*.Scene";
             if (openFileDialog.ShowDialog() == true)
             {
-                SceneLoader sceneLoader = new SceneLoader(ref this.session);
+				await this.session.GetScene().Reset();
+				SceneLoader sceneLoader = new SceneLoader(ref this.session);
                 sceneLoader.LoadSceneFile(openFileDialog.FileName);
                 sceneLoader.SubmitScene();
                 await this.session.GetScene().GetSkyBox().SetTime(sceneLoader.SkyBox.GetTime());
                 //this.nodes = sceneLoader.Nodes;
                 //this.routes = sceneLoader.Routes;
 
-                await this.session.GetScene().Reset();
                 triNodes.Items.Clear();
                 triRoutes.Items.Clear();
 
