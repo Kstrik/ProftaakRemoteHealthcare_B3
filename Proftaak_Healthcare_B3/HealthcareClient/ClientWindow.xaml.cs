@@ -39,6 +39,7 @@ namespace HealthcareClient
         private Client vrClient;
         private Session session;
         private DataManager dataManager;
+        private RealBike bike;
 
         private HealthCareClient healthCareClient;
 
@@ -59,7 +60,7 @@ namespace HealthcareClient
 
         private void ConnectToBike(IBikeDataReceiver bikeDataReceiver)
         {
-            RealBike bike = new RealBike("00438", dataManager);
+            this.bike = new RealBike("00457", dataManager);
         }
 
         private void ConnectToHeartrateMonitor(IHeartrateDataReceiver heartrateDataReceiver)
@@ -144,7 +145,7 @@ namespace HealthcareClient
                         }
                     case Message.MessageType.CHANGE_RESISTANCE:
                         {
-
+                            this.bike.SetResistence(message.Content[0]);
                             break;
                         }
                     case Message.MessageType.START_SESSION:
