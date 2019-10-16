@@ -192,7 +192,7 @@ namespace HealthcareDoctor.UI
                 int resistance = int.Parse(this.resistanceField.Value);
 
                 if(resistance >= 0 && resistance <= 100)
-                    this.OnSendResistance(resistance, this.BSN);
+                    this.OnSendResistance(resistance * 2, this.BSN);
                 else
                     MessageBox.Show("Weerstand mag alleen tusseen 0 en 100 zitten!");
             }
