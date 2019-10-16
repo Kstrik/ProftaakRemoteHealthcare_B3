@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 
 namespace HealthcareDoctor.Net
 {
@@ -22,6 +23,9 @@ namespace HealthcareDoctor.Net
             this.BSN = bsn;
             this.Name = name;
             this.ClientControl = new ClientControl(OnSendResistance, OnSendMessage, OnStartSession, OnStopSession, this.BSN);
+            this.ClientControl.Foreground = Brushes.White;
+            this.ClientControl.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF2D2D30"));
+
             this.healthcareDoctor = healthcareDoctor;
         }
 
@@ -36,9 +40,9 @@ namespace HealthcareDoctor.Net
         private void OnSendMessage(string text, string bsn)
         {
             List<byte> bytes = new List<byte>();
-            bytes.Add((byte)text.Length);
-            bytes.AddRange(Encoding.UTF8.GetBytes(text));
+            bytes.Add((byte)bsn.Length);
             bytes.AddRange(Encoding.UTF8.GetBytes(bsn));
+            bytes.AddRange(Encoding.UTF8.GetBytes(text));
             this.healthcareDoctor.Transmit(new Message(false, Message.MessageType.CHAT_MESSAGE, bytes.ToArray()));
         }
 

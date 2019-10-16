@@ -28,8 +28,30 @@ namespace HealthcareClient
         {
             InitializeComponent();
 
-            this.healthCareClient = new HealthCareClient("127.0.0.1", 1551, this);
-            this.healthCareClient.Connect();
+        }
+
+        private void Connect_Click(object sender, RoutedEventArgs e)
+        {
+            if (!String.IsNullOrEmpty(txb_Ip.Text) && !String.IsNullOrEmpty(txb_Port.Text))
+            {
+                this.healthCareClient = new HealthCareClient(txb_Ip.Text, int.Parse(txb_Port.Text), this);
+                if(this.healthCareClient.Connect())
+                {
+                    stk_Connect.Visibility = Visibility.Collapsed;
+                    stk_Login.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    this.healthCareClient = null;
+                    lbl_ConnectError.Content = "Kon geen verbinden maken, geen connectie gevonden!";
+                    lbl_ConnectError.Visibility = Visibility.Visible;
+                }
+            }
+            else
+            {
+                lbl_ConnectError.Content = "Velden Ip en Poort mogen niet leeg zijn!";
+                lbl_ConnectError.Visibility = Visibility.Visible;
+            }
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)

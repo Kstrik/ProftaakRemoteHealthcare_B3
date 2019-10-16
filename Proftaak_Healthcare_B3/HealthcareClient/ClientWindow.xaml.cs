@@ -57,19 +57,6 @@ namespace HealthcareClient
             ConnectToHeartrateMonitor(this.dataManager);
         }
 
-        public ClientWindow()
-        {
-            InitializeComponent();
-
-            this.vrClient = new Client("145.48.6.10", 6666, this, null);
-            this.vrClient.Connect();
-
-            this.dataManager = new DataManager(this.dataManager);
-            GetCurrentSessions();
-            ConnectToBike(this.dataManager);
-            ConnectToHeartrateMonitor(this.dataManager);
-        }
-
         private void ConnectToBike(IBikeDataReceiver bikeDataReceiver)
         {
             RealBike bike = new RealBike("00438", dataManager);
@@ -132,7 +119,7 @@ namespace HealthcareClient
                     sessions.Add(clientInfo.GetValue("host").ToString());
                 }
 
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                 {
                     this.cmf_Sessions.Value = sessions;
                 }));
@@ -146,33 +133,36 @@ namespace HealthcareClient
 
         public void OnMessageReceived(Message message)
         {
-            switch (message.messageType)
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
-                case Message.MessageType.CHAT_MESSAGE:
-                    {
+                switch (message.messageType)
+                {
+                    case Message.MessageType.CHAT_MESSAGE:
+                        {
 
-                        break;
-                    }
-                case Message.MessageType.CHANGE_RESISTANCE:
-                    {
+                            break;
+                        }
+                    case Message.MessageType.CHANGE_RESISTANCE:
+                        {
 
-                        break;
-                    }
-                case Message.MessageType.START_SESSION:
-                    {
+                            break;
+                        }
+                    case Message.MessageType.START_SESSION:
+                        {
 
-                        break;
-                    }
-                case Message.MessageType.STOP_SESSION:
-                    {
+                            break;
+                        }
+                    case Message.MessageType.STOP_SESSION:
+                        {
 
-                        break;
-                    }
-                default:
-                    {
-                        break;
-                    }
-            }
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+            }));
         }
     }
 }

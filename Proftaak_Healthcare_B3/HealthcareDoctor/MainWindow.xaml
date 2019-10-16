@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HealthcareDoctor"
         xmlns:ui="clr-namespace:HealthcareDoctor.UI"
+        xmlns:uicontrols="clr-namespace:UIControls;assembly=UIControls"
         mc:Ignorable="d"
         Title="Dokter" Height="1000" Width="1400" Background="#FF1E1E1E">
     <Grid>
@@ -15,14 +16,20 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0" Background="#FF2D2D30" HorizontalAlignment="Stretch">
+        <uicontrols:Container x:Name="con_ConnectedClients" Header="Cliënten" Background="#FF1E1E1E" Foreground="#FF2D2D30" HeaderForeground="White" Margin="2,2,2,2" ScrollbarVisibility="Hidden">
+            
+        </uicontrols:Container>
+        <uicontrols:Container x:Name="con_ClientData" Grid.Column="1" Grid.ColumnSpan="4" Header="Cliëntdata" Background="#FF1E1E1E" Foreground="#FF2D2D30" HeaderForeground="White" Margin="2,2,2,2" ScrollbarVisibility="Hidden">
+
+        </uicontrols:Container>
+        <!--<Grid Grid.Column="0" Background="#FF2D2D30" HorizontalAlignment="Stretch">
             <Label Name="lblClient" Content="Clients" HorizontalAlignment="Stretch" FontSize="20" Margin="10,10,10.4,0" VerticalAlignment="Top" Foreground="White" Height="44" Background="#FF39437D"/>
             <StackPanel Name="stk_ConnectedClients" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="#FF1E1E1E" Margin="10,65,10.4,10"/>
         </Grid>
         <Grid Grid.Column="1" Grid.ColumnSpan="4"  Name="clientDataGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <StackPanel Name="stk_ClientData" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <!--<ui:ClientControl Foreground="White" Background="#FF2D2D30" BorderBrush="#FF686868"></ui:ClientControl>-->
+                --><!--<ui:ClientControl Foreground="White" Background="#FF2D2D30" BorderBrush="#FF686868"></ui:ClientControl>--><!--
             </StackPanel>
-        </Grid>
+        </Grid>-->
     </Grid>
 </Window>

@@ -7,7 +7,18 @@
         mc:Ignorable="d"
         Title="Login" Height="600" Width="500">
     <Grid Background="#FF1E1E1E">
-        <StackPanel x:Name="stk_Login" Width="400" VerticalAlignment="Center">
+        <StackPanel x:Name="stk_Connect" Width="400" VerticalAlignment="Center">
+            <Label Content="Connect" FontSize="16" Foreground="White" HorizontalContentAlignment="Center" Margin="5,5,5,5"></Label>
+            <Label x:Name="lbl_ConnectError" FontSize="12" Foreground="Red" HorizontalContentAlignment="Center" Visibility="Hidden"></Label>
+            <Label Content="Ip:" FontSize="14" Foreground="White" Margin="5,5,5,5"></Label>
+            <TextBox x:Name="txb_Ip" Text="127.0.0.1" FontSize="14" Margin="5,5,5,5" Foreground="White" Background="#FF2D2D30" BorderBrush="#FF3E3E42" MaxLength="20"></TextBox>
+            <Label Content="Poort:" FontSize="14" Foreground="White" Margin="5,5,5,5"></Label>
+            <TextBox x:Name="txb_Port" Text="1551" FontSize="14" Margin="5,5,5,5" Foreground="White" Background="#FF2D2D30" BorderBrush="#FF3E3E42" MaxLength="20"></TextBox>
+            <WrapPanel Margin="0,5,0,5">
+                <Button x:Name="btn_Connect" Content="Verbinden" FontSize="14" Margin="5,5,5,5" Foreground="White" Background="#FF2D2D30" BorderBrush="#FF2D2D30" Width="400" Click="Connect_Click"></Button>
+            </WrapPanel>
+        </StackPanel>
+        <StackPanel x:Name="stk_Login" Width="400" VerticalAlignment="Center" Visibility="Collapsed">
             <Label Content="Login" FontSize="16" Foreground="White" HorizontalContentAlignment="Center" Margin="5,5,5,5"></Label>
             <Label x:Name="lbl_Error" FontSize="12" Foreground="Red" HorizontalContentAlignment="Center" Visibility="Hidden"></Label>
             <Label Content="Name:" FontSize="14" Foreground="White" Margin="5,5,5,5"></Label>

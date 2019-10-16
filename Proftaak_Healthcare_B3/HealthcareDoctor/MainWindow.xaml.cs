@@ -94,13 +94,6 @@ namespace HealthcareDoctor
             this.healthCareDoctor.Transmit(message);
         }
 
-        private void Cliënt_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            stk_ClientData.Children.Clear();
-
-
-        }
-
         //private void BtnStartStop_Click(object sender, RoutedEventArgs e)
         //{
 
@@ -137,15 +130,16 @@ namespace HealthcareDoctor
             stackpanel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF2D2D30"));
             stackpanel.HorizontalAlignment = HorizontalAlignment.Stretch;
             stackpanel.VerticalAlignment = VerticalAlignment.Top;
+            stackpanel.Margin = new Thickness(5, 5, 5, 0);
 
             Label nameLabel = new Label();
             nameLabel.Foreground = Brushes.White;
-            nameLabel.Margin = new Thickness(10, 10, 10, 1);
+            nameLabel.Margin = new Thickness(5, 5, 5, 5);
             nameLabel.Content = name;
 
             Label bsnLabel = new Label();
             bsnLabel.Foreground = Brushes.White;
-            bsnLabel.Margin = new Thickness(10, 10, 10, 1);
+            bsnLabel.Margin = new Thickness(5, 0, 5, 5);
             bsnLabel.Content = bsn;
 
             stackpanel.Children.Add(nameLabel);
@@ -153,30 +147,23 @@ namespace HealthcareDoctor
 
             stackpanel.MouseDown += new MouseButtonEventHandler((object sender, MouseButtonEventArgs e) =>
             {
-                if (bsnLabel.Content.ToString() == bsn)
-                {
-                    this.selectedClient = cliënt;
-
-                    stackpanel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC"));
-                    bsnLabel.Content = $"[{bsn}]";
-
-                    foreach (StackPanel panel in stk_ConnectedClients.Children)
-                    {
-                        panel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC"));
-                        (panel.Children[0] as Label).Content = (panel.Children[1] as Label).Content.ToString().Trim(new char[2] { '[', ']' });
-                    }
-
-                    stk_ClientData.Children.Clear();
-                    stk_ClientData.Children.Add(cliënt.ClientControl);
-                }
-                else if (bsnLabel.Content.ToString() == $"[{bsn}]")
-                {
-                    stackpanel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC"));
-                    bsnLabel.Content = bsn;
-                }
+                this.selectedClient = cliënt;
+                con_ClientData.Header = this.selectedClient.Name;
+                con_ClientData.Children.Clear();
+                con_ClientData.Children.Add(cliënt.ClientControl);
             });
 
-            stk_ConnectedClients.Children.Add(stackpanel);
+            stackpanel.MouseEnter += new MouseEventHandler((object sender, MouseEventArgs e) =>
+            {
+                stackpanel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC"));
+            });
+
+            stackpanel.MouseLeave += new MouseEventHandler((object sender, MouseEventArgs e) =>
+            {
+                stackpanel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF2D2D30"));
+            });
+
+            con_ConnectedClients.Children.Add(stackpanel);
         }
 
         private void HandleRemoveClient(string bsn)
@@ -187,10 +174,10 @@ namespace HealthcareDoctor
                 this.clients.Remove(cliënt);
 
                 if (this.selectedClient == cliënt)
-                    stk_ClientData.Children.Clear();
+                    con_ClientData.Children.Clear();
 
                 StackPanel removeStackPanel = null;
-                foreach(StackPanel stackPanel in stk_ConnectedClients.Children)
+                foreach(StackPanel stackPanel in con_ConnectedClients.Children)
                 {
                     if ((stackPanel.Children[0] as Label).Content.ToString() == bsn)
                     {
@@ -200,46 +187,49 @@ namespace HealthcareDoctor
                 }
 
                 if (removeStackPanel != null)
-                    stk_ConnectedClients.Children.Remove(removeStackPanel);
+                    con_ConnectedClients.Children.Remove(removeStackPanel);
             }
         }
 
         public void OnMessageReceived(Message message)
         {
-            switch(message.messageType)
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
-                case Message.MessageType.SERVER_OK:
-                    {
-                        HandleServerOk(message);
-                        break;
-                    }
-                case Message.MessageType.SERVER_ERROR:
-                    {
-                        HandleServerError(message);
-                        break;
-                    }
-                case Message.MessageType.CLIENT_LOGIN:
-                    {
-                        List<byte> bytes = new List<byte>(message.Content);
-                        string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
-                        string name = Encoding.UTF8.GetString(bytes.GetRange(bytes[0] + 1, bytes.Count() - (bytes[0] + 1)).ToArray());
+                switch (message.messageType)
+                {
+                    case Message.MessageType.SERVER_OK:
+                        {
+                            HandleServerOk(message);
+                            break;
+                        }
+                    case Message.MessageType.SERVER_ERROR:
+                        {
+                            HandleServerError(message);
+                            break;
+                        }
+                    case Message.MessageType.CLIENT_LOGIN:
+                        {
+                            List<byte> bytes = new List<byte>(message.Content);
+                            string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
+                            string name = Encoding.UTF8.GetString(bytes.GetRange(bytes[0] + 1, bytes.Count() - (bytes[0] + 1)).ToArray());
 
-                        if (this.clients.Where(c => c.BSN == bsn).Count() == 0)
-                            HandleAddClient(bsn, name);
+                            if (this.clients.Where(c => c.BSN == bsn).Count() == 0)
+                                HandleAddClient(bsn, name);
 
-                        HandleRemoveClient(Encoding.UTF8.GetString(message.Content));
-                        break;
-                    }
-                case Message.MessageType.REMOVE_CLIENT:
-                    {
-                        HandleRemoveClient(Encoding.UTF8.GetString(message.Content));
-                        break;
-                    }
-                default:
-                    {
-                        break;
-                    }
-            }
+                            HandleRemoveClient(Encoding.UTF8.GetString(message.Content));
+                            break;
+                        }
+                    case Message.MessageType.REMOVE_CLIENT:
+                        {
+                            HandleRemoveClient(Encoding.UTF8.GetString(message.Content));
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+            }));
         }
 
         private void HandleServerOk(Message message)

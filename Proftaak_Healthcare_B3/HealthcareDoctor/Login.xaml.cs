@@ -26,22 +26,49 @@ namespace HealthcareDoctor
     /// </summary>
     public partial class Login : Window, IMessageReceiver
     {
-        private HealthCareDoctor client;
+        private HealthCareDoctor healthCareDoctor;
 
         public Login()
         {
             InitializeComponent();
+        }
 
-            this.client = new HealthCareDoctor("127.0.0.1", 1551, this);
-            this.client.Connect();
+        private void Connect_Click(object sender, RoutedEventArgs e)
+        {
+            if (!String.IsNullOrEmpty(txb_Ip.Text) && !String.IsNullOrEmpty(txb_Port.Text))
+            {
+                this.healthCareDoctor = new HealthCareDoctor(txb_Ip.Text, int.Parse(txb_Port.Text), this);
+                if (this.healthCareDoctor.Connect())
+                {
+                    stk_Connect.Visibility = Visibility.Collapsed;
+                    stk_Login.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    this.healthCareDoctor = null;
+                    lbl_ConnectError.Content = "Kon geen verbinden maken, geen connectie gevonden!";
+                    lbl_ConnectError.Visibility = Visibility.Visible;
+                }
+            }
+            else
+            {
+                lbl_ConnectError.Content = "Velden Ip en Poort mogen niet leeg zijn!";
+                lbl_ConnectError.Visibility = Visibility.Visible;
+            }
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(txb_LoginUsername.Text) || string.IsNullOrEmpty(txb_LoginPassword.Password))
-                MessageBox.Show("Ongeldige invoer of leeg!");
+            if (!String.IsNullOrEmpty(txb_Username.Text) && !String.IsNullOrEmpty(txb_Password.Password))
+            {
+                btn_Login.IsEnabled = false;
+                SendLogin(txb_Username.Text, txb_Password.Password);
+            }
             else
-                SendLogin(txb_LoginUsername.Text, txb_LoginPassword.Password);
+            {
+                lbl_Error.Content = "Velden Gebruikersnaam en Wachtwoord mogen niet leeg zijn!";
+                lbl_Error.Visibility = Visibility.Visible;
+            }
         }
 
         public void SendLogin(string username, string password)
@@ -53,7 +80,7 @@ namespace HealthcareDoctor
             bytes.AddRange(Encoding.UTF8.GetBytes(username));
 
             Message message = new Message(false, Message.MessageType.DOCTOR_LOGIN, bytes.ToArray());
-            this.client.Transmit(message);
+            this.healthCareDoctor.Transmit(message);
         }
 
         public void OnMessageReceived(Message message)
@@ -62,6 +89,18 @@ namespace HealthcareDoctor
             {
                 switch (message.messageType)
                 {
+                    case Message.MessageType.SERVER_OK:
+                        {
+                            Message.MessageType type = (Message.MessageType)message.Content[0];
+
+                            if (type == Message.MessageType.DOCTOR_LOGIN)
+                            {
+                                MainWindow main = new MainWindow(this.healthCareDoctor);
+                                main.Show();
+                                this.Close();
+                            }
+                            break;
+                        }
                     case Message.MessageType.SERVER_ERROR:
                         {
                             btn_Login.IsEnabled = true;
@@ -69,19 +108,9 @@ namespace HealthcareDoctor
 
                             if (type == Message.MessageType.DOCTOR_LOGIN)
                             {
-                                MessageBox.Show("Fout tijdens login!");
-                            }
-                            break;
-                        }
-                    case Message.MessageType.SERVER_OK:
-                        {
-                            Message.MessageType type = (Message.MessageType)message.Content[0];
-
-                            if (type == Message.MessageType.DOCTOR_LOGIN)
-                            {
-                                MainWindow main = new MainWindow(this.client);
-                                main.Show();
-                                this.Close();
+                                btn_Login.IsEnabled = false;
+                                lbl_Error.Content = "Het is niet gelukt om in te loggen!";
+                                lbl_Error.Visibility = Visibility.Visible;
                             }
                             break;
                         }
