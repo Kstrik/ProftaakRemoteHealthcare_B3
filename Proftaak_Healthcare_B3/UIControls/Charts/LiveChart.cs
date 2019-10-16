@@ -123,7 +123,7 @@ namespace UIControls.Charts
 
             this.indicatorLabel = new Label();
             this.indicatorLabel.Foreground = this.colorTheme.LineColor;
-            this.indicatorLabel.FontSize = 10;
+            this.indicatorLabel.FontSize = 12;
             this.indicatorLabel.HorizontalAlignment = HorizontalAlignment.Left;
             this.indicatorLabel.VerticalAlignment = VerticalAlignment.Top;
             this.canvas.Children.Add(this.indicatorLabel);
@@ -140,6 +140,8 @@ namespace UIControls.Charts
 
         public void Update(double data)
         {
+            data = Math.Round(data, 2);
+
             this.data.Add(data);
             if (this.data.Count > this.stepsX)
             {

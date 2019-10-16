@@ -94,7 +94,7 @@ namespace HealthcareClient
                         {
                             if (type == Message.MessageType.CLIENT_LOGIN)
                             {
-                                btn_Login.IsEnabled = false;
+                                btn_Login.IsEnabled = true;
                                 lbl_Error.Content = "Het is niet gelukt om in te loggen!";
                                 lbl_Error.Visibility = Visibility.Visible;
                             }

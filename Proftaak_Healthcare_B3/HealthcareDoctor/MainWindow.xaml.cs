@@ -116,13 +116,13 @@ namespace HealthcareDoctor
             nameLabel.Margin = new Thickness(5, 5, 5, 5);
             nameLabel.Content = name;
 
-            Label bsnLabel = new Label();
-            bsnLabel.Foreground = Brushes.White;
-            bsnLabel.Margin = new Thickness(5, 0, 5, 5);
-            bsnLabel.Content = bsn;
+            //Label bsnLabel = new Label();
+            //bsnLabel.Foreground = Brushes.White;
+            //bsnLabel.Margin = new Thickness(5, 0, 5, 5);
+            //bsnLabel.Content = bsn;
 
             stackpanel.Children.Add(nameLabel);
-            stackpanel.Children.Add(bsnLabel);
+            //stackpanel.Children.Add(bsnLabel);
 
             stackpanel.MouseDown += new MouseButtonEventHandler((object sender, MouseButtonEventArgs e) =>
             {
@@ -172,68 +172,77 @@ namespace HealthcareDoctor
 
         public void OnMessageReceived(Message message)
         {
-            List<byte> bytes = new List<byte>(message.Content);
-
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+            lock(message)
             {
-                switch (message.messageType)
+                List<byte> bytes = new List<byte>(message.Content);
+
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                 {
-                    case Message.MessageType.SERVER_OK:
-                        {
-                            HandleServerOk(message);
-                            break;
-                        }
-                    case Message.MessageType.SERVER_ERROR:
-                        {
-                            HandleServerError(message);
-                            break;
-                        }
-                    case Message.MessageType.CLIENT_LOGIN:
-                        {
-                            string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
-                            string name = Encoding.UTF8.GetString(bytes.GetRange(bytes[0] + 1, bytes.Count() - (bytes[0] + 1)).ToArray());
-
-                            if (this.clients.Where(c => c.BSN == bsn).Count() == 0)
-                                HandleAddClient(bsn, name);
-
-                            HandleRemoveClient(Encoding.UTF8.GetString(message.Content));
-                            break;
-                        }
-                    case Message.MessageType.REMOVE_CLIENT:
-                        {
-                            HandleRemoveClient(Encoding.UTF8.GetString(message.Content));
-                            break;
-                        }
-                    case Message.MessageType.BIKEDATA:
-                        {
-                            string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
-                            string name = Encoding.UTF8.GetString(bytes.GetRange(bytes[0] + 2, bytes[bytes[0] + 1]).ToArray());
-
-                            if (this.clients.Where(c => c.BSN == bsn).Count() == 0)
-                                HandleAddClient(bsn, name);
-
-                            Cliënt cliënt = this.clients.Where(c => c.BSN == bsn).First();
-                            //cliënt.HandleBikeData(bytes.GetRange(bytes[0] + 1, bytes.Count - (bytes[0] + 1)));
-                            cliënt.HandleBikeData(bytes.GetRange(bsn.Length + name.Length + 2, bytes.Count - (bsn.Length + name.Length + 2)));
-                            break;
-                        }
-                    case Message.MessageType.CLIENT_DATA:
-                        {
-                            string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
-
-                            if (!this.clientBSNList.Contains(bsn))
+                    switch (message.messageType)
+                    {
+                        case Message.MessageType.SERVER_OK:
                             {
-                                this.clientBSNList.Add(bsn);
-                                cmf_BSN.Value = this.clientBSNList.ToArray();
+                                HandleServerOk(message);
+                                break;
                             }
-                            break;
-                        }
-                    default:
-                        {
-                            break;
-                        }
-                }
-            }));
+                        case Message.MessageType.SERVER_ERROR:
+                            {
+                                HandleServerError(message);
+                                break;
+                            }
+                        case Message.MessageType.CLIENT_LOGIN:
+                            {
+                                string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
+                                string name = Encoding.UTF8.GetString(bytes.GetRange(bytes[0] + 1, bytes.Count() - (bytes[0] + 1)).ToArray());
+
+                                if (this.clients.Where(c => c.BSN == bsn).Count() == 0)
+                                    HandleAddClient(bsn, name);
+
+                                if (!this.clientBSNList.Contains(bsn))
+                                {
+                                    this.clientBSNList.Add(bsn);
+                                    cmf_BSN.Value = this.clientBSNList.ToArray();
+                                }
+
+                                HandleRemoveClient(Encoding.UTF8.GetString(message.Content));
+                                break;
+                            }
+                        case Message.MessageType.REMOVE_CLIENT:
+                            {
+                                HandleRemoveClient(Encoding.UTF8.GetString(message.Content));
+                                break;
+                            }
+                        case Message.MessageType.BIKEDATA:
+                            {
+                                string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
+                                string name = Encoding.UTF8.GetString(bytes.GetRange(bytes[0] + 2, bytes[bytes[0] + 1]).ToArray());
+
+                                if (this.clients.Where(c => c.BSN == bsn).Count() == 0)
+                                    HandleAddClient(bsn, name);
+
+                                Cliënt cliënt = this.clients.Where(c => c.BSN == bsn).First();
+                                //cliënt.HandleBikeData(bytes.GetRange(bytes[0] + 1, bytes.Count - (bytes[0] + 1)));
+                                cliënt.HandleBikeData(bytes.GetRange(bsn.Length + name.Length + 2, bytes.Count - (bsn.Length + name.Length + 2)));
+                                break;
+                            }
+                        case Message.MessageType.CLIENT_DATA:
+                            {
+                                string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
+
+                                if (!this.clientBSNList.Contains(bsn))
+                                {
+                                    this.clientBSNList.Add(bsn);
+                                    cmf_BSN.Value = this.clientBSNList.ToArray();
+                                }
+                                break;
+                            }
+                        default:
+                            {
+                                break;
+                            }
+                    }
+                }));
+            }
         }
 
         private void HandleServerOk(Message message)
