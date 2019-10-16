@@ -88,9 +88,9 @@ namespace HealthcareClient
 
         private async void Connect_Click(object sender, RoutedEventArgs e)
         {
-            if (sessionBox.SelectedItem != null)
+            if (cmf_Sessions.SelectedValue != null)
             {
-                string host = sessionBox.SelectedItem.ToString();
+                string host = cmf_Sessions.SelectedValue.ToString();
                 await Initialize(host, txf_Key.Value);
 
                 if (!String.IsNullOrEmpty(this.session.GetTunnel().Id))
@@ -104,9 +104,7 @@ namespace HealthcareClient
                     MessageBox.Show("Could not start session invalid session or key!");
             }
             else
-            {
                 MessageBox.Show("No seession selected!");
-            }
         }
 
         private void Refresh_Click(object sender, RoutedEventArgs e)
@@ -136,7 +134,7 @@ namespace HealthcareClient
 
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                 {
-                    this.sessionBox.ItemsSource = sessions;
+                    this.cmf_Sessions.Value = sessions;
                 }));
             }
         }

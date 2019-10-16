@@ -10,8 +10,8 @@
     <Grid x:Name="mainGrid" Background="#FF1E1E1E">
         
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <WrapPanel>
-                <ComboBox Name="sessionBox" HorizontalAlignment="Left" VerticalAlignment="Center" Width="444" Margin="5,5,5,5"/>
+            <WrapPanel  HorizontalAlignment="Center">
+                <fields:ComboBoxField x:Name="cmf_Sessions" Width="400" Header="Sessions:" HeaderForeground="White" ValueForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="Transparent" FontSize="12"></fields:ComboBoxField>
                 <fields:TextField x:Name="txf_Key" Value="" Width="50" Header="Key:" HeaderForeground="White" ValueForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="Transparent" FontSize="12"></fields:TextField>
             </WrapPanel>
             <Button Content="Refresh" HorizontalAlignment="Center" VerticalAlignment="Top" Width="469" Margin="5,5,5,5" Click="Refresh_Click" Background="#FF3F3F46" Foreground="White"/>
