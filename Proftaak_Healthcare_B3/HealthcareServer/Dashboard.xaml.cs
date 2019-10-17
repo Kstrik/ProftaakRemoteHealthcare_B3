@@ -34,6 +34,7 @@ namespace HealthcareServer
             this.Loaded += Dashboard_Loaded;
 
             Authorizer.AddNewDoctorAuthorization("Test", HashUtil.HashSha256("test"), "Test");
+            Authorizer.AddNewDoctorAuthorization("Testtest", HashUtil.HashSha256("testtest"), "Test");
             FileHandler.GetAllClientBSNS();
 
             this.Closed += Dashboard_Closed;
@@ -55,6 +56,7 @@ namespace HealthcareServer
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
                 txb_Log.Text += message;
+                txb_Log.ScrollToEnd();
             }));
         }
 

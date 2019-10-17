@@ -8,7 +8,7 @@
         xmlns:uicontrols="clr-namespace:UIControls;assembly=UIControls"
         xmlns:fields="clr-namespace:UIControls.Fields;assembly=UIControls"
         mc:Ignorable="d"
-        Title="Dokter" Height="600" Width="800" Background="#FF1E1E1E">
+        Title="Dokter" Height="600" Width="1000" Background="#FF1E1E1E">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>

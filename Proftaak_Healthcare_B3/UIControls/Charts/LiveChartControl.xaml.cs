@@ -26,13 +26,18 @@ namespace UIControls.Charts
                          bool resizeCanvasWithChart, bool showAxisX, bool showAxisY, bool showChartHeader, bool showAxisHeaderX, bool showAxisHeaderY, bool showGraphPoints)
         {
             InitializeComponent();
-            this.liveChart = new LiveChart(chartHeader,xHeader,yHeader,spacing,width,height,stepsX,colorTheme,canvas,resizeCanvasWithChart,
-                                            showAxisX,showAxisY,showChartHeader,showAxisHeaderX,showAxisHeaderY,showGraphPoints);
+            this.liveChart = new LiveChart(chartHeader, xHeader, yHeader, spacing, width, height, stepsX, colorTheme, cnv_Canvas, resizeCanvasWithChart,
+                                            showAxisX, showAxisY, showChartHeader, showAxisHeaderX, showAxisHeaderY, showGraphPoints);
         }
 
         public LiveChart GetLiveChart()
         {
             return this.liveChart;
+        }
+
+        private void Canvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            this.liveChart.OnMouseMove(e.GetPosition(cnv_Canvas));
         }
     }
 }

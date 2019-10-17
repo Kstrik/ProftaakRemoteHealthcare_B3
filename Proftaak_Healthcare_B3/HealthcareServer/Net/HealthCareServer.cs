@@ -302,7 +302,7 @@ namespace HealthcareServer.Net
             {
                 Cliënt cliënt = this.cliënts.Where(c => c.ClientId == connection.Id).First();
                 this.cliënts.Remove(cliënt);
-                BroadcastToDoctors(EncryptMessage(new Message(true, Message.MessageType.REMOVE_CLIENT, Encoding.UTF8.GetBytes(cliënt.BSN))));
+                BroadcastToDoctors(new Message(false, Message.MessageType.REMOVE_CLIENT, Encoding.UTF8.GetBytes(cliënt.BSN)).GetBytes());
                 FileHandler.SaveHistoryData(cliënt.BSN, cliënt.HistoryData, "Test");
             }
             else if (this.doctors.Where(c => c.ClientId == connection.Id).Count() != 0)

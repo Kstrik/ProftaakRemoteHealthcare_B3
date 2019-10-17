@@ -25,39 +25,43 @@ namespace HealthcareClient.ServerConnection
 
         private HeartrateMonitor heartrateMonitor;
 
-        public DataManager(HealthCareClient healthcareClient) //current observer is datamanager itself, rather than the client window
+        private IClientMessageReceiver receiver;
+
+        public DataManager(HealthCareClient healthcareClient, IClientMessageReceiver receiver) //current observer is datamanager itself, rather than the client window
         {
             this.clientMessage = new ClientMessage();
 
             this.healthcareClient = healthcareClient;
             this.heartrateMonitor = new HeartrateMonitor(this);
+
+            this.receiver = receiver;
         }
 
         public void AddPage25(int cadence)
         {
-            if (clientMessage.HasPage25)
+            if (this.clientMessage.HasPage25)
                 PushMessage();
 
-            clientMessage.Cadence = (byte)cadence;
-            clientMessage.HasPage25 = true;
+            this.clientMessage.Cadence = (byte)cadence;
+            this.clientMessage.HasPage25 = true;
         }
 
         public void AddPage16(int speed, int distance)
         {
-            if (clientMessage.HasPage16)
+            if (this.clientMessage.HasPage16)
                 PushMessage();
 
-            clientMessage.Distance = (byte)distance;
-            clientMessage.Speed = (byte)speed;
-            clientMessage.HasPage16 = true;
+            this.clientMessage.Distance = (byte)distance;
+            this.clientMessage.Speed = (byte)speed;
+            this.clientMessage.HasPage16 = true;
         }
 
         public void AddHeartbeat(byte heartbeat)
         {
-            if (clientMessage.HasHeartbeat)
+            if (this.clientMessage.HasHeartbeat)
                 PushMessage();
-            clientMessage.Heartbeat = heartbeat;
-            clientMessage.HasHeartbeat = true;
+            this.clientMessage.Heartbeat = heartbeat;
+            this.clientMessage.HasHeartbeat = true;
         }
 
         private void PushMessage()
@@ -65,11 +69,12 @@ namespace HealthcareClient.ServerConnection
 #if DEBUG
             Console.WriteLine("Pushing message");
 #endif
-            HandleClientMessage(clientMessage);
-            clientMessage = new ClientMessage();
-            clientMessage.HasHeartbeat = false;
-            clientMessage.HasPage16 = false;
-            clientMessage.HasPage25 = false;
+            this.receiver?.HandleClientMessage(this.clientMessage);
+            HandleClientMessage(this.clientMessage);
+            this.clientMessage = new ClientMessage();
+            this.clientMessage.HasHeartbeat = false;
+            this.clientMessage.HasPage16 = false;
+            this.clientMessage.HasPage25 = false;
         }
 
         //Upon receiving data from the bike and Heartbeat Sensor, try to place in a Struct. 

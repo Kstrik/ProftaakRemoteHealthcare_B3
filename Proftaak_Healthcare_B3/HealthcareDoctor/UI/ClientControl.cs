@@ -61,8 +61,7 @@ namespace HealthcareDoctor.UI
         private Label cycleRhythmLabel;
         private Label cycleRhythmDisplay;
 
-        private Canvas canvas;
-        private LiveChart liveChart;
+        private LiveChartControl liveChartControl;
 
         private TextField resistanceField;
         private Button sendResistanceButton;
@@ -83,7 +82,9 @@ namespace HealthcareDoctor.UI
             this.DataContext = this;
 
             this.grid = new Grid();
-            this.grid.ColumnDefinitions.Add(new ColumnDefinition());
+            ColumnDefinition detailsColumn = new ColumnDefinition();
+            detailsColumn.Width = new GridLength(200);
+            this.grid.ColumnDefinitions.Add(detailsColumn);
             this.grid.ColumnDefinitions.Add(new ColumnDefinition());
             this.grid.RowDefinitions.Add(new RowDefinition());
             this.grid.RowDefinitions.Add(new RowDefinition());
@@ -91,14 +92,12 @@ namespace HealthcareDoctor.UI
             this.resistanceField = new TextField();
             this.resistanceField.FontSize = 12;
             this.resistanceField.Header = "Weerstand aanpassen:";
-            this.resistanceField.Width = 200;
             this.resistanceField.HorizontalAlignment = HorizontalAlignment.Left;
             this.sendResistanceButton = new Button();
             this.sendResistanceButton.Content = "Stuur weerstand";
             this.sendResistanceButton.Height = 25;
             this.sendResistanceButton.BorderBrush = Brushes.Transparent;
             this.sendResistanceButton.Margin = new Thickness(5, 5, 5, 5);
-            this.sendResistanceButton.Width = 200;
             this.sendResistanceButton.HorizontalAlignment = HorizontalAlignment.Left;
 
             this.textField = new TextField();
@@ -132,11 +131,10 @@ namespace HealthcareDoctor.UI
             this.detailsPanel.Children.Add(this.textField);
             this.detailsPanel.Children.Add(this.sendMessageButton);
 
-            this.canvas = new Canvas();
-            this.liveChart = new LiveChart("Hartslag", "", "", 40, 400, 200, 20, LiveChart.BlueGreenDarkTheme, this.canvas, true, true, true, true, false, false, true);
+            this.liveChartControl = new LiveChartControl("Hartslag", "", "", 40, 400, 200, 20, LiveChart.BlueGreenDarkTheme, true, true, true, true, false, false, true);
 
             this.grid.Children.Add(this.detailsPanel);
-            this.grid.Children.Add(this.canvas);
+            this.grid.Children.Add(this.liveChartControl);
             this.grid.Children.Add(this.toggleSessionButton);
 
             BindingOperations.SetBinding(this.heartrateDisplay, Label.ContentProperty, new Binding("Heartrate"));
@@ -161,10 +159,10 @@ namespace HealthcareDoctor.UI
             BindingOperations.SetBinding(this.toggleSessionButton, Button.BackgroundProperty, new Binding("Background"));
 
             Grid.SetColumn(this.detailsPanel, 0);
-            Grid.SetColumn(this.canvas, 1);
+            Grid.SetColumn(this.liveChartControl, 1);
             Grid.SetColumn(this.toggleSessionButton, 0);
             Grid.SetRow(this.detailsPanel, 0);
-            Grid.SetRow(this.canvas, 0);
+            Grid.SetRow(this.liveChartControl, 0);
             Grid.SetRow(this.toggleSessionButton, 1);
             Grid.SetColumnSpan(this.toggleSessionButton, 2);
 
@@ -187,7 +185,7 @@ namespace HealthcareDoctor.UI
 
         private void SendResistanceButton_Click(object sender, RoutedEventArgs e)
         {
-            if (this.resistanceField.Value != null && this.BSN != null)
+            if (!String.IsNullOrEmpty(this.resistanceField.Value) && this.BSN != null)
             {
                 int resistance = int.Parse(this.resistanceField.Value);
 
@@ -196,15 +194,19 @@ namespace HealthcareDoctor.UI
                 else
                     MessageBox.Show("Weerstand mag alleen tusseen 0 en 100 zitten!");
             }
+            else
+                MessageBox.Show("Weerstand veld mag niet leeg zijn!");
         }
 
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
         {
-            if(this.textField.Value != null && this.BSN != null)
+            if(!String.IsNullOrEmpty(this.textField.Value) && this.BSN != null)
             {
                 this.OnSendMessage(this.textField.Value, this.BSN);
                 this.textField.Value = "";
             }
+            else
+                MessageBox.Show("Het chat bericht mag niet leeg zijn!");
         }
 
         private void ToggleSessionButton_Click(object sender, RoutedEventArgs e)
@@ -273,7 +275,7 @@ namespace HealthcareDoctor.UI
 
         public void UpdateChart(double value)
         {
-            this.liveChart.Update(value);
+            this.liveChartControl.GetLiveChart().Update(value);
         }
 
         public Button GetToggleButton()

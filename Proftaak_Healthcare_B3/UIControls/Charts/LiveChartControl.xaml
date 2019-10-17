@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:UIControls.Charts"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Canvas x:Name="canvas">
+    <Canvas x:Name="cnv_Canvas" MouseMove="Canvas_MouseMove">
             
     </Canvas>
 </UserControl>

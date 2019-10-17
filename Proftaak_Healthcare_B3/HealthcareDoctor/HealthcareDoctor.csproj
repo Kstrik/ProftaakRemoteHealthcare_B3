@@ -76,7 +76,6 @@
     </Compile>
     <Compile Include="Net\Cliënt.cs" />
     <Compile Include="UI\ClientControl.cs" />
-    <Compile Include="DataManager.cs" />
     <Compile Include="Net\HealthCareDoctor.cs" />
     <Compile Include="Net\IMessageReceiver.cs" />
     <Compile Include="Login.xaml.cs">

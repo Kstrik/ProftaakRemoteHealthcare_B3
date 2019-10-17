@@ -158,7 +158,7 @@ namespace HealthcareDoctor
                 StackPanel removeStackPanel = null;
                 foreach(StackPanel stackPanel in con_ConnectedClients.Children)
                 {
-                    if ((stackPanel.Children[0] as Label).Content.ToString() == bsn)
+                    if ((stackPanel.Children[0] as Label).Content.ToString() == cliënt.Name)
                     {
                         removeStackPanel = stackPanel;
                         break;
@@ -204,7 +204,6 @@ namespace HealthcareDoctor
                                     cmf_BSN.Value = this.clientBSNList.ToArray();
                                 }
 
-                                HandleRemoveClient(Encoding.UTF8.GetString(message.Content));
                                 break;
                             }
                         case Message.MessageType.REMOVE_CLIENT:
