@@ -19,12 +19,16 @@ namespace HealthcareServer.Net
         private List<Cliënt> cliënts;
         private List<Doctor> doctors;
 
-        public HealthCareServer(string ip, int host, ILogger logger)
+        private IConnectionsDisplay connectionsDisplay;
+
+        public HealthCareServer(string ip, int host, ILogger logger, IConnectionsDisplay connectionsDisplay)
         {
             this.server = new Server(ip, host, this, this, logger);
 
             this.cliënts = new List<Cliënt>();
             this.doctors = new List<Doctor>();
+
+            this.connectionsDisplay = connectionsDisplay;
         }
 
         public bool Start()
@@ -69,6 +73,7 @@ namespace HealthcareServer.Net
                         string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
                         string name = Encoding.UTF8.GetString(bytes.GetRange(bytes[0] + 1, bytes.Count() - (bytes[0] + 1)).ToArray());
                         HandleClientLogin(bsn, name, clientId);
+                        this.connectionsDisplay.OnClientConnected(name);
                         break;
                     }
                 case Message.MessageType.DOCTOR_LOGIN:
@@ -77,6 +82,7 @@ namespace HealthcareServer.Net
                         string username = Encoding.UTF8.GetString(bytes.GetRange(64, bytes.Count - 64).ToArray());
                         string password = Encoding.UTF8.GetString(bytes.GetRange(0, 64).ToArray());
                         HandleDoctorLogin(username, password, clientId);
+                        this.connectionsDisplay.OnDoctorConnected(username);
                         break;
                     }
                 case Message.MessageType.CHANGE_RESISTANCE:
@@ -309,16 +315,21 @@ namespace HealthcareServer.Net
             if(this.cliënts.Where(c => c.ClientId == connection.Id).Count() != 0)
             {
                 Cliënt cliënt = this.cliënts.Where(c => c.ClientId == connection.Id).First();
+                this.connectionsDisplay.OnClientDisconnected(cliënt.Name);
                 this.cliënts.Remove(cliënt);
                 BroadcastToDoctors(new Message(false, Message.MessageType.REMOVE_CLIENT, Encoding.UTF8.GetBytes(cliënt.BSN)).GetBytes());
                 FileHandler.SaveHistoryData(cliënt.BSN, cliënt.HistoryData, "Test");
             }
             else if (this.doctors.Where(c => c.ClientId == connection.Id).Count() != 0)
-                this.doctors.Remove(this.doctors.Where(c => c.ClientId == connection.Id).First());
+            {
+                Doctor doctor = this.doctors.Where(c => c.ClientId == connection.Id).First();
+                this.connectionsDisplay.OnDoctorDisconnected(doctor.Username);
+                this.doctors.Remove(doctor);
+            }
         }
 
         public void OnClientConnected(ClientConnection connection)
-        {    
+        {
 
         }
 

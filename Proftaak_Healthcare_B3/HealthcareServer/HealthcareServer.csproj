@@ -77,6 +77,7 @@
     <Compile Include="Net\HealthCareServer.cs" />
     <Compile Include="ILog.cs" />
     <Compile Include="IMessageHandler.cs" />
+    <Compile Include="Net\IConnectionsDisplay.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

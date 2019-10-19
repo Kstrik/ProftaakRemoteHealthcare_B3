@@ -73,7 +73,8 @@ namespace HealthcareClient
 
         private async void ClientWindow_Closed(object sender, EventArgs e)
         {
-            await this.sceneManager.BikeNode.SetFollowSpeed(0);
+            if(this.sceneManager != null)
+                await this.sceneManager.BikeNode.SetFollowSpeed(0);
             this.vrClient.Disconnect();
             this.healthCareClient.Disconnect();
             Environment.Exit(0);

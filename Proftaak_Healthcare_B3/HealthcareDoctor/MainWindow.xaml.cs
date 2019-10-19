@@ -60,6 +60,14 @@ namespace HealthcareDoctor
             //dataManager = new DataManager();
 
             this.healthCareDoctor.Transmit(new Message(false, Message.MessageType.GET_CLIENTS, null));
+
+            this.Closed += MainWindow_Closed;
+        }
+
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            this.healthCareDoctor.Disconnect();
+            Environment.Exit(0);
         }
 
         private void SendChatMessage(string chatMessage)
