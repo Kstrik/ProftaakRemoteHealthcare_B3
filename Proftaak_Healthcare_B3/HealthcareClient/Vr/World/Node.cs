@@ -16,7 +16,7 @@ namespace HealthcareServer.Vr.World
 
         public string Id { get; set; }
         public string Name { get; }
-        public string ParentId { get; }
+        public string ParentId { get; set; }
 
         private Transform transform;
         private Model model;

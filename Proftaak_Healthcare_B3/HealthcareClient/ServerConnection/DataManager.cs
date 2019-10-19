@@ -70,7 +70,7 @@ namespace HealthcareClient.ServerConnection
             Console.WriteLine("Pushing message");
 #endif
             this.receiver?.HandleClientMessage(this.clientMessage);
-            HandleClientMessage(this.clientMessage);
+            //HandleClientMessage(this.clientMessage);
             this.clientMessage = new ClientMessage();
             this.clientMessage.HasHeartbeat = false;
             this.clientMessage.HasPage16 = false;

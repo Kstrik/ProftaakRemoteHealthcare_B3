@@ -228,6 +228,14 @@ namespace HealthcareDoctor
                             {
                                 string bsn = Encoding.UTF8.GetString(bytes.GetRange(1, bytes[0]).ToArray());
 
+                                if(bytes.Count() > bytes[0] + 1)
+                                {
+                                    string name = Encoding.UTF8.GetString(bytes.GetRange(bytes[0] + 2, bytes[bytes[0] + 1]).ToArray());
+
+                                    if (this.clients.Where(c => c.BSN == bsn).Count() == 0)
+                                        HandleAddClient(bsn, name);
+                                }
+
                                 if (!this.clientBSNList.Contains(bsn))
                                 {
                                     this.clientBSNList.Add(bsn);

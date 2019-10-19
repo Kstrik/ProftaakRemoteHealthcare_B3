@@ -27,6 +27,7 @@ namespace HealthcareServer.Vr.World
         private Session session;
 
         public string Id { get; set; }
+        public string Name { get; set; }
         private List<RouteNode> routeNodes;
 
         public Road Road { get; set; }

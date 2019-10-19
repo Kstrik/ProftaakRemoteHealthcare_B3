@@ -39,6 +39,9 @@ namespace HealthcareClient
         private Client client;
         private Session session;
 
+        public Node BikeNode;
+        public HealthcareServer.Vr.World.Components.Panel TextPanel;
+
         public SceneManager(Session session, Client client)
         {
             InitializeComponent();
@@ -64,14 +67,14 @@ namespace HealthcareClient
             openFileDialog.Filter = "Scene files (*.Scene)|*.Scene";
             if (openFileDialog.ShowDialog() == true)
             {
+                await this.session.GetScene().Reset();
                 SceneLoader sceneLoader = new SceneLoader(ref this.session);
                 sceneLoader.LoadSceneFile(openFileDialog.FileName);
-                sceneLoader.SubmitScene();
+                await sceneLoader.SubmitScene();
                 await this.session.GetScene().GetSkyBox().SetTime(sceneLoader.SkyBox.GetTime());
                 //this.nodes = sceneLoader.Nodes;
                 //this.routes = sceneLoader.Routes;
 
-                await this.session.GetScene().Reset();
                 triNodes.Items.Clear();
                 triRoutes.Items.Clear();
 
@@ -95,6 +98,8 @@ namespace HealthcareClient
                     this.treeItems.Add(item.Header.ToString(), route);
                     routeCounter++;
                 }
+
+                await SetupBikeWithPanel();
             }
         }
 
@@ -262,6 +267,45 @@ namespace HealthcareClient
                 con_Properties.Children.Add(nameField);
                 con_Properties.Children.Add(routePropertiesView);
             }
+        }
+
+        public async Task SetupBikeWithPanel()
+        {
+            this.BikeNode = new Node("BikeNode", this.session);
+            this.BikeNode.SetTransform(new HealthcareServer.Vr.World.Components.Transform(new HealthcareServer.Vr.VectorMath.Vector3(0, 0, 0), 1.0f,
+                                        new HealthcareServer.Vr.VectorMath.Vector3(0, 0, 0)));
+            this.BikeNode.SetModel(new HealthcareServer.Vr.World.Components.Model(@"data\NetworkEngine\models\bike\Bike.fbx", false));
+            await this.session.GetScene().AddNode(this.BikeNode);
+
+            Node panelNode = new Node("PanelNode", this.session, this.BikeNode.Id);
+            panelNode.SetTransform(new HealthcareServer.Vr.World.Components.Transform(new HealthcareServer.Vr.VectorMath.Vector3(-0.5f, 1.1f, 0), 1.0f,
+                                        new HealthcareServer.Vr.VectorMath.Vector3(-60, 90, 0)));
+            this.TextPanel = new HealthcareServer.Vr.World.Components.Panel(new HealthcareServer.Vr.VectorMath.Vector2(0.4f, 0.4f),
+                                        new HealthcareServer.Vr.VectorMath.Vector2(512, 512),
+                                        new HealthcareServer.Vr.VectorMath.Vector4(1, 1, 1, 0.5f), false, this.session);
+            panelNode.SetPanel(this.TextPanel);
+            panelNode.ParentId = this.BikeNode.Id;
+            await this.session.GetScene().AddNode(panelNode);
+
+            Node cameraNode = await this.session.GetScene().FindNode("Camera");
+            cameraNode.SetTransform(new HealthcareServer.Vr.World.Components.Transform(new HealthcareServer.Vr.VectorMath.Vector3(0, 0, 0), 1.0f,
+                                        new HealthcareServer.Vr.VectorMath.Vector3(0, 90, 0)));
+            cameraNode.ParentId = this.BikeNode.Id;
+            await cameraNode.Update();
+
+            //Route route = new Route(this.session);
+            //route.AddRouteNode(new Route.RouteNode(new HealthcareServer.Vr.VectorMath.Vector3(0, 0, 0), new HealthcareServer.Vr.VectorMath.Vector3(0, 0, 0)));
+            //route.AddRouteNode(new Route.RouteNode(new HealthcareServer.Vr.VectorMath.Vector3(10, 0, 10), new HealthcareServer.Vr.VectorMath.Vector3(0, 0, 0)));
+            //await this.session.GetScene().AddRoute(route);
+            //Route route = this.session.GetScene().GetRoutes().Where(r => r.Name == "Route1").First();
+            Route route = this.session.GetScene().GetRoutes().First();
+
+            await this.TextPanel.SetClearColor(new HealthcareServer.Vr.VectorMath.Vector4(1, 1, 1, 0.5f));
+            await this.TextPanel.Swap();
+            await this.TextPanel.Clear();
+            await this.TextPanel.Swap();
+
+            await this.BikeNode.FollowRoute(route, 0.0f, new HealthcareServer.Vr.VectorMath.Vector3(0, 0, 0), new HealthcareServer.Vr.VectorMath.Vector3(0, 0, 0));
         }
     }
 }

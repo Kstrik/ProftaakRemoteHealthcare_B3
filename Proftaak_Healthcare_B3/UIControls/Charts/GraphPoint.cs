@@ -41,7 +41,7 @@ namespace UIControls.Charts
             this.ellipse.Height = radius * 2;
             this.ellipse.Margin = new System.Windows.Thickness(position.X - radius, position.Y - radius, 0, 0);
             this.ellipse.Fill = Brushes.White;
-            canvas.Children.Add(this.ellipse);
+            this.canvas.Children.Add(this.ellipse);
 
             this.rectangle = new Rectangle();
             this.rectangle.Fill = Brushes.White;
@@ -77,6 +77,8 @@ namespace UIControls.Charts
         public void Remove()
         {
             this.canvas.Children.Remove(this.ellipse);
+            this.canvas.Children.Remove(this.label);
+            this.canvas.Children.Remove(this.rectangle);
         }
 
         public void OnMouseMoved(System.Windows.Point cursorPosition)

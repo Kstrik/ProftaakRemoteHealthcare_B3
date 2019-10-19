@@ -47,6 +47,10 @@ namespace HealthcareClient
 
         private LiveChartControl liveChartControl;
 
+        private SceneManager sceneManager;
+
+        private bool sessionInProgress;
+
         public ClientWindow(HealthCareClient healthCareClient)
         {
             InitializeComponent();
@@ -64,10 +68,14 @@ namespace HealthcareClient
             grd_DataGrid.Children.Add(this.liveChartControl);
 
             this.Closed += ClientWindow_Closed;
+            this.sessionInProgress = false;
         }
 
-        private void ClientWindow_Closed(object sender, EventArgs e)
+        private async void ClientWindow_Closed(object sender, EventArgs e)
         {
+            await this.sceneManager.BikeNode.SetFollowSpeed(0);
+            this.vrClient.Disconnect();
+            this.healthCareClient.Disconnect();
             Environment.Exit(0);
         }
 
@@ -104,8 +112,8 @@ namespace HealthcareClient
                     btn_Refresh.Foreground = Brushes.Gray;
                     btn_ConnectToSession.Foreground = Brushes.Gray;
 
-                    SceneManager sceneManager = new SceneManager(this.session, this.vrClient);
-                    sceneManager.Show();
+                    this.sceneManager = new SceneManager(this.session, this.vrClient);
+                    this.sceneManager.Show();
                 }
                 else
                     MessageBox.Show("Could not start session invalid session or key!");
@@ -180,6 +188,14 @@ namespace HealthcareClient
 
                             txb_Chat.Text += "Dokter: " + chatMessage + Environment.NewLine;
                             txb_Chat.ScrollToEnd();
+
+                            Task.Run(async () =>
+                            {
+                                await this.sceneManager.TextPanel.Swap();
+                                await this.sceneManager.TextPanel.Clear();
+                                await this.sceneManager.TextPanel.DrawText("Dokter: " + chatMessage, new HealthcareServer.Vr.VectorMath.Vector2(10, 10), 16.0f, new HealthcareServer.Vr.VectorMath.Vector4(0, 0, 0, 1), "Arial");
+                                await this.sceneManager.TextPanel.Swap();
+                            });
                             break;
                         }
                     case Message.MessageType.CHANGE_RESISTANCE:
@@ -189,12 +205,25 @@ namespace HealthcareClient
                         }
                     case Message.MessageType.START_SESSION:
                         {
+                            //lbl_Heartrate.Content = "";
+                            //lbl_Distance.Content = "";
+                            //lbl_Speed.Content = "";
+                            //lbl_CycleRyhthm.Content = "";
+                            //this.liveChartControl.GetLiveChart().Clear();
 
+                            this.sessionInProgress = true;
                             break;
                         }
                     case Message.MessageType.STOP_SESSION:
                         {
+                            //lbl_Heartrate.Content = "";
+                            //lbl_Distance.Content = "";
+                            //lbl_Speed.Content = "";
+                            //lbl_CycleRyhthm.Content = "";
+                            //this.liveChartControl.GetLiveChart().Clear();
+                            Task.Run(() => this.sceneManager.BikeNode.SetFollowSpeed(0.0f));
 
+                            this.sessionInProgress = false;
                             break;
                         }
                     default:
@@ -221,29 +250,9 @@ namespace HealthcareClient
                     clientMessage.HasPage25 = true;
                     clientMessage.Heartbeat = (byte)random.Next(10, 100);
                     clientMessage.Distance = (byte)random.Next(10, 100);
-                    clientMessage.Speed = (byte)random.Next(10, 100);
+                    clientMessage.Speed = (byte)random.Next(0, 5);
                     clientMessage.Cadence = (byte)random.Next(10, 100);
                     HandleClientMessage(clientMessage);
-
-                    List<byte> bytes = new List<byte>();
-                    //bytes.Add((byte)Message.ValueId.HEARTRATE);
-                    //bytes.Add((byte)random.Next(10, 100));
-                    //bytes.Add((byte)Message.ValueId.DISTANCE);
-                    //bytes.Add((byte)random.Next(5, 20));
-                    //bytes.Add((byte)Message.ValueId.SPEED);
-                    //bytes.Add((byte)random.Next(0, 50));
-                    //bytes.Add((byte)Message.ValueId.CYCLE_RHYTHM);
-                    //bytes.Add((byte)random.Next(20, 60));
-                    bytes.Add((byte)Message.ValueId.HEARTRATE);
-                    bytes.Add(clientMessage.Heartbeat);
-                    bytes.Add((byte)Message.ValueId.DISTANCE);
-                    bytes.Add(clientMessage.Distance);
-                    bytes.Add((byte)Message.ValueId.SPEED);
-                    bytes.Add(clientMessage.Speed);
-                    bytes.Add((byte)Message.ValueId.CYCLE_RHYTHM);
-                    bytes.Add(clientMessage.Cadence);
-
-                    this.healthCareClient.Transmit(new Message(false, Message.MessageType.BIKEDATA, bytes.ToArray()));
                 }
             }).Start();
         }
@@ -252,19 +261,25 @@ namespace HealthcareClient
         {
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
-                if (clientMessage.HasHeartbeat)
+                if(this.sessionInProgress)
                 {
-                    lbl_Heartrate.Content = clientMessage.Heartbeat;
-                    this.liveChartControl.GetLiveChart().Update(clientMessage.Heartbeat);
-                }
-                if (clientMessage.HasPage16)
-                {
-                    lbl_Distance.Content = clientMessage.Distance;
-                    lbl_Speed.Content = clientMessage.Speed;
-                }
-                if (clientMessage.HasPage25)
-                {
-                    lbl_CycleRyhthm.Content = clientMessage.Cadence;
+                    this.healthCareClient.Transmit(new Message(false, Message.MessageType.BIKEDATA, clientMessage.GetData()));
+
+                    if (clientMessage.HasHeartbeat)
+                    {
+                        lbl_Heartrate.Content = clientMessage.Heartbeat;
+                        this.liveChartControl.GetLiveChart().Update(clientMessage.Heartbeat);
+                    }
+                    if (clientMessage.HasPage16)
+                    {
+                        lbl_Distance.Content = clientMessage.Distance;
+                        lbl_Speed.Content = clientMessage.Speed;
+                        Task.Run(() => this.sceneManager.BikeNode.SetFollowSpeed(clientMessage.Speed));
+                    }
+                    if (clientMessage.HasPage25)
+                    {
+                        lbl_CycleRyhthm.Content = clientMessage.Cadence;
+                    }
                 }
             }));
         }

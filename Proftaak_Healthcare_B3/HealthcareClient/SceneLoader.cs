@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,6 +16,9 @@ namespace HealthcareClient
 {
     public class SceneLoader
     {
+        private static string appFolderPath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+        private static string heightmapsFolderPath = System.IO.Path.Combine(Directory.GetParent(appFolderPath).Parent.FullName, "Resources/Textures/Heightmaps/");
+
         public Session Session;
         public List<Node> Nodes;
         public List<Route> Routes;
@@ -99,7 +103,7 @@ namespace HealthcareClient
                 int depth = int.Parse(jTerrain.GetValue("depth").ToString());
                 float maxHeight = float.Parse(jTerrain.GetValue("maxheight").ToString());
                 string heightMap = jTerrain.GetValue("heightmap").ToString();
-                terrain = new Terrain(width, depth, maxHeight, heightMap, smoothNormals, Session);
+                terrain = new Terrain(width, depth, maxHeight, heightmapsFolderPath + heightMap, smoothNormals, Session);
 
                 JArray layers = jTerrain.GetValue("texturelayers").ToObject<JArray>();
 
@@ -142,6 +146,7 @@ namespace HealthcareClient
         {
             string name = jObject.GetValue("name").ToString();
             Route route = new Route(Session);
+            route.Name = name;
             Road road = null;
 
             if (jObject.ContainsKey("road"))
@@ -172,15 +177,12 @@ namespace HealthcareClient
             Routes.Add(route);
         }
 
-        public void SubmitScene()
+        public async Task SubmitScene()
         {
-            Task.Run(async () =>
-            {
-                foreach (Route route in this.Routes)
-                    await route.Add();
-                foreach (Node node in this.Nodes)
-                    await node.Add();
-            });
+            foreach (Route route in this.Routes)
+                await this.Session.GetScene().AddRoute(route);
+            foreach (Node node in this.Nodes)
+                await this.Session.GetScene().AddNode(node);
         }
     }
 }

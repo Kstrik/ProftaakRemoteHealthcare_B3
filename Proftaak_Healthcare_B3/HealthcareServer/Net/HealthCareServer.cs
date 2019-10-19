@@ -257,6 +257,14 @@ namespace HealthcareServer.Net
                     List<byte> bytes = new List<byte>();
                     bytes.Add((byte)bsn.Length);
                     bytes.AddRange(Encoding.UTF8.GetBytes(bsn));
+
+                    if(this.cliënts.Where(c => c.BSN == bsn).Count() != 0)
+                    {
+                        string username = this.cliënts.Where(c => c.BSN == bsn).First().Name;
+                        bytes.Add((byte)username.Length);
+                        bytes.AddRange(Encoding.UTF8.GetBytes(username));
+                    }
+
                     this.server.Transmit(EncryptMessage(new Message(false, Message.MessageType.CLIENT_DATA, bytes.ToArray())), clientId);
                 }
             }
