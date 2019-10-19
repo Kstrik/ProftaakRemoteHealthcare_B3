@@ -41,7 +41,7 @@ namespace HealthcareServer
                             bikeData.Append( $"Speed: {lastvalue}\r\n" );
                             break;
                         }
-                    case Message.ValueId.CYCLE_RHYTHM:
+                    case Message.ValueId._RHYTHM:
                         {
                             skip = 2;
                             bikeData.Append( $"Cycle rithm: {lastvalue}\r\n" );

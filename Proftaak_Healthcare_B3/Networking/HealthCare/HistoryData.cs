@@ -53,7 +53,7 @@ namespace Networking.HealthCare
 
                     if (CycleRhythmValues.Count - 1 > i)
                     {
-                        bytes.Add((byte)Message.ValueId.CYCLE_RHYTHM);
+                        bytes.Add((byte)Message.ValueId._RHYTHM);
                         bytes.Add((byte)CycleRhythmValues[i].cycleRhythm);
                         bytes.AddRange(Encoding.UTF8.GetBytes(CycleRhythmValues[i].time.ToString()));
                     }

@@ -28,7 +28,8 @@ namespace Networking.HealthCare
             HEARTRATE,
             DISTANCE,
             SPEED,
-            CYCLE_RHYTHM
+
+            _RHYTHM
         }
 
         public bool isDoctor { get; }

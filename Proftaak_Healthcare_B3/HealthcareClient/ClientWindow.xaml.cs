@@ -57,6 +57,22 @@ namespace HealthcareClient
             ConnectToHeartrateMonitor(this.dataManager);
         }
 
+        public ClientWindow()
+        {
+            InitializeComponent();
+
+            this.vrClient = new Client("145.48.6.10", 6666, this, null);
+            this.vrClient.Connect();
+            /*this.healthCareClient = healthCareClient;
+            this.healthCareClient.SetReciever(this);
+*/
+            this.dataManager = new DataManager(this.dataManager);
+            GetCurrentSessions();
+            ConnectToBike(this.dataManager);
+            ConnectToHeartrateMonitor(this.dataManager);
+        }
+
+
         private void ConnectToBike(IBikeDataReceiver bikeDataReceiver)
         {
             RealBike bike = new RealBike("00438", dataManager);
@@ -133,7 +149,7 @@ namespace HealthcareClient
             {
                 case Message.MessageType.CHAT_MESSAGE:
                     {
-
+                        //Receive doctor message here and show on VR
                         break;
                     }
                 case Message.MessageType.CHANGE_RESISTANCE:

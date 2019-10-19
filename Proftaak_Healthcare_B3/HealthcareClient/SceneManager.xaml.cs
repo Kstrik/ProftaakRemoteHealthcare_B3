@@ -23,6 +23,10 @@ using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using UIControls.Fields;
+using HealthcareServer.Vr.World.Components;
+using HealthcareServer.Vr.VectorMath;
+using HealthcareServer.Vr.Actions;
+using Newtonsoft.Json.Linq;
 
 namespace HealthcareClient
 {
@@ -96,6 +100,8 @@ namespace HealthcareClient
                     routeCounter++;
                 }
             }
+            //createBicyclePanel();
+            createVRPanel();
         }
 
         private void SaveScene_MouseDown(object sender, MouseButtonEventArgs e)
@@ -220,6 +226,63 @@ namespace HealthcareClient
             Task.Run(() => route.Update());
         }
 
+        /// <summary>
+        /// Creates a panel for text and more to be drawn on
+        /// </summary>
+        private async void createBicyclePanel()
+        {
+            Node parent = (Node)treeItems["Node1"];
+            string parentID = parent.Id;
+            Vector2 size = new Vector2(1, 1);
+            Vector2 resolution = new Vector2(512, 512);
+            Vector4 background = new Vector4(1, 1, 1, 1);
+            bool castShadow = true;
+            HealthcareServer.Vr.World.Components.Panel panel = new HealthcareServer.Vr.World.Components.Panel(size, resolution,background,castShadow,this.session);
+            Vector3 position = new Vector3(0, 1, 1);
+            float scale = 1;
+            Vector3 rotation = new Vector3(0, 0, 180);
+            HealthcareServer.Vr.World.Components.Transform transform = new HealthcareServer.Vr.World.Components.Transform(position, scale, rotation);
+            Node panelNode = new Node("BicyclePanel", this.session,parentID);
+            panelNode.SetTransform(transform);
+            panelNode.SetPanel(panel);
+            await panelNode.Add();
+            await panel.Clear();
+            await panel.DrawText("Testing!", new Vector2(100, 100), 32, new Vector4(0, 0, 0, 1), "segoeui");
+        }
+
+        private async void createVRPanel()
+        {
+
+            //JObject findrequest = Node.GetFindNodeJsonObject("head", this.session);
+            //Response response = await this.session.SendAction(GetAddJsonObject(), new ActionRequest("tunnel/send", "scene/node/add", this));
+            //this.Id = (response.Status == Response.ResponseStatus.SUCCES) ? (string)response.Value : "";
+
+            Node cameraNode = await session.GetScene().FindNode("Camera");
+            /*Response response = await this.session.SendAction(findrequest, new ActionRequest("tunnel/send", "scene/node/find", null));
+            Log(response.Value.ToString());
+*/
+            Log("Camera node uuid: " + cameraNode.Id);
+
+            //Node parent = (Node)treeItems["Node1"];
+            string parentID = cameraNode.Id;
+            Vector2 size = new Vector2(1, 1);
+            Vector2 resolution = new Vector2(512, 512);
+            Vector4 background = new Vector4(1, 1, 1, 1);
+            bool castShadow = true;
+            HealthcareServer.Vr.World.Components.Panel panel = new HealthcareServer.Vr.World.Components.Panel(size, resolution, background, castShadow, this.session);
+            Vector3 position = new Vector3(0, 1, 1);
+            float scale = 1;
+            Vector3 rotation = new Vector3(0, 0, 180);
+            HealthcareServer.Vr.World.Components.Transform transform = new HealthcareServer.Vr.World.Components.Transform(position, scale, rotation);
+            Node panelNode = new Node("VRPanel", this.session, parentID);
+            Log("VRPanel parent: " + panelNode.ParentId);
+            panelNode.SetTransform(transform);
+            panelNode.SetPanel(panel);
+            await panelNode.Add();
+            await panel.Clear();
+            await panel.DrawText("Testing!", new Vector2(100, 100), 32, new Vector4(0, 0, 0, 1), "segoeui");
+            await panel.Swap();
+        }
         private void Cancel()
         {
             con_Builder.Visibility = Visibility.Visible;

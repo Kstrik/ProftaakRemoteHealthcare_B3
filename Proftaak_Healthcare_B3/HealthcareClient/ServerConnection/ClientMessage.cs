@@ -40,7 +40,7 @@ namespace HealthcareClient.BikeConnection
             if(HasPage25)
             {
                 
-                data.Append((byte)Message.ValueId.CYCLE_RHYTHM);
+                data.Append((byte)Message.ValueId._RHYTHM);
                 data.Append(Cadence);
             }
             return data;
