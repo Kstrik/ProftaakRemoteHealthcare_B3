@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Avans.TI.BLE;
 
 namespace HealthcareClient.Bike
@@ -15,12 +16,12 @@ namespace HealthcareClient.Bike
             : base(bikeDataReceiver)
         {
             this.ModelNumber = ModelNumber;
-            ThreadStart bikeStart = new ThreadStart(ConnectToBike);
-            Thread bikeThread = new Thread(bikeStart);
-            bikeThread.Start();
+            //ThreadStart bikeStart = new ThreadStart(ConnectToBike);
+            //Thread bikeThread = new Thread(bikeStart);
+            //bikeThread.Start();
         }
 
-        private async void ConnectToBike()
+        public async Task<bool> ConnectToBike()
         {
             Console.WriteLine("Starting connection to bike");
             int errorCode = 0;
@@ -37,7 +38,7 @@ namespace HealthcareClient.Bike
             bleBike.SubscriptionValueChanged += BleBike_SubscriptionValueChanged;
             errorCode = await this.bleBike.SubscribeToCharacteristic("6e40fec2-b5a3-f393-e0a9-e50e24dcca9e");
 
-
+            return (errorCode == 0);
         }
 
         private void BleBike_SubscriptionValueChanged(object sender, BLESubscriptionValueChangedEventArgs e)

@@ -347,31 +347,73 @@ namespace HealthcareDoctor
         {
             if(this.clientHistoryWindow != null)
             {
-                for (int i = 0; i < bytes.Count(); i += 21)
-                {
-                    int value = bytes[i + 1];
-                    DateTime time = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
+                //for (int i = 0; i < bytes.Count(); i += 21)
+                //{
+                //    int value = bytes[i + 1];
+                //    DateTime time = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
 
-                    switch ((Message.ValueId)bytes[i])
+                //    switch ((Message.ValueId)bytes[i])
+                //    {
+                //        case Message.ValueId.HEARTRATE:
+                //            {
+                //                this.clientHistoryWindow.AddHeartRate((value, time));
+                //                break;
+                //            }
+                //        case Message.ValueId.DISTANCE:
+                //            {
+                //                this.clientHistoryWindow.AddDistance((value, time));
+                //                break;
+                //            }
+                //        case Message.ValueId.SPEED:
+                //            {
+                //                this.clientHistoryWindow.AddSpeed((value, time));
+                //                break;
+                //            }
+                //        case Message.ValueId.CYCLE_RHYTHM:
+                //            {
+                //                this.clientHistoryWindow.AddCycleRyhthm((value, time));
+                //                break;
+                //            }
+                //    }
+                //}
+
+                int skip = 21;
+                for (int i = 0; i < bytes.Count; i += skip)
+                {
+                    Message.ValueId valueType = (Message.ValueId)bytes[i];
+
+                    switch (valueType)
                     {
                         case Message.ValueId.HEARTRATE:
                             {
-                                this.clientHistoryWindow.AddHeartRate((value, time));
+                                skip = 21;
+                                int value = bytes[i + 1];
+                                DateTime time = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
+                                this.clientHistoryWindow.AddHeartRate((heartRate: value, time: time));
                                 break;
                             }
                         case Message.ValueId.DISTANCE:
                             {
-                                this.clientHistoryWindow.AddDistance((value, time));
+                                skip = bytes[i + 1] + 21;
+                                int value = int.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, bytes[i + 1]).ToArray()));
+                                DateTime time = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + bytes[i + 1] + 2, 19).ToArray()));
+                                this.clientHistoryWindow.AddDistance((distance: value, time: time));
                                 break;
                             }
                         case Message.ValueId.SPEED:
                             {
-                                this.clientHistoryWindow.AddSpeed((value, time));
+                                skip = 21;
+                                int value = bytes[i + 1];
+                                DateTime time = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
+                                this.clientHistoryWindow.AddSpeed((speed: value, time: time));
                                 break;
                             }
                         case Message.ValueId.CYCLE_RHYTHM:
                             {
-                                this.clientHistoryWindow.AddCycleRyhthm((value, time));
+                                skip = 21;
+                                int value = bytes[i + 1];
+                                DateTime time = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
+                                this.clientHistoryWindow.AddCycleRyhthm((cycleRhythm: value, time: time));
                                 break;
                             }
                     }

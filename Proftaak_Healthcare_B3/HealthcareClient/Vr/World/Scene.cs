@@ -35,12 +35,30 @@ namespace HealthcareServer.Vr.World
             }
         }
 
+        public async Task RemoveNode(Node node)
+        {
+            if (node != null)
+            {
+                this.nodes.Remove(node);
+                await node.Delete();
+            }
+        }
+
         public async Task AddRoute(Route route)
         {
             if(route != null)
             {
                 this.routes.Add(route);
                 await route.Add();
+            }
+        }
+
+        public async Task RemoveRoute(Route route)
+        {
+            if (route != null)
+            {
+                this.routes.Remove(route);
+                await route.Delete();
             }
         }
 

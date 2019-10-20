@@ -99,6 +99,8 @@ namespace HealthcareClient
                     routeCounter++;
                 }
 
+                Node groundPlane = await this.session.GetScene().FindNode("GroundPlane");
+                await groundPlane.Delete();
                 await SetupBikeWithPanel();
             }
         }

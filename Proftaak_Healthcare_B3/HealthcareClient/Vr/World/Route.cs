@@ -76,6 +76,11 @@ namespace HealthcareServer.Vr.World
                 await Task.Run(() => this.Road.Update());
         }
 
+        public async Task Delete()
+        {
+            await this.session.SendAction(GetDeleteJsonObject());
+        }
+
         private JObject GetAddJsonObject()
         {
             JArray nodes = new JArray();
@@ -128,6 +133,18 @@ namespace HealthcareServer.Vr.World
             string test = routeAdd.ToString();
 
             return this.session.GetTunnelSendRequest(routeAdd);
+        }
+
+        private JObject GetDeleteJsonObject()
+        {
+            JObject data = new JObject();
+            data.Add("id", this.Id);
+
+            JObject routeRemove = new JObject();
+            routeRemove.Add("id", "route/delete");
+            routeRemove.Add("data", data);
+
+            return this.session.GetTunnelSendRequest(routeRemove);
         }
 
         public async Task<Response> GetResponse(string jsonResponse)

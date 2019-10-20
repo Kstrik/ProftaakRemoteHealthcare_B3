@@ -47,8 +47,13 @@ namespace Networking.HealthCare
 
                     if (DistanceValues.Count - 1 > i)
                     {
+                        //bytes.Add((byte)Message.ValueId.DISTANCE);
+                        //bytes.Add((byte)DistanceValues[i].distance);
+                        //bytes.AddRange(Encoding.UTF8.GetBytes(DistanceValues[i].time.ToString()));
                         bytes.Add((byte)Message.ValueId.DISTANCE);
-                        bytes.Add((byte)DistanceValues[i].distance);
+                        string distance = DistanceValues[i].distance.ToString();
+                        bytes.Add((byte)Encoding.UTF8.GetBytes(distance).Length);
+                        bytes.AddRange(Encoding.UTF8.GetBytes(distance));
                         bytes.AddRange(Encoding.UTF8.GetBytes(DistanceValues[i].time.ToString()));
                     }
 

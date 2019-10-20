@@ -51,7 +51,7 @@ namespace HealthcareClient.ServerConnection
             if (this.clientMessage.HasPage16)
                 PushMessage();
 
-            this.clientMessage.Distance = (byte)distance;
+            this.clientMessage.Distance = distance;
             this.clientMessage.Speed = (byte)speed;
             this.clientMessage.HasPage16 = true;
         }

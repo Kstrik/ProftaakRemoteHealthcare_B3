@@ -52,6 +52,9 @@ namespace HealthcareClient
         private bool sessionInProgress;
         private bool bikeIsConnected;
 
+        private int distance = 0;
+        private string lastChatMessage;
+
         public ClientWindow(HealthCareClient healthCareClient)
         {
             InitializeComponent();
@@ -71,6 +74,15 @@ namespace HealthcareClient
             this.Closed += ClientWindow_Closed;
             this.sessionInProgress = false;
             this.bikeIsConnected = false;
+
+            this.lastChatMessage = "";
+            this.KeyUp += ClientWindow_KeyUp;
+        }
+
+        private void ClientWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F11)
+                btn_SendTestData.Visibility = (btn_SendTestData.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private async void ClientWindow_Closed(object sender, EventArgs e)
@@ -131,22 +143,47 @@ namespace HealthcareClient
             GetCurrentSessions();
         }
 
-        private void ConnectToBike_Click(object sender, RoutedEventArgs e)
+        private async void ConnectToBike_Click(object sender, RoutedEventArgs e)
         {
-            if(ConnectToBike())
+            //if(ConnectToBike())
+            //{
+            //    txf_BikeId.IsEnabled = false;
+            //    btn_ConnectToBike.IsEnabled = false;
+            //    btn_ConnectToBike.Foreground = Brushes.Gray;
+            //}
+
+            if (!String.IsNullOrEmpty(txf_BikeId.Value))
             {
-                txf_BikeId.IsEnabled = false;
-                btn_ConnectToBike.IsEnabled = false;
-                btn_ConnectToBike.Foreground = Brushes.Gray;
+                this.bike = new RealBike(txf_BikeId.Value, this.dataManager);
+                if (await this.bike.ConnectToBike())
+                {
+                    txf_BikeId.IsEnabled = false;
+                    btn_ConnectToBike.IsEnabled = false;
+                    btn_ConnectToBike.Foreground = Brushes.Gray;
+
+                    this.bikeIsConnected = true;
+                }
+                else
+                {
+                    txf_BikeId.IsEnabled = true;
+                    btn_ConnectToBike.IsEnabled = true;
+                    btn_ConnectToBike.Foreground = Brushes.White;
+                    MessageBox.Show("Kon niet verbinden met de fiets!");
+                }
             }
+            else
+                MessageBox.Show("FietsId veld mag niet leeg zijn!");
         }
 
-        //private void SendTestData_Click(object sender, RoutedEventArgs e)
-        //{
-        //    SendTestBikeData();
-        //    btn_SendTestData.IsEnabled = false;
-        //    btn_SendTestData.Foreground = Brushes.Gray;
-        //}
+        private void SendTestData_Click(object sender, RoutedEventArgs e)
+        {
+            if(!this.bikeIsConnected)
+            {
+                SendTestBikeData();
+                btn_SendTestData.IsEnabled = false;
+                btn_SendTestData.Foreground = Brushes.Gray;
+            }
+        }
 
         public void OnDataReceived(byte[] data)
         {
@@ -189,21 +226,23 @@ namespace HealthcareClient
                     case Message.MessageType.CHAT_MESSAGE:
                         {
                             string chatMessage = Encoding.UTF8.GetString(message.Content);
+                            this.lastChatMessage = chatMessage;
 
                             txb_Chat.Text += "Dokter: " + chatMessage + Environment.NewLine;
                             txb_Chat.ScrollToEnd();
 
-                            if(this.sceneManager != null)
+                            if (this.sceneManager != null)
                             {
                                 Task.Run(async () =>
                                 {
                                     await this.sceneManager.TextPanel.Swap();
                                     await this.sceneManager.TextPanel.Clear();
-                                    await this.sceneManager.TextPanel.DrawText("Dokter: " + chatMessage, new HealthcareServer.Vr.VectorMath.Vector2(10, 10), 16.0f, new HealthcareServer.Vr.VectorMath.Vector4(0, 0, 0, 1), "Arial");
+                                    await this.sceneManager.TextPanel.DrawText("Bericht dokter: ", new HealthcareServer.Vr.VectorMath.Vector2(10, 20), 20.0f, new HealthcareServer.Vr.VectorMath.Vector4(0, 0, 0, 1), "Arial");
+                                    await this.sceneManager.TextPanel.DrawText(chatMessage, new HealthcareServer.Vr.VectorMath.Vector2(10, 50), 20.0f, new HealthcareServer.Vr.VectorMath.Vector4(0, 0, 0, 1), "Arial");
                                     await this.sceneManager.TextPanel.Swap();
                                 });
                             }
-                            break;
+                        break;
                         }
                     case Message.MessageType.CHANGE_RESISTANCE:
                         {
@@ -251,14 +290,14 @@ namespace HealthcareClient
                 while (true)
                 {
                     Thread.Sleep(1000);
-
+                    this.distance += 1;
                     ClientMessage clientMessage = new ClientMessage();
                     clientMessage.HasHeartbeat = true;
                     clientMessage.HasPage16 = true;
                     clientMessage.HasPage25 = true;
                     clientMessage.Heartbeat = (byte)random.Next(10, 100);
-                    clientMessage.Distance = (byte)random.Next(10, 100);
-                    clientMessage.Speed = (byte)random.Next(0, 5);
+                    clientMessage.Distance = this.distance;
+                    clientMessage.Speed = (byte)random.Next(1, 5);
                     clientMessage.Cadence = (byte)random.Next(10, 100);
                     HandleClientMessage(clientMessage);
                 }
