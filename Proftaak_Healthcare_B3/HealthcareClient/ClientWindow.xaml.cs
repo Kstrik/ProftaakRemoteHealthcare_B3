@@ -157,17 +157,17 @@ namespace HealthcareClient
                 this.bike = new RealBike(txf_BikeId.Value, this.dataManager);
                 if (await this.bike.ConnectToBike())
                 {
-                    txf_BikeId.IsEnabled = false;
-                    btn_ConnectToBike.IsEnabled = false;
-                    btn_ConnectToBike.Foreground = Brushes.Gray;
+                    //txf_BikeId.IsEnabled = false;
+                    //btn_ConnectToBike.IsEnabled = false;
+                    //btn_ConnectToBike.Foreground = Brushes.Gray;
 
                     this.bikeIsConnected = true;
                 }
                 else
                 {
-                    txf_BikeId.IsEnabled = true;
-                    btn_ConnectToBike.IsEnabled = true;
-                    btn_ConnectToBike.Foreground = Brushes.White;
+                    //txf_BikeId.IsEnabled = true;
+                    //btn_ConnectToBike.IsEnabled = true;
+                    //btn_ConnectToBike.Foreground = Brushes.White;
                     MessageBox.Show("Kon niet verbinden met de fiets!");
                 }
             }
@@ -321,7 +321,8 @@ namespace HealthcareClient
                     {
                         lbl_Distance.Content = clientMessage.Distance;
                         lbl_Speed.Content = clientMessage.Speed;
-                        Task.Run(() => this.sceneManager.BikeNode.SetFollowSpeed(clientMessage.Speed));
+                        if(this.sceneManager != null && this.sceneManager.BikeNode != null)
+                            Task.Run(() => this.sceneManager.BikeNode.SetFollowSpeed(clientMessage.Speed));
                     }
                     if (clientMessage.HasPage25)
                     {

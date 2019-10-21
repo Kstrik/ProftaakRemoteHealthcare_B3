@@ -98,9 +98,12 @@ namespace HealthcareServer
         {
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
-                StackPanel stackPanel = GetStackPanel("Cliënt: " + name);
-                this.clients.Add(name, stackPanel);
-                con_Connections.Children.Add(stackPanel);
+                if (!this.clients.Keys.Contains(name))
+                {
+                    StackPanel stackPanel = GetStackPanel("Cliënt: " + name);
+                    this.clients.Add(name, stackPanel);
+                    con_Connections.Children.Add(stackPanel);
+                }
             }));
         }
 
@@ -108,9 +111,12 @@ namespace HealthcareServer
         {
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
-                StackPanel stackPanel = GetStackPanel("Doctor: " + name);
-                this.doctors.Add(name, stackPanel);
-                con_Connections.Children.Add(stackPanel);
+                if(!this.doctors.Keys.Contains(name))
+                {
+                    StackPanel stackPanel = GetStackPanel("Doctor: " + name);
+                    this.doctors.Add(name, stackPanel);
+                    con_Connections.Children.Add(stackPanel);
+                }
             }));
         }
 

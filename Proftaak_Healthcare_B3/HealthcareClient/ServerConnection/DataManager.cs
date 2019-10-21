@@ -52,7 +52,7 @@ namespace HealthcareClient.ServerConnection
                 PushMessage();
 
             this.clientMessage.Distance = distance;
-            this.clientMessage.Speed = (byte)speed;
+            this.clientMessage.Speed = (byte)(speed * 0.001);
             this.clientMessage.HasPage16 = true;
         }
 
